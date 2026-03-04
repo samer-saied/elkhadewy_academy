@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:unimind/services/lang/app_localizations.dart';
+import '../../../../core/device_info/device_info.dart';
+import '../../../../general/presentations/cubits/navigation_cubit.dart';
+import '../../../../general/widgets/headers_widgets.dart';
+import '../../../../utils/colors.dart';
+import '../widgets/category_horizontal_section_widget.dart';
+import '../widgets/continue_learning/continue_widgets.dart';
+import '../widgets/faetured_courses_section_widget.dart';
+import '../widgets/divider_widget.dart';
+import '../widgets/cahpters/latest_chapter_section_widget.dart';
+import '../widgets/news_section_widget.dart';
+import '../widgets/welcome_widget.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    DeviceInfo().getUniqueId().then((value) {
+      // print(value);
+    });
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // NotificationTopBarWidget(),
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 7, 10, 7),
+              decoration: BoxDecoration(
+                color: AppColors.jonquil,
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(40),
+                ),
+              ),
+              child: WelcomeUserWidget(),
+            ),
+
+            // CarouselWidget(),
+            // DividerWidget(),
+            buildContinueLearningCard(),
+            SectionHeaderWidget(title: "Recent News".tr(context), action: ""),
+            NewsSectionWidget(),
+
+            // DividerWidget(),
+            SectionHeaderWidget(
+              title: "Colleges".tr(context),
+              action: "VIEW ALL".tr(context),
+              onTapFunc: () {
+                context.read<NavigationCubit>().updateIndex(1);
+              },
+            ),
+            CategoryHListSectionWidget(widgetType: WidgetType.labels),
+
+            SectionHeaderWidget(title: "Your Courses".tr(context), action: ""),
+            FaeturedCoursesSectionWidget(),
+            DividerWidget(),
+
+            SectionHeaderWidget(
+              title: "Latest Chapters".tr(context),
+              action: "",
+            ),
+            LatestChapterSectionWidget(),
+            DividerWidget(),
+          ],
+        ),
+      ),
+    );
+  }
+}

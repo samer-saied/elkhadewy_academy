@@ -1,0 +1,433 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_border/dotted_border.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:unimind/services/lang/app_localizations.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/helper.dart';
+import '../../auth/bloc/login_cubit.dart';
+import '../../auth/presentation/widgets/auth_widgets.dart';
+import '../../course_details/data/chapter_model.dart';
+import '../../course_details/presentations/cubit/chapters_cubit.dart';
+import '../../courses/presentations/cubit/course_cubit.dart';
+
+class AddChapterPage extends StatelessWidget {
+  const AddChapterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromRGBO(251, 251, 251, 1),
+      appBar: AppBar(
+        backgroundColor: AppColors.jonquil,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Add New Chapter',
+          style: TextStyle(
+            color: AppColors.whiteColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: const AddChapterForm(),
+    );
+  }
+}
+
+class AddChapterForm extends StatefulWidget {
+  const AddChapterForm({super.key});
+
+  @override
+  State<AddChapterForm> createState() => _AddChapterFormState();
+}
+
+class _AddChapterFormState extends State<AddChapterForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _indexController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _contentController = TextEditingController();
+  final _linkController = TextEditingController();
+
+  String? _selectedCourseId;
+
+  @override
+  void initState() {
+    super.initState();
+    _linkController.addListener(() => setState(() {}));
+    GetIt.I<CourseCubit>().fetchCourseItems();
+  }
+
+  @override
+  void dispose() {
+    _indexController.dispose();
+    _titleController.dispose();
+    _linkController.dispose();
+    _contentController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) return;
+    if (_selectedCourseId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a course'),
+          backgroundColor: AppColors.redWood,
+        ),
+      );
+      return;
+    }
+
+    final chapter = Chapter(
+      title: _titleController.text.trim(),
+      orderIndex: int.tryParse(_indexController.text.trim()) ?? 0,
+      content: _contentController.text.trim(),
+      courseId: _selectedCourseId!,
+      createdAt: Timestamp.now(),
+      videoUrl: _linkController.text.trim(),
+      createdBy: GetIt.I<LoginCubit>().currentUser!.name,
+    );
+
+    GetIt.I<ChaptersCubit>().addChapter(_selectedCourseId!, chapter);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<ChaptersCubit, ChaptersState>(
+      bloc: GetIt.I<ChaptersCubit>(),
+      listener: (context, state) {
+        if (state is ChaptersOperationSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+          if (mounted) Navigator.of(context).pop();
+        } else if (state is ChaptersFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error),
+              backgroundColor: AppColors.redWood,
+            ),
+          );
+        }
+      },
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Order Index ──────────────────────────────────
+                    LabeledInputFields(
+                      label: 'Chapter Number',
+                      hint: 'e.g. 1',
+                      prefixIcon: Icons.numbers,
+                      controller: _indexController,
+                      keyboardType: TextInputType.number,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? 'Chapter number is required'
+                          : (int.tryParse(v.trim()) == null)
+                          ? 'Must be a valid number'
+                          : null,
+                    ),
+                    const SizedBox(height: 14),
+
+                    // ── Title ────────────────────────────────────────
+                    LabeledInputFields(
+                      label: 'Chapter Title',
+                      hint: 'Enter a catchy title for the chapter',
+                      prefixIcon: Icons.title,
+                      controller: _titleController,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? 'Title is required'
+                          : null,
+                    ),
+                    const SizedBox(height: 14),
+
+                    // ── Content / Description ────────────────────────
+                    LabeledInputFields(
+                      label: 'Chapter Description',
+                      maxLines: 5,
+                      hint:
+                          'Write a detailed description of the chapter content and its objectives…',
+                      controller: _contentController,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? 'Description is required'
+                          : null,
+                    ),
+                    const SizedBox(height: 14),
+
+                    // ── Course Dropdown ──────────────────────────────
+                    Text(
+                      'Select Course',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    _buildCourseDropdown(),
+                    const SizedBox(height: 28),
+
+                    // ── Video URL ────────────────────────────────────
+                    LabeledInputFields(
+                      label: 'YouTube Video URL',
+                      maxLines: 1,
+                      hint: 'https://www.youtube.com/watch?v=...',
+                      prefixIcon: Icons.videocam_rounded,
+                      controller: _linkController,
+                      keyboardType: TextInputType.url,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? 'Video URL is required'
+                          : null,
+                    ),
+                    DottedBorder(
+                      options: RoundedRectDottedBorderOptions(
+                        color: AppColors.jonquil,
+                        strokeWidth: 1.5,
+                        dashPattern: const [6, 3],
+                        radius: const Radius.circular(15),
+                      ),
+                      child:
+                          _linkController.text.isEmpty ||
+                              Helper.extractYoutubeId(_linkController.text) ==
+                                  null
+                          ? Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 30),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFEF9F0),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: const Color(0xFFD49E3C),
+                                    child: const Icon(
+                                      Icons.videocam_rounded,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    "Input Chapter Video Youtube link".tr(
+                                      context,
+                                    ),
+                                    style: TextStyle(
+                                      color: Color(0xFFD49E3C),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: YoutubePlayer(
+                                controller: YoutubePlayerController(
+                                  initialVideoId: Helper.extractYoutubeId(
+                                    _linkController.text,
+                                  ).toString(),
+                                  flags: YoutubePlayerFlags(
+                                    autoPlay: false,
+                                    mute: true,
+                                  ),
+                                ),
+                                showVideoProgressIndicator: true,
+                                progressIndicatorColor: Colors.amber,
+                                progressColors: const ProgressBarColors(
+                                  playedColor: Colors.amber,
+                                  handleColor: Colors.amberAccent,
+                                ),
+                                onReady: () {},
+                              ),
+                            ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // const SizedBox(height: 30),
+
+                    // ── Save Button ──────────────────────────────────────────
+                    _buildSaveButton(),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCourseDropdown() {
+    return BlocBuilder<CourseCubit, CourseState>(
+      bloc: GetIt.I<CourseCubit>(),
+      builder: (context, state) {
+        final courses = GetIt.I<CourseCubit>().allCourses;
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(40),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              isExpanded: true,
+              value: _selectedCourseId,
+              hint: Text(
+                'Select the appropriate course',
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge!.copyWith(color: AppColors.grey),
+              ),
+              items: courses.map((course) {
+                return DropdownMenuItem<String>(
+                  value: course.id,
+                  child: Text(course.title),
+                );
+              }).toList(),
+              onChanged: (v) => setState(() => _selectedCourseId = v),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSaveButton() {
+    return BlocBuilder<ChaptersCubit, ChaptersState>(
+      bloc: GetIt.I<ChaptersCubit>(),
+      builder: (context, state) {
+        final isLoading = state is ChaptersLoading;
+        return Container(
+          padding: const EdgeInsets.all(20),
+          color: Colors.white,
+          child: MaterialButton(
+            onPressed: isLoading ? null : _submit,
+            color: AppColors.jonquil,
+            minWidth: double.infinity,
+            height: 55,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: isLoading
+                ? const CircularProgressIndicator(color: AppColors.jonquil)
+                : const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Publish Chapter',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      Icon(Icons.rocket_launch, color: Colors.white),
+                    ],
+                  ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+// /////////////////   ATTACHMENTS //////////////////////////
+
+//   Widget _buildSectionHeader(
+//     String title,
+//     IconData icon, {
+//     required VoidCallback onAdd,
+//   }) {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         Row(
+//           children: [
+//             Icon(icon, color: const Color(0xFFD49E3C)),
+//             const SizedBox(width: 8),
+//             Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+//           ],
+//         ),
+//         TextButton.icon(
+//           onPressed: onAdd,
+//           icon: const Icon(Icons.add, size: 18, color: Color(0xFFD49E3C)),
+//           label: const Text(
+//             "Add File",
+//             style: TextStyle(color: Color(0xFFD49E3C)),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+
+// class AttachmentsList extends StatelessWidget {
+//   const AttachmentsList({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<ChaptersCubit, ChaptersState>(
+//       builder: (context, state) {
+//         return Column(
+//           children: List.generate(state.attachments.length, (index) {
+//             return Container(
+//               margin: const EdgeInsets.only(top: 10),
+//               padding: const EdgeInsets.all(12),
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.circular(12),
+//               ),
+//               child: Row(
+//                 children: [
+//                   const Icon(Icons.picture_as_pdf, color: Colors.red),
+//                   const SizedBox(width: 12),
+//                   Expanded(
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           state.attachments[index],
+//                           style: const TextStyle(fontWeight: FontWeight.w500),
+//                         ),
+//                         const Text(
+//                           "2.4 MB",
+//                           style: TextStyle(color: Colors.grey, fontSize: 12),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                   IconButton(
+//                     icon: const Icon(Icons.delete_outline, color: Colors.grey),
+//                     onPressed: () =>
+//                         // context.read<ChaptersCubit>().removeAttachment(index),
+//                   ),
+//                 ],
+//               ),
+//             );
+//           }),
+//         );
+//       },
+//     );
+//   }
+// }
