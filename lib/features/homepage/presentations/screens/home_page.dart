@@ -61,12 +61,7 @@ class HomePage extends StatelessWidget {
             FaeturedCoursesSectionWidget(),
             DividerWidget(),
 
-            SectionHeaderWidget(
-              title: "Latest Chapters".tr(context),
-              action: "",
-            ),
             LatestChapterSectionWidget(),
-            DividerWidget(),
           ],
         ),
       ),

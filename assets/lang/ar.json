@@ -95,7 +95,7 @@
     "None": "لا يوجد",
     "Last updated at": "آخر تحديث",
     "Description": "الوصف",
-    "You don't have access to this course": "ليس لديك صلاحية الوصول إلى هذا الكورس",
+    "access_course": "ليس لديك صلاحية الوصول إلى هذا الكورس",
     "Buy it now": "اشتريه الآن",
     "Chapters": "الدروس",
     "Since": "منذ",

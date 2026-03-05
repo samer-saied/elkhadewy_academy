@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:unimind/services/lang/app_localizations.dart';
 
 import '../../../courses/data/models/course_model.dart';

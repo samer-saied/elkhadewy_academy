@@ -36,9 +36,7 @@ class ChaptersCourseWidget extends StatelessWidget {
                   courseId: course.id.toString(),
                 )
               : ListTile(
-                  title: Text(
-                    "You don't have access to this course".tr(context),
-                  ),
+                  title: Text("access_course".tr(context)),
                   subtitle: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15.0),
                     child: ElevatedButton(

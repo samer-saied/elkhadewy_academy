@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:unimind/features/auth/bloc/login_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -45,42 +46,8 @@ class GetBody extends StatelessWidget {
 
           ///
           ///
-          ///    Notification Menu (  )
-          // Container(
-          //   padding: const EdgeInsets.only(left: 15, right: 15),
-          //   decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.circular(5),
-          //     color: AppColors.whiteColor,
-          //     boxShadow: [
-          //       BoxShadow(
-          //         color: AppColors.shadowColor,
-          //         spreadRadius: 1,
-          //         blurRadius: 1,
-          //         offset: const Offset(0, 1), // changes position of shadow
-          //       ),
-          //     ],
-          //   ),
-          //   child: Column(children: [
-          //     NotificationSettingItem(
-          //       title: "Notifications",
-          //       bgIconColor: AppColors.mainColor,
-          //       leadingIconColor: AppColors.whiteColor,
-          //       onTap: () {
-          //         HapticFeedback.mediumImpact();
-          //         // Get.to(() => const ProfilePageScreen());
-          //       },
-          //     ),
-          //   ]),
-          // ),
-          // const SizedBox(
-          //   height: 10,
-          // ),
-
-          ///
-          ///
           ///    Admin Menu
-          // Get.find<UsersController>().currentStudent!.isAdmin
-          true
+          GetIt.I<LoginCubit>().currentUser!.role == "admin"
               ? Container(
                   padding: const EdgeInsets.only(left: 15, right: 15),
                   decoration: BoxDecoration(

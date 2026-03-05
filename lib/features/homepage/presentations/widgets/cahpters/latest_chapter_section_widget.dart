@@ -3,7 +3,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:unimind/services/lang/app_localizations.dart';
 
+import '../../../../../general/widgets/headers_widgets.dart';
 import '../../../../../general/widgets/loading_widget.dart';
 import '../../../../../utils/colors.dart';
 import '../../../../auth/bloc/login_cubit.dart';
@@ -18,51 +20,66 @@ class LatestChapterSectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final colorScheme = Theme.of(context).colorScheme;
-    // final textTheme = Theme.of(context).textTheme;
     List<String> userMaterials = GetIt.I
         .get<LoginCubit>()
         .currentUser!
         .materials;
-    return BlocBuilder<ChaptersCubit, ChaptersState>(
-      bloc: GetIt.I.get<ChaptersCubit>()
-        ..latestChaptersFunc(userMaterials: userMaterials),
-      builder: (context, state) {
-        if (state is ChaptersLoaded) {
-          List<Chapter> latestChapters = GetIt.I
-              .get<ChaptersCubit>()
-              .latestChapters;
+    return Column(
+      children: [
+        BlocBuilder<ChaptersCubit, ChaptersState>(
+          bloc: GetIt.I.get<ChaptersCubit>()
+            ..latestChaptersFunc(userMaterials: userMaterials),
+          builder: (context, state) {
+            if (state is ChaptersLoaded) {
+              List<Chapter> latestChapters = GetIt.I
+                  .get<ChaptersCubit>()
+                  .latestChapters;
 
-          return ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: latestChapters.length,
-            itemBuilder: (context, index) {
-              CourseModel? course = GetIt.I<CourseCubit>().userCourses
-                  .firstWhereOrNull(
-                    (element) =>
-                        element.id.toString() == latestChapters[index].courseId,
-                  );
+              return Column(
+                children: [
+                  latestChapters.isNotEmpty
+                      ? SectionHeaderWidget(
+                          title: "Latest Chapters".tr(context),
+                          action: "",
+                        )
+                      : SizedBox(),
 
-              return LatestChapterCardWidget(
-                chapter: latestChapters[index],
-                cardColor: course!.color == null || course.color!.isEmpty
-                    ? AppColors.jonquil
-                    : Color(int.parse(course.color.toString())),
-                course: course,
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: latestChapters.length,
+                    itemBuilder: (context, index) {
+                      CourseModel? course = GetIt.I<CourseCubit>().userCourses
+                          .firstWhereOrNull(
+                            (element) =>
+                                element.id.toString() ==
+                                latestChapters[index].courseId,
+                          );
+
+                      return LatestChapterCardWidget(
+                        chapter: latestChapters[index],
+                        cardColor:
+                            course!.color == null || course.color!.isEmpty
+                            ? AppColors.jonquil
+                            : Color(int.parse(course.color.toString())),
+                        course: course,
+                      );
+                    },
+                  ),
+                ],
               );
-            },
-          );
-        }
-        return ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            return LoadingWidget(isFullWidth: true, numRows: 2);
+            }
+            return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return LoadingWidget(isFullWidth: true, numRows: 2);
+              },
+            );
           },
-        );
-      },
+        ),
+      ],
     );
   }
 }
