@@ -299,10 +299,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   Wrap(
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildYearOption(cubit, state, 0, 'First'),
-                      _buildYearOption(cubit, state, 1, 'Second'),
-                      _buildYearOption(cubit, state, 2, 'Third'),
-                      _buildYearOption(cubit, state, 3, 'Fourth'),
+                      _buildYearOption(cubit, state, 0, 'First'.tr(context)),
+                      _buildYearOption(cubit, state, 1, 'Second'.tr(context)),
+                      _buildYearOption(cubit, state, 2, 'Third'.tr(context)),
+                      _buildYearOption(cubit, state, 3, 'Fourth'.tr(context)),
                     ],
                   ),
                 ],
