@@ -79,8 +79,6 @@ class ChapterDetailsWidget extends StatelessWidget {
                         ),
                       );
                     }
-
-                    Navigator.pop(context);
                     /////////
                     ///
                     ///
@@ -362,8 +360,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               watchingReport: currentWatchingReport,
             );
           }
-
-          Navigator.pop(context);
           /////////
           ///
           ///
