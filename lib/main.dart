@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/navigation/app_routes.dart';
+import 'core/protect_screen/protect_screen.dart';
 import 'features/auth/bloc/login_cubit.dart';
 import 'features/auth/bloc/register_cubit.dart';
 import 'features/auth/presentation/pages/login_page.dart';
@@ -21,11 +22,14 @@ import 'services/service_locator.dart';
 import 'package:get_it/get_it.dart';
 import 'services/lang/app_localizations.dart';
 import 'services/themes/app_themes.dart';
-import 'services/themes/themes_cache_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Protect Screen
+  ProtectScreenController.protectDataLeakageOn();
+
   // Initialize service locator (GetIt)
   await ServiceLocator.init();
   runApp(const MainApp());

@@ -96,7 +96,7 @@
     "Last updated at": "Last updated at",
     "Description": "Description",
     "access_course": "You don't have access to this course",
-    "Buy it now": "Buy it now",
+    "Buy it now": "Request show Course",
     "Chapters": "Chapters",
     "Since": "Since",
     "Courses": "Courses",
@@ -169,5 +169,10 @@
     "Course": "Course",
     "Created By": "Created By",
     "CHAPTER": "CHAPTER",
-    "Thanks For Watching": "Thanks For Watching"
+    "Thanks For Watching": "Thanks For Watching",
+    "Edit User": "Edit User",
+    "Refresh Token": "Refresh Token",
+    "Update User": "Update User",
+    "User details compiled!": "User details compiled!",
+    "User updated successfully": "User updated successfully"
 }

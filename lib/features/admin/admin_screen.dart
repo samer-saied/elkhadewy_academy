@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:unimind/features/auth/bloc/login_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
 import '../../core/navigation/app_routes.dart';
 import '../../general/widgets/headers_widgets.dart';
 import '../../utils/colors.dart';
 import '../more/widgets/setting_item.dart';
+import 'users/edit_user.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -251,7 +254,18 @@ class GetBodyAdminPage extends StatelessWidget {
                           leadingIconColor: AppColors.whiteColor,
                           onTap: () {
                             HapticFeedback.mediumImpact();
-                            // Get.to(() => const InfoStudentScreen());
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditUserPage(
+                                  userModel: GetIt.I<LoginCubit>().currentUser!,
+                                ),
+                              ),
+                            );
+                            // Navigator.pushNamed(
+                            //   context,
+                            //   AppRoutes.manageUsers,
+                            // );
                           },
                         ),
                       ],

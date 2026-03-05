@@ -50,17 +50,3 @@ Future<void> lastLoginDateTime() async {
   }
   await prefs.setString('current_login_time', DateTime.now().toIso8601String());
 }
-
-//   Future<void> checkLastLoginTime() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final lastLoginTime = prefs.getString('last_login_time');
-//     if (lastLoginTime != null) {
-//       final lastLoginDateTime = DateTime.parse(lastLoginTime);
-//       final now = DateTime.now();
-//       final duration = now.difference(lastLoginDateTime);
-//       if (duration.inDays >= 30) {
-//         emit(state.copyWith(status: LoginStatus.expired));
-//       }
-//     }
-//   }
-// }

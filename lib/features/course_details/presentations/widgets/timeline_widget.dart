@@ -48,7 +48,7 @@ class ChaptersCourseWidget extends StatelessWidget {
                             icon: HugeIcons.strokeRoundedShoppingBag02,
                             color: AppColors.whiteColor,
                           ),
-                          Text(" Buy it now".tr(context)),
+                          Text("Buy it now".tr(context)),
                         ],
                       ),
                     ),

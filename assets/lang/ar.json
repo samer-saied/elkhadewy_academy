@@ -96,7 +96,7 @@
     "Last updated at": "آخر تحديث",
     "Description": "الوصف",
     "access_course": "ليس لديك صلاحية الوصول إلى هذا الكورس",
-    "Buy it now": "اشتريه الآن",
+    "Buy it now": "طلب عرض الكورس",
     "Chapters": "الدروس",
     "Since": "منذ",
     "Courses": "الكورسات",
@@ -169,5 +169,10 @@
     "Course": "الكورس",
     "Created By": "تم الرفع بواسطة",
     "CHAPTER": "الدرس",
-    "Thanks For Watching": "شكراً لمشاهدتك"
+    "Thanks For Watching": "شكراً لمشاهدتك",
+    "Edit User": "تعديل بيانات المستخدم",
+    "Refresh Token": "تغير حمايه المستخدم",
+    "Update User": "تحديث بيانات المستخدم",
+    "User details compiled!": "تم تحديث بيانات المستخدم بنجاح",
+    "User updated successfully": "تم تحديث بيانات المستخدم بنجاح"
 }

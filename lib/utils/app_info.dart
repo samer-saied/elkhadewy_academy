@@ -7,7 +7,7 @@ class AppInfo {
   static const String infoEMail = "elkhedewycenter@gmail.com";
   static const String infoFacebook = "https://www.facebook.com/ElkhdewyAcademy";
   static const String appTerms =
-      "https://samer-saied.github.io/terms-policy/elkhedewycenter_terms";
+      "https://samer-saied.github.io/terms-policy/unimind_terms.html";
   static const String technicalEMail = "samersaied02@gmail.com";
 
   ////////////////////////////////////////   ASSETS    ////////////////////////////////////////
