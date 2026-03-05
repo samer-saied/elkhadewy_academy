@@ -76,7 +76,7 @@ class _AddNewsFormState extends State<AddNewsForm> {
           LabeledInputFields(
             label: 'News Description'.tr(context),
             hint:
-                "Write a detailed description of the news post content and its objectives..."
+                "Write a detailed description of the news post content and its objectives"
                     .tr(context),
             prefixIcon: Icons.description,
             controller: descriptionController,

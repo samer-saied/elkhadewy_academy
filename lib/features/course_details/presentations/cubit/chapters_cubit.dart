@@ -26,13 +26,11 @@ class ChaptersCubit extends Cubit<ChaptersState> {
 
   Future<Chapter> fetchlastWatchingChapter({required String chapterId}) async {
     Chapter chapter = await _repository.getChapterById(chapterId: chapterId);
-    print(chapter);
     return chapter;
   }
 
   Future<void> latestChaptersFunc({required List<String> userMaterials}) async {
     emit(ChaptersLoading());
-
     try {
       final List<Chapter> items = await _repository.getLatestChapters(
         userMaterials: userMaterials,
@@ -40,8 +38,7 @@ class ChaptersCubit extends Cubit<ChaptersState> {
       latestChapters.clear();
       latestChapters.addAll(items);
       latestChapters.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
-      emit(ChaptersLoaded(items: items));
+      emit(ChaptersLoaded(items: latestChapters));
     } catch (e) {
       emit(ChaptersFailure(error: e.toString()));
     }

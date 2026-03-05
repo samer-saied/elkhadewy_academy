@@ -94,12 +94,12 @@ class MainAppWidget extends StatelessWidget {
               home: LoginScreen(),
               onGenerateRoute: appOnGenerateRoute,
               theme: AppThemes.lightTheme,
-              darkTheme: AppThemes.darkTheme,
-              themeMode: themeState is ThemesChanged
-                  ? themeState.currentTheme == ThemeType.dark
-                        ? ThemeMode.dark
-                        : ThemeMode.light
-                  : ThemeMode.system,
+              // darkTheme: AppThemes.darkTheme,
+              // themeMode: themeState is ThemesChanged
+              //     ? themeState.currentTheme == ThemeType.dark
+              //           ? ThemeMode.dark
+              //           : ThemeMode.light
+              //     : ThemeMode.system,
             );
           },
         );

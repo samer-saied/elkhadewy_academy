@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:timeago/timeago.dart' as timeago;
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
+import 'package:unimind/general/widgets/headers_widgets.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -12,6 +13,7 @@ import '../../auth/bloc/login_cubit.dart';
 import '../../auth/models/user_model.dart';
 import '../../course_details/data/chapter_model.dart';
 import '../../courses/presentations/cubit/course_cubit.dart';
+import '../../pdfviewer/web_view_screen.dart';
 import '../../watching_report/data/cubit/watching_report_cubit.dart';
 import '../../watching_report/data/model/watching_model.dart';
 import 'copy_right_widget.dart';
@@ -173,6 +175,63 @@ class ChapterDetailsWidget extends StatelessWidget {
                 color: AppColors.blackColor,
               ),
             ),
+            const SizedBox(height: 20),
+            if (chapterModel.attachments.isNotEmpty)
+              SectionHeaderSmallWidget(title: "Attachments"),
+            if (chapterModel.attachments.isNotEmpty)
+              Column(
+                children: List.generate(chapterModel.attachments.length, (
+                  index,
+                ) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WebViewScreen(
+                            url: chapterModel.attachments[index],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.picture_as_pdf, color: Colors.red),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "File No. ${index + 1}",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const Text(
+                                  "pdf file",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ),
+
             // 6. Lesson Created
             const SizedBox(height: 20),
             Text(
@@ -184,6 +243,7 @@ class ChapterDetailsWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 5),
+
             Text(
               "${"College".tr(context)}: ${currentCourse.collegeTitle}",
               style: TextStyle(

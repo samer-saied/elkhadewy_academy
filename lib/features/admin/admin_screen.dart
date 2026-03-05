@@ -209,7 +209,10 @@ class GetBodyAdminPage extends StatelessWidget {
                           leadingIconColor: AppColors.whiteColor,
                           onTap: () {
                             HapticFeedback.mediumImpact();
-                            // Get.to(() => const ManageChaptersScreen());
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.manageChapters,
+                            );
                           },
                         ),
                       ],

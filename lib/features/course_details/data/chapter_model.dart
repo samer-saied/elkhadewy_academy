@@ -9,6 +9,7 @@ class Chapter {
   final Timestamp createdAt;
   final String videoUrl;
   final String createdBy;
+  final List<String> attachments;
 
   Chapter({
     required this.title,
@@ -19,12 +20,20 @@ class Chapter {
     required this.createdAt,
     required this.videoUrl,
     required this.createdBy,
+    required this.attachments,
   });
 
   // --- Factory Constructor for Firestore Mapping ---
   // Accept both raw Map-like data and DocumentSnapshot-like objects.
   factory Chapter.fromFirestore(dynamic snapshot) {
     final data = snapshot.data() as Map<String, dynamic>?;
+    List<String> attachmentsFiles = [];
+
+    if (data?['attachments'] != null) {
+      attachmentsFiles = List<String>.from(
+        data!['attachments'].map((e) => e.toString()),
+      );
+    }
 
     return Chapter(
       id: snapshot.id,
@@ -37,6 +46,7 @@ class Chapter {
       createdAt: data['createdAt'] ?? DateTime.now().toString(),
       videoUrl: data['videoUrl'] ?? '',
       createdBy: data['createdBy'] ?? 'admin',
+      attachments: attachmentsFiles,
     );
   }
 
@@ -49,6 +59,7 @@ class Chapter {
       'createdAt': createdAt,
       'videoUrl': videoUrl,
       'createdBy': createdBy,
+      'attachments': attachments,
     };
   }
 }

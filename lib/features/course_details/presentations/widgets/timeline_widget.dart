@@ -183,6 +183,14 @@ class TimeLineWidget extends StatelessWidget {
                   color: color.withAlpha(10),
                   borderRadius: BorderRadius.circular(7),
                   border: BoxBorder.all(color: color),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withAlpha(10),
+                      blurRadius: 5,
+                      offset: const Offset(0, 2),
+                      spreadRadius: 1,
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

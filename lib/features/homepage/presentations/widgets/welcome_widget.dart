@@ -59,7 +59,7 @@ class _WelcomeUserWidgetState extends State<WelcomeUserWidget> {
                 ),
               ),
               ///////////////   Notification CustomIcon button. ///////////////
-              NotificationButton(),
+              // NotificationButton(),
             ],
           ),
         ),

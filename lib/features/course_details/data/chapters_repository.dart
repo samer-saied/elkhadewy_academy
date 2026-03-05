@@ -21,7 +21,6 @@ class ChaptersRepository {
       collectionId: collectionID,
       documentId: chapterId,
     );
-    print(chapterId);
     Chapter chapter = Chapter.fromFirestore(doc);
     return chapter;
   }

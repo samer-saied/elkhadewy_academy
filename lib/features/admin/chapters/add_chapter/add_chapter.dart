@@ -6,13 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import '../../../utils/colors.dart';
-import '../../../utils/helper.dart';
-import '../../auth/bloc/login_cubit.dart';
-import '../../auth/presentation/widgets/auth_widgets.dart';
-import '../../course_details/data/chapter_model.dart';
-import '../../course_details/presentations/cubit/chapters_cubit.dart';
-import '../../courses/presentations/cubit/course_cubit.dart';
+import '../../../../utils/colors.dart';
+import '../../../../utils/helper.dart';
+import '../../../auth/bloc/login_cubit.dart';
+import '../../../auth/presentation/widgets/auth_widgets.dart';
+import '../../../course_details/data/chapter_model.dart';
+import '../../../course_details/presentations/cubit/chapters_cubit.dart';
+import '../../../courses/presentations/cubit/course_cubit.dart';
 
 class AddChapterPage extends StatelessWidget {
   const AddChapterPage({super.key});
@@ -52,6 +52,7 @@ class _AddChapterFormState extends State<AddChapterForm> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
   final _linkController = TextEditingController();
+  final List<TextEditingController> _attachmentControllers = [];
 
   String? _selectedCourseId;
 
@@ -68,6 +69,9 @@ class _AddChapterFormState extends State<AddChapterForm> {
     _titleController.dispose();
     _linkController.dispose();
     _contentController.dispose();
+    for (var controller in _attachmentControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -91,6 +95,10 @@ class _AddChapterFormState extends State<AddChapterForm> {
       createdAt: Timestamp.now(),
       videoUrl: _linkController.text.trim(),
       createdBy: GetIt.I<LoginCubit>().currentUser!.name,
+      attachments: _attachmentControllers
+          .map((c) => c.text.trim())
+          .where((text) => text.isNotEmpty)
+          .toList(),
     );
 
     GetIt.I<ChaptersCubit>().addChapter(_selectedCourseId!, chapter);
@@ -105,7 +113,7 @@ class _AddChapterFormState extends State<AddChapterForm> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.emerald,
             ),
           );
           if (mounted) Navigator.of(context).pop();
@@ -259,7 +267,52 @@ class _AddChapterFormState extends State<AddChapterForm> {
                     const SizedBox(height: 14),
 
                     // const SizedBox(height: 30),
-
+                    _buildSectionHeader(
+                      'Attachments',
+                      Icons.attach_file,
+                      onAdd: () {
+                        setState(() {
+                          _attachmentControllers.add(TextEditingController());
+                        });
+                      },
+                    ),
+                    ..._attachmentControllers.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final controller = entry.value;
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: LabeledInputFields(
+                                label: 'Attachment Link ${index + 1}',
+                                hint: 'Enter link here...',
+                                prefixIcon: Icons.link,
+                                controller: controller,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 32.0),
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    controller.dispose();
+                                    _attachmentControllers.removeAt(index);
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 14),
                     // ── Save Button ──────────────────────────────────────────
                     _buildSaveButton(),
                   ],
@@ -355,79 +408,29 @@ class _AddChapterFormState extends State<AddChapterForm> {
 
 // /////////////////   ATTACHMENTS //////////////////////////
 
-//   Widget _buildSectionHeader(
-//     String title,
-//     IconData icon, {
-//     required VoidCallback onAdd,
-//   }) {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Row(
-//           children: [
-//             Icon(icon, color: const Color(0xFFD49E3C)),
-//             const SizedBox(width: 8),
-//             Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-//           ],
-//         ),
-//         TextButton.icon(
-//           onPressed: onAdd,
-//           icon: const Icon(Icons.add, size: 18, color: Color(0xFFD49E3C)),
-//           label: const Text(
-//             "Add File",
-//             style: TextStyle(color: Color(0xFFD49E3C)),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-// class AttachmentsList extends StatelessWidget {
-//   const AttachmentsList({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<ChaptersCubit, ChaptersState>(
-//       builder: (context, state) {
-//         return Column(
-//           children: List.generate(state.attachments.length, (index) {
-//             return Container(
-//               margin: const EdgeInsets.only(top: 10),
-//               padding: const EdgeInsets.all(12),
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 borderRadius: BorderRadius.circular(12),
-//               ),
-//               child: Row(
-//                 children: [
-//                   const Icon(Icons.picture_as_pdf, color: Colors.red),
-//                   const SizedBox(width: 12),
-//                   Expanded(
-//                     child: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Text(
-//                           state.attachments[index],
-//                           style: const TextStyle(fontWeight: FontWeight.w500),
-//                         ),
-//                         const Text(
-//                           "2.4 MB",
-//                           style: TextStyle(color: Colors.grey, fontSize: 12),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                   IconButton(
-//                     icon: const Icon(Icons.delete_outline, color: Colors.grey),
-//                     onPressed: () =>
-//                         // context.read<ChaptersCubit>().removeAttachment(index),
-//                   ),
-//                 ],
-//               ),
-//             );
-//           }),
-//         );
-//       },
-//     );
-//   }
-// }
+Widget _buildSectionHeader(
+  String title,
+  IconData icon, {
+  required VoidCallback onAdd,
+}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Row(
+        children: [
+          Icon(icon, color: const Color(0xFFD49E3C)),
+          const SizedBox(width: 8),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ],
+      ),
+      TextButton.icon(
+        onPressed: onAdd,
+        icon: const Icon(Icons.add, size: 18, color: Color(0xFFD49E3C)),
+        label: const Text(
+          "Add File",
+          style: TextStyle(color: Color(0xFFD49E3C)),
+        ),
+      ),
+    ],
+  );
+}

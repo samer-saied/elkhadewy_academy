@@ -21,17 +21,17 @@ class CourseDetailsWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Card(
-            child: ListTile(
-              title: Text("${"Last updated at".tr(context)} : "),
-              trailing: Text(
-                timeago.format(
-                  DateTime.parse(course.dateTime ?? DateTime.now().toString()),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 7),
+          // Card(
+          //   child: ListTile(
+          //     title: Text("${"Last updated at".tr(context)} : "),
+          //     trailing: Text(
+          //       timeago.format(
+          //         DateTime.parse(course.dateTime ?? DateTime.now().toString()),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // SizedBox(height: 7),
           Card(
             child: ListTile(
               title: Text("${"Description".tr(context)} : "),

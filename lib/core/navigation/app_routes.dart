@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../features/admin/chapters/manage_chapters/manage_lesson.dart';
 import '../../features/admin/manage_courses/add_course.dart';
 import '../../features/admin/manage_news/add_news.dart';
 import '../../features/admin/manage_courses/edit_courses.dart';
@@ -7,7 +8,7 @@ import '../../features/admin/manage_courses/manage_courses.dart';
 import '../../features/admin/manage_news/edit_news.dart';
 import '../../features/admin/manage_news/manage_news.dart';
 import '../../features/courses/data/models/course_model.dart';
-import '../../features/admin/add_chapter/add_chapter.dart';
+import '../../features/admin/chapters/add_chapter/add_chapter.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/contact_me/contact_me_screen.dart';
 import '../../features/course_details/presentations/screens/course_details_page.dart';
@@ -37,6 +38,7 @@ class AppRoutes {
   static const String profilePage = '/ProfilePage';
   ///// Admin
   static const String addChapter = '/AddChapterPage';
+  static const String manageChapters = '/ManageChaptersPage';
   static const String addNews = '/AddNewsPage';
   static const String manageNews = '/ManageNewsPage';
   static const String editNews = '/EditNewsPage';
@@ -110,6 +112,12 @@ Route<dynamic>? appOnGenerateRoute(RouteSettings settings) {
     case AppRoutes.addChapter:
       return MaterialPageRoute(
         builder: (context) => const AddChapterPage(),
+        settings: settings,
+      );
+
+    case AppRoutes.manageChapters:
+      return MaterialPageRoute(
+        builder: (context) => const ManageChapters(),
         settings: settings,
       );
 

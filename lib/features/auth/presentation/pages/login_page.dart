@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                'Enter your username and password'.tr(context),
+                                'Enter your mobile and password'.tr(context),
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: AppColors.blackColor,
