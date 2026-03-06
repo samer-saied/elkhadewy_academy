@@ -8,6 +8,8 @@ class FirebaseFirestoreService {
     String? filterField2,
     String? filterValue2,
     int? limit,
+    String? orderByField,
+    bool isAscending = true,
   }) async {
     Query<Object?> query = FirebaseFirestore.instance.collection(collectionId);
 
@@ -17,6 +19,10 @@ class FirebaseFirestoreService {
 
     if (filterField2 != null && filterValue2 != null) {
       query = query.where(filterField2, isEqualTo: filterValue2);
+    }
+
+    if (orderByField != null) {
+      query = query.orderBy(orderByField, descending: !isAscending);
     }
 
     if (limit != null) {

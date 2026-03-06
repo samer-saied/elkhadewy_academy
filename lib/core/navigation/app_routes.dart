@@ -7,6 +7,7 @@ import '../../features/admin/manage_courses/edit_courses.dart';
 import '../../features/admin/manage_courses/manage_courses.dart';
 import '../../features/admin/manage_news/edit_news.dart';
 import '../../features/admin/manage_news/manage_news.dart';
+import '../../features/admin/teacher_screen.dart';
 import '../../features/courses/data/models/course_model.dart';
 import '../../features/admin/chapters/add_chapter/add_chapter.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
@@ -46,6 +47,7 @@ class AppRoutes {
   static const String manageCourse = '/ManageCoursePage';
   static const String editCourse = '/EditCoursePage';
   static const String watchingReport = '/WatchingReportPage';
+  static const String teacherPage = '/TeacherPage';
 }
 
 /// Route generator used by `MaterialApp.onGenerateRoute`.
@@ -109,6 +111,13 @@ Route<dynamic>? appOnGenerateRoute(RouteSettings settings) {
     ///////////////// ADMIN /////////////////
     ///
     ///
+
+    case AppRoutes.teacherPage:
+      return MaterialPageRoute(
+        builder: (context) => const TeacherPage(),
+        settings: settings,
+      );
+
     case AppRoutes.addChapter:
       return MaterialPageRoute(
         builder: (context) => const AddChapterPage(),

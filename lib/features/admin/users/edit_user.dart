@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:unimind/features/auth/bloc/register_cubit.dart';
+import 'package:unimind/features/courses/presentations/cubit/course_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
 import '../../../../utils/colors.dart';
 import '../../auth/models/user_model.dart';
 import '../../auth/presentation/widgets/auth_widgets.dart';
+import 'widgets/multi_select_widget.dart';
 
 class EditUserPage extends StatefulWidget {
   final UserModel userModel;
@@ -21,11 +27,12 @@ class _EditUserPageState extends State<EditUserPage> {
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
   late TextEditingController _passwordController;
-
   late String _selectedFaculty;
   late int _selectedYearIndex;
   late String _selectedRole;
   late String _selectedStatus;
+  late bool _refreshUserStatus;
+  late bool _userHeadset;
 
   @override
   void initState() {
@@ -38,20 +45,23 @@ class _EditUserPageState extends State<EditUserPage> {
     );
 
     _selectedFaculty =
-        ['BIS', 'ARABIC', 'ENGLISH', 'AFP'].contains(widget.userModel.faculty)
+        ['BIS', 'ARABIC', 'ENGLISH', 'AFT'].contains(widget.userModel.faculty)
         ? widget.userModel.faculty
         : 'BIS';
     _selectedYearIndex =
         int.tryParse(widget.userModel.studyYear.toString()) ?? 0;
 
-    _selectedRole = ['student', 'admin'].contains(widget.userModel.role)
+    _selectedRole =
+        ['student', 'teacher', 'admin'].contains(widget.userModel.role)
         ? widget.userModel.role
         : 'student';
 
-    _selectedStatus =
-        ['active', 'inactive', 'banned'].contains(widget.userModel.status)
+    _selectedStatus = ['active', 'blocked'].contains(widget.userModel.status)
         ? widget.userModel.status
         : 'active';
+
+    _userHeadset = widget.userModel.statusEnableHeadset;
+    _refreshUserStatus = widget.userModel.refreshToken;
   }
 
   @override
@@ -76,21 +86,21 @@ class _EditUserPageState extends State<EditUserPage> {
       faculty: _selectedFaculty,
       studyYear: _selectedYearIndex.toString(),
       role: _selectedRole,
-      status: _selectedStatus,
       materials: widget.userModel.materials,
       createdAt: widget.userModel.createdAt,
-      updatedAt: widget.userModel.updatedAt,
+      updatedAt: Timestamp.now(),
       deviceId: widget.userModel.deviceId,
-      refreshToken: widget.userModel.refreshToken,
-      statusEnableHeadset: widget.userModel.statusEnableHeadset,
+      status: _selectedStatus,
+      refreshToken: _refreshUserStatus,
+      statusEnableHeadset: _userHeadset,
     );
 
     // Call your logic here to save the updatedUser to back-end
-    print(updatedUser.toMap());
-
+    GetIt.I<RegisterCubit>().updateUser(updatedUser);
+    Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('User details compiled!'),
+        content: Text('User details updated!'),
         backgroundColor: AppColors.emerald,
       ),
     );
@@ -164,7 +174,7 @@ class _EditUserPageState extends State<EditUserPage> {
                 hint: '*******',
                 prefixIcon: Icons.lock_outline,
                 controller: _passwordController,
-                isPassword: true,
+                isPassword: false,
                 isPasswordVisible: false,
                 validator: (value) => value == null || value.isEmpty
                     ? 'Please enter a password'.tr(context)
@@ -218,7 +228,7 @@ class _EditUserPageState extends State<EditUserPage> {
                         isExpanded: true,
                         underline: const SizedBox.shrink(),
                         value: _selectedFaculty,
-                        items: ['BIS', 'ARABIC', 'ENGLISH', 'AFP'].map((
+                        items: ['BIS', 'ARABIC', 'ENGLISH', 'AFT'].map((
                           String value,
                         ) {
                           return DropdownMenuItem<String>(
@@ -314,7 +324,7 @@ class _EditUserPageState extends State<EditUserPage> {
                         ) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value.toUpperCase()),
+                            child: Text(value),
                           );
                         }).toList(),
                         onChanged: (val) {
@@ -349,7 +359,7 @@ class _EditUserPageState extends State<EditUserPage> {
                         items: ['active', 'blocked'].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value.toUpperCase()),
+                            child: Text(value),
                           );
                         }).toList(),
                         onChanged: (val) {
@@ -372,9 +382,31 @@ class _EditUserPageState extends State<EditUserPage> {
                               .copyWith(color: AppColors.blackColor),
                         ),
                         Switch.adaptive(
-                          value: false,
+                          value: _refreshUserStatus,
                           onChanged: (val) {
-                            print(val);
+                            setState(() {
+                              _refreshUserStatus = val;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Headset Required',
+                          style: Theme.of(context).textTheme.bodyLarge!
+                              .copyWith(color: AppColors.blackColor),
+                        ),
+                        Switch.adaptive(
+                          value: _userHeadset,
+                          onChanged: (val) {
+                            setState(() {
+                              _userHeadset = val;
+                            });
                           },
                         ),
                       ],
@@ -383,6 +415,52 @@ class _EditUserPageState extends State<EditUserPage> {
                 ),
               ),
 
+              const SizedBox(height: 20),
+
+              /////////////// Materials Section ///////////////
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 20,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.jonquilLight.withAlpha(20),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      children: [
+                        const Icon(Icons.menu_book, color: AppColors.jonquil),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Materials'.tr(context),
+                          style: Theme.of(context).textTheme.bodyLarge!
+                              .copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    BlocBuilder<CourseCubit, CourseState>(
+                      bloc: GetIt.I<CourseCubit>()..fetchCourseItems(),
+                      builder: (context, state) {
+                        return MultiSelect(
+                          userItems: widget.userModel.materials,
+                          items: GetIt.I<CourseCubit>().allCourses,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              ////////////////  BUTTON  //////////////////
               const SizedBox(height: 30),
               Container(
                 width: double.infinity,

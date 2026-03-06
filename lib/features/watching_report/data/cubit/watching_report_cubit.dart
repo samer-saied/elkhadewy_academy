@@ -52,6 +52,8 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
         filterField: 'userId',
         filterValue: GetIt.I.get<LoginCubit>().currentUser!.id,
         limit: 1,
+        orderByField: 'startDate',
+        isAscending: false,
       );
 
       lastWatchingReports = WatchingReport.fromJson(

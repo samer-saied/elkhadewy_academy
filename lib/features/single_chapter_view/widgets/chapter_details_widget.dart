@@ -72,13 +72,9 @@ class ChapterDetailsWidget extends StatelessWidget {
                       GetIt.I<WatchingReportCubit>().addWatchingReport(
                         watchingReport: currentWatchingReport,
                       );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Thanks For Watching"),
-                          backgroundColor: AppColors.emerald,
-                        ),
-                      );
                     }
+                    Navigator.pop(context);
+
                     /////////
                     ///
                     ///

@@ -40,6 +40,9 @@ class AuthRepository {
           'role': 'user',
           'createdAt': FieldValue.serverTimestamp(),
           'deviceId': deviceInfo,
+          'refreshToken': false,
+          'statusEnableHeadset': true,
+          'materials': [],
         },
       );
       return id;
@@ -82,6 +85,19 @@ class AuthRepository {
       }
     } catch (e) {
       return 'Error: Something went wrong';
+    }
+  }
+
+  updateUser(UserModel userModel) async {
+    try {
+      await _service.updateDocument(
+        collectionId: collectionId,
+        documentId: userModel.id,
+        data: userModel.toMap(),
+      );
+      return 'User updated successfully';
+    } catch (e) {
+      return 'Error: ${e.toString()}';
     }
   }
 }

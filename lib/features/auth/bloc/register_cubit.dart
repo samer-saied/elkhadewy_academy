@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import '../models/user_model.dart';
 import '../repository/auth_repository.dart';
 import 'register_state.dart';
 
@@ -36,6 +37,27 @@ class RegisterCubit extends Cubit<RegisterState> {
         faculty: faculty,
         studyYear: studyYear,
       );
+      if (result.startsWith('Error')) {
+        emit(
+          state.copyWith(status: RegisterStatus.failure, errorMessage: result),
+        );
+      } else {
+        emit(state.copyWith(status: RegisterStatus.success));
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: RegisterStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> updateUser(UserModel userModel) async {
+    emit(state.copyWith(status: RegisterStatus.loading));
+    try {
+      String result = await GetIt.I<AuthRepository>().updateUser(userModel);
       if (result.startsWith('Error')) {
         emit(
           state.copyWith(status: RegisterStatus.failure, errorMessage: result),

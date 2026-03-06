@@ -9,6 +9,7 @@ import '../../core/navigation/app_routes.dart';
 import '../../general/presentations/cubits/navigation_cubit.dart';
 import '../../utils/app_info.dart';
 import '../../utils/colors.dart';
+import '../admin/teacher_screen.dart';
 import 'widgets/setting_item.dart';
 
 class MoreScreen extends StatelessWidget {
@@ -76,6 +77,44 @@ class GetBody extends StatelessWidget {
                         onTap: () {
                           HapticFeedback.mediumImpact();
                           Navigator.pushNamed(context, AppRoutes.adminPage);
+                          // Get.to(() => const AdminScreen());
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              : const SizedBox(height: 10),
+
+          ///    Teacher Menu
+          GetIt.I<LoginCubit>().currentUser!.role == "teacher"
+              ? Container(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: AppColors.whiteColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.lightGrey,
+                        spreadRadius: 1,
+                        blurRadius: 1,
+                        offset: const Offset(
+                          0,
+                          1,
+                        ), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      SettingItem(
+                        title: "Teacher Panel".tr(context),
+                        leadingIcon: Icons.school,
+                        bgIconColor: AppColors.jonquil,
+                        leadingIconColor: AppColors.whiteColor,
+                        tailingIcon: Icons.circle,
+                        onTap: () {
+                          HapticFeedback.mediumImpact();
+                          Navigator.pushNamed(context, AppRoutes.teacherPage);
                           // Get.to(() => const AdminScreen());
                         },
                       ),

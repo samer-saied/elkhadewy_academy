@@ -81,24 +81,6 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             );
             Navigator.pop(context);
-            // Alert(
-            //   context: context,
-            //   type: AlertType.success,
-            //   title: "Success",
-            //   buttons: [
-            //     DialogButton(
-            //       onPressed: () {
-            //         Navigator.pop(context);
-            //         Navigator.pop(context);
-            //       },
-            //       child: const Text(
-            //         "OK",
-            //         style: TextStyle(color: AppColors.whiteColor, fontSize: 16),
-            //       ),
-            //     ),
-            //   ],
-            //   desc: "Account created successfully, Start learning now!",
-            // ).show();
           }
         },
         builder: (context, state) {
@@ -169,7 +151,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             LabeledInputFields(
               label: 'Mobile'.tr(context),
-              hint: '01** **** ****',
+              hint: '01* **** ****',
               prefixIcon: Icons.phone,
               controller: _phoneController,
               keyboardType: TextInputType.phone,
