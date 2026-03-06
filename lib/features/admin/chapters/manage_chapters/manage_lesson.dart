@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:unimind/general/widgets/headers_widgets.dart';
 
 import '../../../../utils/colors.dart';
 import '../../../course_details/data/chapter_model.dart';
@@ -26,7 +25,13 @@ class _ManageChaptersState extends State<ManageChapters> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SectionHeaderSmallWidget(title: "Select the course"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            child: Text(
+              "Select the course",
+              style: TextStyle(color: AppColors.jonquil, fontSize: 18),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: _buildCourseDropdown(context),
@@ -123,8 +128,12 @@ class _ManageChaptersState extends State<ManageChapters> {
       key: Key(chapter.id.toString()),
       direction: DismissDirection.endToStart,
       background: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
         color: AppColors.redWood,
-        child: const Icon(Icons.delete, color: Colors.white),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [Icon(Icons.delete, color: Colors.white)],
+        ),
       ),
       onDismissed: (direction) {
         if (direction == DismissDirection.endToStart) {

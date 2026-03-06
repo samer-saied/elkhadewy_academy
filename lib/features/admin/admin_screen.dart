@@ -7,6 +7,7 @@ import '../../general/widgets/headers_widgets.dart';
 import '../../utils/colors.dart';
 import '../more/widgets/setting_item.dart';
 import 'reports/show_reports.dart';
+import 'reports/show_reports_bydate.dart';
 import 'users/manage_users.dart';
 
 class AdminPage extends StatelessWidget {
@@ -299,7 +300,50 @@ class GetBodyAdminPage extends StatelessWidget {
                     child: Column(
                       children: [
                         SettingItem(
-                          title: "Reports".tr(context),
+                          title: "Reports By Date",
+                          leadingIcon: Icons.bar_chart_sharp,
+                          bgIconColor: AppColors.jonquil,
+                          leadingIconColor: AppColors.whiteColor,
+                          onTap: () {
+                            HapticFeedback.mediumImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowReportsByDatePage(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: AppColors.whiteColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.lightGrey,
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(
+                            0,
+                            1,
+                          ), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        SettingItem(
+                          title: "Reports By User".tr(context),
                           leadingIcon: Icons.bar_chart_sharp,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,

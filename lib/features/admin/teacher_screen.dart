@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
-import 'package:unimind/features/auth/bloc/login_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
 import '../../core/navigation/app_routes.dart';
 import '../../general/widgets/headers_widgets.dart';
 import '../../utils/colors.dart';
 import '../more/widgets/setting_item.dart';
-import 'users/edit_user.dart';
+import 'reports/show_reports.dart';
+import 'reports/show_reports_bydate.dart';
 
 class TeacherPage extends StatelessWidget {
   const TeacherPage({super.key});
@@ -225,56 +224,6 @@ class GetBodyTeacherPage extends StatelessWidget {
                 ],
               ),
 
-              ////////////////////////////  USERS  ////////////////////
-              Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: AppColors.whiteColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.lightGrey,
-                          spreadRadius: 1,
-                          blurRadius: 1,
-                          offset: const Offset(
-                            0,
-                            1,
-                          ), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        SettingItem(
-                          title: "Manage Users".tr(context),
-                          leadingIcon: Icons.people,
-                          bgIconColor: AppColors.jonquil,
-                          leadingIconColor: AppColors.whiteColor,
-                          onTap: () {
-                            HapticFeedback.mediumImpact();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EditUserPage(
-                                  userModel: GetIt.I<LoginCubit>().currentUser!,
-                                ),
-                              ),
-                            );
-                            // Navigator.pushNamed(
-                            //   context,
-                            //   AppRoutes.manageUsers,
-                            // );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ),
-
               ///
               ///
               ///
@@ -302,15 +251,17 @@ class GetBodyTeacherPage extends StatelessWidget {
                     child: Column(
                       children: [
                         SettingItem(
-                          title: "Reports".tr(context),
-                          leadingIcon: Icons.insert_chart_outlined_rounded,
+                          title: "Reports By Date",
+                          leadingIcon: Icons.bar_chart_sharp,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,
                           onTap: () {
                             HapticFeedback.mediumImpact();
-                            Navigator.pushNamed(
+                            Navigator.push(
                               context,
-                              AppRoutes.watchingReport,
+                              MaterialPageRoute(
+                                builder: (context) => ShowReportsByDatePage(),
+                              ),
                             );
                           },
                         ),
@@ -318,6 +269,10 @@ class GetBodyTeacherPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
+                ],
+              ),
+              Column(
+                children: [
                   Container(
                     padding: const EdgeInsets.only(left: 15, right: 15),
                     decoration: BoxDecoration(
@@ -338,21 +293,24 @@ class GetBodyTeacherPage extends StatelessWidget {
                     child: Column(
                       children: [
                         SettingItem(
-                          title: "Charts".tr(context),
-                          leadingIcon: Icons.bar_chart_rounded,
+                          title: "Reports By User",
+                          leadingIcon: Icons.bar_chart_sharp,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,
                           onTap: () {
                             HapticFeedback.mediumImpact();
-                            Navigator.pushNamed(
+                            Navigator.push(
                               context,
-                              AppRoutes.watchingReport,
+                              MaterialPageRoute(
+                                builder: (context) => ShowReportsPage(),
+                              ),
                             );
                           },
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 10),
                 ],
               ),
 

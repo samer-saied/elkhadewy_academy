@@ -88,7 +88,7 @@ class AuthRepository {
     }
   }
 
-  updateUser(UserModel userModel) async {
+  Future<String> updateUser(UserModel userModel) async {
     try {
       await _service.updateDocument(
         collectionId: collectionId,
@@ -96,6 +96,18 @@ class AuthRepository {
         data: userModel.toMap(),
       );
       return 'User updated successfully';
+    } catch (e) {
+      return 'Error: ${e.toString()}';
+    }
+  }
+
+  Future<String> deleteUser({required String userId}) async {
+    try {
+      await _service.deleteDocument(
+        collectionId: collectionId,
+        documentId: userId,
+      );
+      return 'User deleted successfully';
     } catch (e) {
       return 'Error: ${e.toString()}';
     }

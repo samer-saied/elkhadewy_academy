@@ -69,19 +69,19 @@ class ShowReportsPage extends StatelessWidget {
               },
             ),
           ),
-          BlocBuilder<WatchingReportCubit, WatchingReportState>(
-            bloc: GetIt.I<WatchingReportCubit>()
-              ..getWatchingReportsByPhone(phone: searchValue),
-            builder: (context, state) {
-              if (state is WatchingReportLoaded) {
-                if (state.reports.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Center(child: Text('No Watching Reports Found')),
-                  );
-                }
-                return Expanded(
-                  child: ListView.builder(
+          Expanded(
+            child: BlocBuilder<WatchingReportCubit, WatchingReportState>(
+              bloc: GetIt.I<WatchingReportCubit>()
+                ..getWatchingReportsByPhone(phone: searchValue),
+              builder: (context, state) {
+                if (state is WatchingReportLoaded) {
+                  if (state.reports.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      child: Center(child: Text('No Watching Reports Found')),
+                    );
+                  }
+                  return ListView.builder(
                     itemCount: state.reports.length,
                     itemBuilder: (context, index) {
                       return WatchedReportCardWidget(
@@ -89,11 +89,11 @@ class ShowReportsPage extends StatelessWidget {
                         report: state.reports[index],
                       );
                     },
-                  ),
-                );
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
+                  );
+                }
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
           ),
         ],
       ),

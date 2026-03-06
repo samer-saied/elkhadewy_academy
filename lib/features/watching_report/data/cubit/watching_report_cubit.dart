@@ -61,6 +61,28 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
     }
   }
 
+  Future<void> getWatchingReportsByDate({required String selectedDate}) async {
+    emit(WatchingReportLoading());
+
+    try {
+      final reports = await _service.getCollectionsByField(
+        collectionId: collectionID,
+        filterField: 'startDate',
+        filterValue: selectedDate,
+      );
+
+      watchingReports = reports
+          .map(
+            (doc) =>
+                WatchingReport.fromJson(doc.data() as Map<String, dynamic>),
+          )
+          .toList();
+      emit(WatchingReportLoaded(reports: watchingReports));
+    } catch (e) {
+      emit(WatchingReportError(message: e.toString()));
+    }
+  }
+
   Future<void> getLastWatchingReport() async {
     if (isContinue) {
       emit(LastWatchingReportLoaded(report: lastWatchingReports));

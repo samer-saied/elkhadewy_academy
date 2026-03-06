@@ -74,4 +74,27 @@ class RegisterCubit extends Cubit<RegisterState> {
       );
     }
   }
+
+  Future<void> deleteUser({required String userId}) async {
+    emit(state.copyWith(status: RegisterStatus.loading));
+    try {
+      String result = await GetIt.I<AuthRepository>().deleteUser(
+        userId: userId,
+      );
+      if (result.startsWith('Error')) {
+        emit(
+          state.copyWith(status: RegisterStatus.failure, errorMessage: result),
+        );
+      } else {
+        emit(state.copyWith(status: RegisterStatus.success));
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: RegisterStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
 }

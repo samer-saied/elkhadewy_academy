@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:unimind/features/admin/users/cubit/statistic_cubit.dart';
+import 'package:unimind/features/auth/bloc/register_cubit.dart';
 import 'package:unimind/features/auth/models/user_model.dart';
 
 import '../../../utils/colors.dart';
@@ -67,65 +68,82 @@ class UserCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditUserPage(userModel: student),
+    return Dismissible(
+      key: Key(student.id.toString()),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        color: AppColors.redWood,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [Icon(Icons.delete, color: Colors.white)],
+        ),
+      ),
+      onDismissed: (direction) {
+        if (direction == DismissDirection.endToStart) {
+          GetIt.I<RegisterCubit>().deleteUser(userId: student.id);
+        }
+      },
+      child: Card(
+        child: ListTile(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditUserPage(userModel: student),
+              ),
+            );
+          },
+          leading: Container(
+            padding: const EdgeInsets.all(5),
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25),
+              // color: AppColors.getStatusColor(status: student.status),
             ),
-          );
-        },
-        leading: Container(
-          padding: const EdgeInsets.all(5),
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            // color: AppColors.getStatusColor(status: student.status),
-          ),
-          child: Center(
-            child: FittedBox(
-              child: Text(
-                (index + 1).toString(),
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: AppColors.whiteColor,
-                  fontWeight: FontWeight.bold,
+            child: Center(
+              child: FittedBox(
+                child: Text(
+                  (index + 1).toString(),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: AppColors.whiteColor,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        title: Text(student.name),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(student.phone),
-            Wrap(
-              children: [
-                Text("College : ${student.faculty}"),
-                const SizedBox(width: 10),
-                Text("Academic Year : ${int.parse(student.studyYear) + 1}"),
-              ],
-            ),
-          ],
-        ),
-        trailing: Wrap(
-          children: [
-            Icon(
-              Icons.headphones,
-              color: student.statusEnableHeadset == false
-                  ? AppColors.redWood
-                  : AppColors.emerald,
-            ),
-            Icon(
-              Icons.token,
-              color: student.refreshToken == true
-                  ? AppColors.emerald
-                  : AppColors.redWood,
-            ),
-          ],
+          title: Text(student.name),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(student.phone),
+              Wrap(
+                children: [
+                  Text("College : ${student.faculty}"),
+                  const SizedBox(width: 10),
+                  Text("Academic Year : ${int.parse(student.studyYear) + 1}"),
+                ],
+              ),
+            ],
+          ),
+          trailing: Wrap(
+            children: [
+              Icon(
+                Icons.headphones,
+                color: student.statusEnableHeadset == false
+                    ? AppColors.redWood
+                    : AppColors.emerald,
+              ),
+              Icon(
+                Icons.token,
+                color: student.refreshToken == true
+                    ? AppColors.emerald
+                    : AppColors.redWood,
+              ),
+            ],
+          ),
         ),
       ),
     );
