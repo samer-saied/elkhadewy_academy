@@ -184,6 +184,7 @@ class _EditCoursesFormState extends State<EditCoursesForm> {
     // 3. Use captured references (No "deactivated" error)
     messenger.showSnackBar(
       SnackBar(
+        // ignore: use_build_context_synchronously
         content: Text("Course Edited successfully".tr(context)),
         backgroundColor: AppColors.emerald,
       ),

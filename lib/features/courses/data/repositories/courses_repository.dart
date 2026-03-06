@@ -79,8 +79,9 @@ class CoursesRepository {
   }
 
   Future<void> update(CourseModel model) async {
-    if (model.id == null)
+    if (model.id == null) {
       throw ArgumentError('Model id is required for update');
+    }
     await _service.updateDocument(
       collectionId: collectionId,
       documentId: model.id!,

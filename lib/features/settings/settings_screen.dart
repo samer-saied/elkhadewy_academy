@@ -68,21 +68,13 @@ class _SettingsPageState extends State<SettingsPage> {
                           ? 'field is required'.tr(context)
                           : null,
                       onChanged: (val) {
-                        print(val);
                         if (val == "English") {
                           setState(() {
-                            // GetIt.I<LocaleCubit>().changeLanguage('en');
-                            // BlocProvider.of<ThemesCubit>(context).changeTheme();
                             context.read<LocaleCubit>().changeLanguage('en');
-                            // Get.updateLocale(locale);
-                            // GetStorage().write('lang', locale.languageCode);
                           });
                         } else {
                           setState(() {
-                            // GetIt.I<LocaleCubit>().changeLanguage('ar');
                             context.read<LocaleCubit>().changeLanguage('ar');
-                            // Get.updateLocale(locale);
-                            // GetStorage().write('lang', locale.languageCode);
                           });
                         }
                       },

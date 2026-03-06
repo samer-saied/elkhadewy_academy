@@ -113,8 +113,9 @@ class CategoryRepository {
 
   /// Updates an existing CategoryModel in the Firestore collection.
   Future<void> update(CategoryModel model) async {
-    if (model.id == null)
+    if (model.id == null) {
       throw ArgumentError('Model id is required for update');
+    }
     await _service.updateDocument(
       collectionId: collectionId,
       documentId: model.id!,

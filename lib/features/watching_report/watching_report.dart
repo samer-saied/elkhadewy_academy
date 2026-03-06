@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
+import '../auth/bloc/login_cubit.dart';
 import 'data/cubit/watching_report_cubit.dart';
 import 'widgets/watched_report_card_widget.dart';
 
@@ -17,7 +18,10 @@ class WatchingReportPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: BlocBuilder<WatchingReportCubit, WatchingReportState>(
-        bloc: GetIt.I<WatchingReportCubit>()..getWatchingReports(),
+        bloc: GetIt.I<WatchingReportCubit>()
+          ..getWatchingReports(
+            userId: GetIt.I.get<LoginCubit>().currentUser!.id,
+          ),
         builder: (context, state) {
           if (state is WatchingReportLoaded) {
             if (state.reports.isEmpty) {

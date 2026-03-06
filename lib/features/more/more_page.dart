@@ -9,7 +9,6 @@ import '../../core/navigation/app_routes.dart';
 import '../../general/presentations/cubits/navigation_cubit.dart';
 import '../../utils/app_info.dart';
 import '../../utils/colors.dart';
-import '../admin/teacher_screen.dart';
 import 'widgets/setting_item.dart';
 
 class MoreScreen extends StatelessWidget {

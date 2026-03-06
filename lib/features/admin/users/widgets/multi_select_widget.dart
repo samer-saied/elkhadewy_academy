@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:unimind/services/lang/app_localizations.dart';
 
 import '../../../../utils/colors.dart';
 import '../../../courses/data/models/course_model.dart';

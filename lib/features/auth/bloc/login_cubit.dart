@@ -15,6 +15,7 @@ class LoginCubit extends Cubit<LoginState> {
       state.copyWith(
         isPasswordVisible: !state.isPasswordVisible,
         errorMessage: '',
+        status: LoginStatus.initial,
       ),
     );
   }

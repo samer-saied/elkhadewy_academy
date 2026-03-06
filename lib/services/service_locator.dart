@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import '../core/remote/firebase_firestore_service.dart';
+import '../features/admin/users/cubit/statistic_cubit.dart';
 import '../features/auth/bloc/login_cubit.dart';
 import '../features/auth/repository/auth_repository.dart';
 import '../features/auth/bloc/register_cubit.dart';
@@ -59,6 +60,9 @@ class ServiceLocator {
     );
     getIt.registerLazySingleton<WatchingReportCubit>(
       () => WatchingReportCubit(getIt<FirebaseFirestoreService>()),
+    );
+    getIt.registerLazySingleton<StatisticCubit>(
+      () => StatisticCubit(getIt<FirebaseFirestoreService>()),
     );
     getIt.registerLazySingleton<NewsCubit>(() => NewsCubit());
     getIt.registerLazySingleton<LocaleCubit>(() => LocaleCubit());

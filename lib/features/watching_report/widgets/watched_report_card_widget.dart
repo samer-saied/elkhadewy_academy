@@ -43,9 +43,7 @@ class WatchedReportCardWidget extends StatelessWidget {
             flex: 1,
             child: Icon(
               Icons.circle,
-              color: report.courseColor == null
-                  ? AppColors.jonquil
-                  : Color(int.parse(report.courseColor.toString())),
+              color: Color(int.parse(report.courseColor.toString())),
             ),
           ),
           Padding(
@@ -78,9 +76,7 @@ class WatchedReportCardWidget extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       fontSize: 16,
-                      color:
-                          report.courseColor == null ||
-                              report.courseColor.isEmpty
+                      color: report.courseColor.isEmpty
                           ? AppColors.jonquil
                           : Color(int.parse(report.courseColor.toString())),
                     ),

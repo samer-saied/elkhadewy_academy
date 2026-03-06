@@ -240,4 +240,17 @@ class FirebaseFirestoreService {
         .doc(subDocumentId)
         .set(data);
   }
+
+  Future<int> getDocumentsCount({
+    required String collectionId,
+    String? field,
+    dynamic value,
+  }) async {
+    final Query<Map<String, dynamic>> reference = FirebaseFirestore.instance
+        .collection(collectionId)
+        .where(field ?? "", isEqualTo: value);
+    final AggregateQuerySnapshot count = await reference.count().get();
+
+    return count.count ?? 0;
+  }
 }

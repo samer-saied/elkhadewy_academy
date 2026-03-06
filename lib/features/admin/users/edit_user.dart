@@ -129,7 +129,10 @@ class _EditUserPageState extends State<EditUserPage> {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.whiteColor),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: AppColors.whiteColor,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),

@@ -237,6 +237,7 @@ class _AddCoursesFormState extends State<AddCoursesForm> {
 
       // Success logic using captured references
       messenger.showSnackBar(
+        // ignore: use_build_context_synchronously
         SnackBar(content: Text("Course created successfully".tr(context))),
       );
       if (navigator.canPop()) navigator.pop();

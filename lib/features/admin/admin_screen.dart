@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
-import 'package:unimind/features/auth/bloc/login_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
 import '../../core/navigation/app_routes.dart';
 import '../../general/widgets/headers_widgets.dart';
 import '../../utils/colors.dart';
 import '../more/widgets/setting_item.dart';
-import 'users/edit_user.dart';
+import 'reports/show_reports.dart';
+import 'users/manage_users.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -257,9 +256,7 @@ class GetBodyAdminPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => EditUserPage(
-                                  userModel: GetIt.I<LoginCubit>().currentUser!,
-                                ),
+                                builder: (context) => ManageUsersPage(),
                               ),
                             );
                             // Navigator.pushNamed(
@@ -308,9 +305,11 @@ class GetBodyAdminPage extends StatelessWidget {
                           leadingIconColor: AppColors.whiteColor,
                           onTap: () {
                             HapticFeedback.mediumImpact();
-                            Navigator.pushNamed(
+                            Navigator.push(
                               context,
-                              AppRoutes.watchingReport,
+                              MaterialPageRoute(
+                                builder: (context) => ShowReportsPage(),
+                              ),
                             );
                           },
                         ),

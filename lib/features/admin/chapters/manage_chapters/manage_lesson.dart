@@ -10,8 +10,6 @@ import '../../../course_details/data/chapter_model.dart';
 import '../../../course_details/presentations/cubit/chapters_cubit.dart';
 import '../../../courses/presentations/cubit/course_cubit.dart';
 
-String? _selectedCourseId = "";
-
 class ManageChapters extends StatefulWidget {
   const ManageChapters({super.key});
 
@@ -20,6 +18,7 @@ class ManageChapters extends StatefulWidget {
 }
 
 class _ManageChaptersState extends State<ManageChapters> {
+  String? _selectedCourseId;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,33 +43,32 @@ class _ManageChaptersState extends State<ManageChapters> {
             child: Divider(),
           ),
           Expanded(
-            child: BlocBuilder<ChaptersCubit, ChaptersState>(
-              bloc: GetIt.I<ChaptersCubit>()..fetchChapters(_selectedCourseId!),
-              builder: (context, state) {
-                // if (_selectedCourseId != null) {
-                //   GetIt.I<ChaptersCubit>()..fetchChapters(_selectedCourseId!);
-                // }
-                if (state is ChaptersLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state is ChaptersFailure) {
-                  return Center(child: Text(state.error));
-                }
-                if (state is ChaptersLoaded) {
-                  if (state.items.isEmpty) {
-                    return const Center(child: Text("No Chapters Found"));
-                  }
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.items.length,
-                    itemBuilder: (context, index) {
-                      return _chapterCard(context, state.items[index]);
+            child: _selectedCourseId == null
+                ? const Center(child: Text("Please select a course"))
+                : BlocBuilder<ChaptersCubit, ChaptersState>(
+                    bloc: GetIt.I<ChaptersCubit>()
+                      ..fetchChapters(_selectedCourseId!),
+                    builder: (context, state) {
+                      if (state is ChaptersLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is ChaptersFailure) {
+                        return Center(child: Text(state.error));
+                      }
+                      if (state is ChaptersLoaded) {
+                        if (state.items.isEmpty) {
+                          return const Center(child: Text("No Chapters Found"));
+                        }
+                        return ListView.builder(
+                          itemCount: state.items.length,
+                          itemBuilder: (context, index) {
+                            return _chapterCard(context, state.items[index]);
+                          },
+                        );
+                      }
+                      return const SizedBox.shrink();
                     },
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
+                  ),
           ),
         ],
       ),
@@ -199,13 +197,11 @@ class _ManageChaptersState extends State<ManageChapters> {
                             ],
                           ),
                           SizedBox(height: 5),
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Text(
-                                timeago.format(chapter.createdAt.toDate()),
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Text(
+                              timeago.format(chapter.createdAt.toDate()),
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ),
                         ],

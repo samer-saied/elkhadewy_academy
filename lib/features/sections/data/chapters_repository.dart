@@ -94,8 +94,9 @@ class ChaptersRepository {
   }
 
   Future<void> update(String courseId, Chapter chapter) async {
-    if (chapter.id == null)
+    if (chapter.id == null) {
       throw ArgumentError('Chapter id required for update');
+    }
     await _service.updateSubCollectionDocument(
       collectionId: collectionId,
       documentId: courseId,
