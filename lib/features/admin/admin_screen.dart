@@ -343,7 +343,7 @@ class GetBodyAdminPage extends StatelessWidget {
                     child: Column(
                       children: [
                         SettingItem(
-                          title: "Reports By User".tr(context),
+                          title: "Reports By User",
                           leadingIcon: Icons.bar_chart_sharp,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,

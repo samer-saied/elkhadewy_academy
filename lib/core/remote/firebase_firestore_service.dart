@@ -4,17 +4,30 @@ class FirebaseFirestoreService {
   Future<List<QueryDocumentSnapshot>> getCollectionsByField({
     required String collectionId,
     String? filterField,
-    String? filterValue,
+    dynamic filterValue,
+    dynamic isGreaterThanOrEqualTo,
+    dynamic isLessThan,
     String? filterField2,
-    String? filterValue2,
+    dynamic filterValue2,
     int? limit,
     String? orderByField,
     bool isAscending = true,
   }) async {
     Query<Object?> query = FirebaseFirestore.instance.collection(collectionId);
 
-    if (filterField != null && filterValue != null) {
-      query = query.where(filterField, isEqualTo: filterValue);
+    if (filterField != null) {
+      if (filterValue != null) {
+        query = query.where(filterField, isEqualTo: filterValue);
+      }
+      if (isGreaterThanOrEqualTo != null) {
+        query = query.where(
+          filterField,
+          isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
+        );
+      }
+      if (isLessThan != null) {
+        query = query.where(filterField, isLessThan: isLessThan);
+      }
     }
 
     if (filterField2 != null && filterValue2 != null) {

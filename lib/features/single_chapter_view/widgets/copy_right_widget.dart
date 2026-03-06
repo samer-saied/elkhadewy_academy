@@ -9,7 +9,8 @@ import '../../auth/bloc/login_cubit.dart';
 
 class CopyRigthsWidget extends StatefulWidget {
   final bool isSafeArea;
-  const CopyRigthsWidget({super.key, this.isSafeArea = false});
+  final Color? color;
+  const CopyRigthsWidget({super.key, this.isSafeArea = false, this.color});
 
   @override
   State<CopyRigthsWidget> createState() => _CopyRigthsWidgetState();
@@ -52,7 +53,9 @@ class _CopyRigthsWidgetState extends State<CopyRigthsWidget> {
         child: Text(
           GetIt.I<LoginCubit>().currentUser!.phone,
           style: TextStyle(
-            color: AppColors.whiteColor.withValues(alpha: 0.6),
+            color:
+                widget.color?.withValues(alpha: 0.6) ??
+                AppColors.whiteColor.withValues(alpha: 0.6),
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),

@@ -26,6 +26,8 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
         collectionId: collectionID,
         filterField: 'userId',
         filterValue: userId,
+        isAscending: false,
+        orderByField: 'startDate',
       );
       watchingReports = reports
           .map(
@@ -47,6 +49,8 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
         collectionId: collectionID,
         filterField: 'userPhone',
         filterValue: phone,
+        isAscending: false,
+        orderByField: 'startDate',
       );
 
       watchingReports = reports
@@ -68,7 +72,10 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
       final reports = await _service.getCollectionsByField(
         collectionId: collectionID,
         filterField: 'startDate',
-        filterValue: selectedDate,
+        isGreaterThanOrEqualTo: selectedDate,
+        isLessThan: DateTime.parse(
+          selectedDate,
+        ).add(const Duration(days: 1)).toString().split(' ')[0],
       );
 
       watchingReports = reports

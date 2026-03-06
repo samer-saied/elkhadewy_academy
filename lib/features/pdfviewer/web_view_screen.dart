@@ -68,19 +68,26 @@ class WebViewScreenState extends State<WebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppBar appTopWidget = AppBar(
+      title: const Text('PDF Viewer'),
+      backgroundColor: AppColors.jonquil,
+    );
+
     return Scaffold(
-      backgroundColor: AppColors.blackColor,
+      backgroundColor: AppColors.jonquil,
 
       body: Stack(
         children: [
           WebViewWidget(controller: controller, key: _key),
-          AppBar(
-            title: const Text('PDF Viewer'),
-            backgroundColor: AppColors.jonquil,
+          Container(
+            height: appTopWidget.preferredSize.height + 10,
+            width: double.infinity,
+            color: AppColors.jonquil,
+            child: appTopWidget,
           ),
-          const CopyRigthsWidget(),
+          // const CopyRigthsWidget(),
           const CopyRigthsWidget(isSafeArea: true),
-          const CopyRigthsWidget(),
+          const CopyRigthsWidget(color: AppColors.jonquil, isSafeArea: true),
           isLoading
               ? const Center(child: CircularProgressIndicator())
               : const Stack(),
