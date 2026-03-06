@@ -43,7 +43,39 @@ class FirebaseFirestoreService {
     }
 
     final querySnapshot = await query.get();
+
     return querySnapshot.docs;
+  }
+
+  Future<List<QueryDocumentSnapshot>> getCollections4LastWatchingReport({
+    required String collectionId,
+    String? filterField,
+    dynamic filterValue,
+    int? limit,
+    String? orderByField,
+    bool isAscending = true,
+  }) async {
+    Query<Object?> query = FirebaseFirestore.instance.collection(collectionId);
+
+    if (filterField != null) {
+      if (filterValue != null) {
+        query = query.where(filterField, isEqualTo: filterValue);
+      }
+
+      if (orderByField != null) {
+        query = query.orderBy(orderByField, descending: !isAscending);
+      }
+
+      if (limit != null) {
+        query = query.limit(limit);
+      }
+
+      final querySnapshot = await query.get();
+      // print('filterField: ${querySnapshot.docs}');
+
+      return querySnapshot.docs;
+    }
+    return [];
   }
 
   Future<List<QueryDocumentSnapshot>> getCollection({

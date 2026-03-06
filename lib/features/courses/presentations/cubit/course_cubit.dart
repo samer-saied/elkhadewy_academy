@@ -38,9 +38,12 @@ class CourseCubit extends Cubit<CourseState> {
     }
   }
 
-  Future<void> fetchUsersCourse({required List<String> materials}) async {
+  Future<void> fetchUsersCourse({
+    required List<String> materials,
+    bool forceRefresh = false,
+  }) async {
     emit(CourseLoading());
-    if (userCourses.isNotEmpty) {
+    if (userCourses.isNotEmpty && !forceRefresh) {
       emit(CourseLoaded(items: userCourses));
       return;
     }

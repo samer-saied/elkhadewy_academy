@@ -68,6 +68,10 @@ class AuthRepository {
         if (user.status != 'active') {
           return 'Error: Your account is not active yet';
         }
+        if (user.role == 'admin') {
+          return user;
+        }
+
         if (user.deviceId != deviceInfo) {
           if (user.refreshToken == true) {
             await _service.updateDocument(

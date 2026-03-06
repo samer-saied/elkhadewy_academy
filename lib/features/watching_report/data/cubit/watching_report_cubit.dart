@@ -22,7 +22,7 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
     emit(WatchingReportLoading());
 
     try {
-      final reports = await _service.getCollectionsByField(
+      final reports = await _service.getCollections4LastWatchingReport(
         collectionId: collectionID,
         filterField: 'userId',
         filterValue: userId,
@@ -90,15 +90,12 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
     }
   }
 
-  Future<void> getLastWatchingReport() async {
+  Future<dynamic> getLastWatchingReport() async {
     if (isContinue) {
-      emit(LastWatchingReportLoaded(report: lastWatchingReports));
-      return;
+      return lastWatchingReports;
     }
-    emit(WatchingReportLoading());
-
     try {
-      final reports = await _service.getCollectionsByField(
+      final reports = await _service.getCollections4LastWatchingReport(
         collectionId: collectionID,
         filterField: 'userId',
         filterValue: GetIt.I.get<LoginCubit>().currentUser!.id,
@@ -111,9 +108,10 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
         reports.first.data() as Map<String, dynamic>,
       );
       isContinue = true;
-      emit(LastWatchingReportLoaded(report: lastWatchingReports));
+      return lastWatchingReports;
     } catch (e) {
-      emit(WatchingReportError(message: e.toString()));
+      // emit(WatchingReportError(message: e.toString()));
+      return null;
     }
   }
 

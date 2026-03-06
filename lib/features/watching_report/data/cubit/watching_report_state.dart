@@ -20,15 +20,6 @@ final class WatchingReportLoaded extends WatchingReportState {
   List<Object> get props => [reports];
 }
 
-final class LastWatchingReportLoaded extends WatchingReportState {
-  final WatchingReport report;
-
-  const LastWatchingReportLoaded({required this.report});
-
-  @override
-  List<Object> get props => [report];
-}
-
 final class WatchingReportError extends WatchingReportState {
   final String message;
 
