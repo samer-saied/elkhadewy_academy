@@ -41,13 +41,29 @@ class LoginCubit extends Cubit<LoginState> {
       );
     }
   }
-}
 
-Future<void> lastLoginDateTime() async {
-  final prefs = await SharedPreferences.getInstance();
-  final currentLoginTime = prefs.getString('current_login_time');
-  if (currentLoginTime != null) {
-    await prefs.setString('last_login_time', currentLoginTime);
+  Future<void> refreshUserDatet() async {
+    Object result = await authRepository.refreshUserData(
+      userId: currentUser!.id,
+    );
+
+    if (result is String) {
+      emit(state.copyWith(status: LoginStatus.failure, errorMessage: result));
+    } else if (result is UserModel) {
+      currentUser = result;
+      emit(state.copyWith(status: LoginStatus.success, errorMessage: ''));
+    }
   }
-  await prefs.setString('current_login_time', DateTime.now().toIso8601String());
+
+  Future<void> lastLoginDateTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentLoginTime = prefs.getString('current_login_time');
+    if (currentLoginTime != null) {
+      await prefs.setString('last_login_time', currentLoginTime);
+    }
+    await prefs.setString(
+      'current_login_time',
+      DateTime.now().toIso8601String(),
+    );
+  }
 }

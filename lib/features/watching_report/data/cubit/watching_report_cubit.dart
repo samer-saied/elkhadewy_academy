@@ -91,9 +91,9 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
   }
 
   Future<dynamic> getLastWatchingReport() async {
-    if (isContinue) {
-      return lastWatchingReports;
-    }
+    // if (isContinue) {
+    //   return lastWatchingReports;
+    // }
     try {
       final reports = await _service.getCollections4LastWatchingReport(
         collectionId: collectionID,

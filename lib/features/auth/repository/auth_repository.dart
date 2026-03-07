@@ -116,4 +116,17 @@ class AuthRepository {
       return 'Error: ${e.toString()}';
     }
   }
+
+  Future<Object> refreshUserData({required String userId}) async {
+    DocumentSnapshot snapshot = await _service.getDocument(
+      collectionId: collectionId,
+      documentId: userId,
+    );
+    if (snapshot.exists) {
+      UserModel user = UserModel.fromFirestore(snapshot);
+      return user;
+    } else {
+      return 'Error: Invalid phone number or password';
+    }
+  }
 }
