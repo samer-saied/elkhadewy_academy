@@ -88,6 +88,7 @@ class UserCardWidget extends StatelessWidget {
                 backgroundColor: AppColors.redWood,
               ),
             );
+            return;
           }
           GetIt.I<RegisterCubit>().deleteUser(userId: student.id);
         }
