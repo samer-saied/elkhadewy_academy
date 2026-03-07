@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBNNVJqI9fqeWOju-W4xAbuXpmiUwwAuCY',
-    appId: '1:671433330861:android:588b901d13ff052b687624',
+    appId: '1:671433330861:android:bd8dcdbf977041f6687624',
     messagingSenderId: '671433330861',
     projectId: 'education-app-97160',
     databaseURL: 'https://education-app-97160-default-rtdb.firebaseio.com',
@@ -67,5 +67,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'education-app-97160.appspot.com',
     iosBundleId: 'com.example.courseMate',
   );
-
 }
