@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:timelines_plus/timelines_plus.dart';
+import 'package:unimind/features/course_details/presentations/cubit/request_show_course_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
 import '../../../../../utils/helper.dart';
@@ -39,19 +40,80 @@ class ChaptersCourseWidget extends StatelessWidget {
                   title: Text("access_course".tr(context)),
                   subtitle: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15.0),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          HugeIcon(
-                            icon: HugeIcons.strokeRoundedShoppingBag02,
-                            color: AppColors.whiteColor,
-                          ),
-                          Text("Buy it now".tr(context)),
-                        ],
-                      ),
-                    ),
+                    child:
+                        BlocConsumer<
+                          RequestShowCourseCubit,
+                          RequestShowCourseState
+                        >(
+                          bloc: GetIt.I<RequestShowCourseCubit>(),
+                          listener: (context, state) {
+                            if (state is RequestShowCourseLoaded) {
+                              if (state.isSuccess) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(state.message),
+                                    backgroundColor: AppColors.emerald,
+                                  ),
+                                );
+                                return;
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(state.message),
+                                  backgroundColor: AppColors.redWood,
+                                ),
+                              );
+                            }
+                          },
+                          builder: (context, state) {
+                            if (state is RequestShowCourseInitial) {
+                              return ElevatedButton(
+                                onPressed: () {
+                                  GetIt.I<RequestShowCourseCubit>()
+                                      .requestShowCourse(course: course);
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0,
+                                      ),
+                                      child: HugeIcon(
+                                        icon: HugeIcons
+                                            .strokeRoundedShoppingBag02,
+                                        color: AppColors.whiteColor,
+                                      ),
+                                    ),
+                                    Text("Request it now".tr(context)),
+                                  ],
+                                ),
+                              );
+                            }
+                            return ElevatedButton(
+                              onPressed: () {
+                                GetIt.I<RequestShowCourseCubit>()
+                                    .requestShowCourse(course: course);
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0,
+                                    ),
+                                    child: HugeIcon(
+                                      icon:
+                                          HugeIcons.strokeRoundedShoppingBag02,
+                                      color: AppColors.whiteColor,
+                                    ),
+                                  ),
+                                  Text("Request it now".tr(context)),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                   ),
                 ),
         ),

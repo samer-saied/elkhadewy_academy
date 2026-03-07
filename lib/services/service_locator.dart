@@ -7,6 +7,7 @@ import '../features/auth/repository/auth_repository.dart';
 import '../features/auth/bloc/register_cubit.dart';
 import '../features/course_details/data/chapters_repository.dart';
 import '../features/course_details/presentations/cubit/chapters_cubit.dart';
+import '../features/course_details/presentations/cubit/request_show_course_cubit.dart';
 import '../features/courses/data/repositories/courses_repository.dart';
 import '../features/courses/presentations/cubit/course_cubit.dart';
 import '../features/homepage/data/repository/category_repository.dart';
@@ -63,6 +64,9 @@ class ServiceLocator {
     );
     getIt.registerLazySingleton<StatisticCubit>(
       () => StatisticCubit(getIt<FirebaseFirestoreService>()),
+    );
+    getIt.registerLazySingleton<RequestShowCourseCubit>(
+      () => RequestShowCourseCubit(getIt<FirebaseFirestoreService>()),
     );
     getIt.registerLazySingleton<NewsCubit>(() => NewsCubit());
     getIt.registerLazySingleton<LocaleCubit>(() => LocaleCubit());
