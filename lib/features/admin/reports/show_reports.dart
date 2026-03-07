@@ -28,7 +28,8 @@ class ShowReportsPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: TextField(
-              keyboardType: TextInputType.phone,
+              keyboardType: TextInputType.text,
+
               decoration: InputDecoration(
                 hint: Text(
                   "User Phone Number",

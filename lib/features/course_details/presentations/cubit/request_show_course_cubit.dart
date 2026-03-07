@@ -6,6 +6,7 @@ import 'package:unimind/features/courses/data/models/course_model.dart';
 
 import '../../../../core/remote/firebase_firestore_service.dart';
 import '../../../auth/bloc/login_cubit.dart';
+import '../../../auth/repository/auth_repository.dart';
 import '../../../auth/models/user_model.dart';
 
 part 'request_show_course_state.dart';
@@ -15,6 +16,7 @@ class RequestShowCourseCubit extends Cubit<RequestShowCourseState> {
   RequestShowCourseCubit(this._service) : super(RequestShowCourseInitial());
 
   final String collectionId = "request_show_course";
+  List<Map> requestsData = [];
 
   Future<void> requestShowCourse({required CourseModel course}) async {
     emit(RequestShowCourseLoading());
@@ -52,6 +54,72 @@ class RequestShowCourseCubit extends Cubit<RequestShowCourseState> {
           ),
         );
       }
+    } catch (e) {
+      emit(RequestShowCourseError(message: e.toString()));
+    }
+  }
+
+  Future<void> getPendingRequests() async {
+    emit(RequestShowCourseLoading());
+    try {
+      requestsData.clear();
+      QuerySnapshot<Object?> data = await _service.getDocuments(
+        collectionId: collectionId,
+        where: {},
+      );
+
+      List<QueryDocumentSnapshot<Object?>> docs = data.docs;
+      requestsData = docs.map((doc) {
+        final map = doc.data() as Map<String, dynamic>;
+        map['docId'] = doc.id;
+        return map;
+      }).toList();
+      emit(PendingRequestsLoaded(requests: requestsData));
+    } catch (e) {
+      emit(RequestShowCourseError(message: e.toString()));
+    }
+  }
+
+  Future<void> acceptRequest({required Map request}) async {
+    emit(RequestShowCourseLoading());
+    try {
+      // 1. Get student user document
+      final studentDoc = await _service.getDocument(
+        collectionId: 'users',
+        documentId: request['studentId'],
+      );
+
+      if (studentDoc.exists) {
+        UserModel student = UserModel.fromFirestore(studentDoc);
+
+        // 2. Add course to student materials if not already present
+        if (!student.materials.contains(request['courseId'])) {
+          student.materials.add(request['courseId']);
+          await GetIt.I<AuthRepository>().updateUser(student);
+        }
+
+        // 3. Delete the request and refresh list
+        await _service.deleteDocument(
+          collectionId: collectionId,
+          documentId: request['docId'],
+        );
+        await getPendingRequests();
+      } else {
+        emit(const RequestShowCourseError(message: "Student not found"));
+      }
+    } catch (e) {
+      emit(RequestShowCourseError(message: e.toString()));
+    }
+  }
+
+  Future<void> deleteRequest({required String requestId}) async {
+    emit(RequestShowCourseLoading());
+    try {
+      await _service.deleteDocument(
+        collectionId: collectionId,
+        documentId: requestId,
+      );
+      await getPendingRequests();
     } catch (e) {
       emit(RequestShowCourseError(message: e.toString()));
     }

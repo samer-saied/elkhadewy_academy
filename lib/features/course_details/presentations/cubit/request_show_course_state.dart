@@ -18,9 +18,20 @@ final class RequestShowCourseLoaded extends RequestShowCourseState {
     required this.isSuccess,
     required this.message,
   });
+  @override
+  List<Object> get props => [isSuccess, message];
+}
+
+final class PendingRequestsLoaded extends RequestShowCourseState {
+  final List<Map> requests;
+  const PendingRequestsLoaded({required this.requests});
+  @override
+  List<Object> get props => [requests];
 }
 
 final class RequestShowCourseError extends RequestShowCourseState {
   final String message;
   const RequestShowCourseError({required this.message});
+  @override
+  List<Object> get props => [message];
 }
