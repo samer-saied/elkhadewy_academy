@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:unimind/core/navigation/app_routes.dart';
+import 'package:unimind/features/auth/bloc/login_cubit.dart';
+import 'package:unimind/features/auth/bloc/register_cubit.dart';
 
 import '../../general/presentations/cubits/locale_cubit.dart';
 import '../../general/widgets/headers_widgets.dart';
@@ -143,123 +147,24 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                       onPressed: () {
-                        // Get.dialog(
-                        //   barrierDismissible: false,
-                        //   Dialog(
-                        //     backgroundColor: Colorsansparent,
-                        //     child: PopScope(
-                        //       // onWillPop: () async => false,
-                        //       child: Container(
-                        //         padding: const EdgeInsets.all(10),
-                        //         decoration: BoxDecoration(
-                        //           color: Colors.white,
-                        //           borderRadius: BorderRadius.circular(20),
-                        //         ),
-                        //         child: Column(
-                        //           mainAxisAlignment: MainAxisAlignment.center,
-                        //           mainAxisSize: MainAxisSize.min,
-                        //           crossAxisAlignment: CrossAxisAlignment.center,
-                        //           children: [
-                        //             Center(
-                        //               child: Text(
-                        //                 "WARNING",
-                        //                 style: const TextStyle(
-                        //                   color: AppColors.blackColor,
-                        //                   fontSize: 18,
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //             const SizedBox(height: 5),
-                        //             const Icon(
-                        //               Icons.delete,
-                        //               color: AppColors.gmailColor,
-                        //               size: 40,
-                        //             ),
-                        //             const SizedBox(height: 5),
-                        //             Padding(
-                        //               padding: const EdgeInsets.symmetric(
-                        //                 horizontal: 10,
-                        //               ),
-                        //               child: Align(
-                        //                 alignment: Alignment.center,
-                        //                 child: Text(
-                        //                   "You are about to delete your account.\nAre you sure you want to delete your account?",
-                        //                   textAlign: TextAlign.center,
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //             Divider(
-                        //               color: AppColors.greyColor,
-                        //               thickness: 1,
-                        //             ),
-                        //             Row(
-                        //               children: [
-                        //                 Expanded(
-                        //                   child: ElevatedButton(
-                        //                     style: ElevatedButton.styleFrom(
-                        //                       minimumSize: const Size(0, 45),
-                        //                       backgroundColor:
-                        //                           AppColors.whiteColor,
-                        //                       foregroundColor:
-                        //                           AppColors.blackColor,
-                        //                       shape: RoundedRectangleBorder(
-                        //                         borderRadius:
-                        //                             BorderRadius.circular(8),
-                        //                       ),
-                        //                     ),
-                        //                     onPressed: () {
-                        //                       Get.back();
-                        //                     },
-                        //                     child: const Text(
-                        //                       'NO',
-                        //                       style: TextStyle(
-                        //                         fontWeight: FontWeight.bold,
-                        //                       ),
-                        //                     ),
-                        //                   ),
-                        //                 ),
-                        //                 const SizedBox(width: 10),
-                        //                 Expanded(
-                        //                   child: ElevatedButton(
-                        //                     style: ElevatedButton.styleFrom(
-                        //                       minimumSize: const Size(0, 45),
-                        //                       backgroundColor:
-                        //                           AppColors.gmailColor,
-                        //                       foregroundColor:
-                        //                           AppColors.whiteColor,
-                        //                       shape: RoundedRectangleBorder(
-                        //                         borderRadius:
-                        //                             BorderRadius.circular(8),
-                        //                       ),
-                        //                     ),
-                        //                     onPressed: () {
-                        //                       if (mainController
-                        //                           .currentStudent!
-                        //                           .id!
-                        //                           .isNotEmpty) {
-                        //                         mainController.blockStudent();
-                        //                         Get.find<MainController>()
-                        //                                 .selectedIndex =
-                        //                             0;
-                        //                         Get.offAll(
-                        //                           () => const LogInScreen(),
-                        //                         );
-                        //                         LocalStorage(
-                        //                           GetStorage(),
-                        //                         ).clearLoginStatus();
-                        //                       }
-                        //                     },
-                        //                     child: const Text('YES'),
-                        //                   ),
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //           ],
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // );
+                        String currentUserId =
+                            GetIt.I<LoginCubit>().currentUser!.id;
+                        GetIt.I<RegisterCubit>().deleteUser(
+                          userId: currentUserId,
+                        );
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          AppRoutes.login,
+                          (route) => false,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'User Deleted Successfully'.tr(context),
+                            ),
+                            backgroundColor: AppColors.redWood,
+                          ),
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5.0),

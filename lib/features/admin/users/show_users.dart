@@ -81,6 +81,14 @@ class UserCardWidget extends StatelessWidget {
       ),
       onDismissed: (direction) {
         if (direction == DismissDirection.endToStart) {
+          if (student.role == "admin") {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Admin User can't be deleted"),
+                backgroundColor: AppColors.redWood,
+              ),
+            );
+          }
           GetIt.I<RegisterCubit>().deleteUser(userId: student.id);
         }
       },
