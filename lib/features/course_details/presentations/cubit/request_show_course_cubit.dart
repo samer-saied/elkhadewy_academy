@@ -40,7 +40,7 @@ class RequestShowCourseCubit extends Cubit<RequestShowCourseState> {
           data: {
             "courseId": course.id,
             "courseTitle": course.title,
-            "studentId": currentUser!.id,
+            "studentId": currentUser.id,
             "studentName": currentUser.name,
             "studentPhone": currentUser.phone,
             "createdAt": DateTime.now(),
