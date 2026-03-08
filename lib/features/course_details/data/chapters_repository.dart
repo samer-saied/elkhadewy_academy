@@ -16,11 +16,12 @@ class ChaptersRepository {
     return docs.map((d) => Chapter.fromFirestore(d)).toList();
   }
 
-  Future<Chapter> getChapterById({required String chapterId}) async {
+  Future<Chapter?> getChapterById({required String chapterId}) async {
     final doc = await _service.getDocument(
       collectionId: collectionID,
       documentId: chapterId,
     );
+    if (!doc.exists) return null;
     Chapter chapter = Chapter.fromFirestore(doc);
     return chapter;
   }

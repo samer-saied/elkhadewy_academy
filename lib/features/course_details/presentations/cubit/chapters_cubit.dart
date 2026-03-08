@@ -24,8 +24,8 @@ class ChaptersCubit extends Cubit<ChaptersState> {
     }
   }
 
-  Future<Chapter> fetchlastWatchingChapter({required String chapterId}) async {
-    Chapter chapter = await _repository.getChapterById(chapterId: chapterId);
+  Future<Chapter?> fetchlastWatchingChapter({required String chapterId}) async {
+    Chapter? chapter = await _repository.getChapterById(chapterId: chapterId);
     return chapter;
   }
 

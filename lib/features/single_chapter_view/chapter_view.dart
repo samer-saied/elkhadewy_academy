@@ -79,23 +79,14 @@ class _SingleChapterScreenState extends State<SingleChapterScreen> {
     // ScrollController scrollController = ScrollController();
 
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(0.0),
+        child: AppBar(backgroundColor: AppColors.jonquil, elevation: 0),
+      ),
       body: SingleChildScrollView(
         // controller: scrollController,
         child: Column(
           children: [
-            // AppBar(
-            //   backgroundColor: AppColors.jonquil,
-            //   elevation: 0,
-            //   centerTitle: true,
-            //   title: Text(
-            //     widget.singleChapter.title[0].toUpperCase() +
-            //         widget.singleChapter.title.substring(1),
-            //     style: TextStyle(
-            //       color: AppColors.whiteColor,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
             isValid()
                 ? VideoPlayerWidget(
                     chapterModel: widget.singleChapter,

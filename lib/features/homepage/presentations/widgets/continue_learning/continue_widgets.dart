@@ -101,13 +101,23 @@ Widget buildContinueLearningCard() {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         GetIt.I
                             .get<ChaptersCubit>()
                             .fetchlastWatchingChapter(
                               chapterId: snapshot.data!.chapterId,
                             )
                             .then((chapter) {
+                              if (chapter == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Chapter not found"),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                return;
+                              }
+
                               Navigator.push(
                                 // ignore: use_build_context_synchronously
                                 context,

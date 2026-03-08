@@ -26,26 +26,26 @@ class Chapter {
   // --- Factory Constructor for Firestore Mapping ---
   // Accept both raw Map-like data and DocumentSnapshot-like objects.
   factory Chapter.fromFirestore(dynamic snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>?;
+    final data = snapshot.data() as Map<String, dynamic>? ?? {};
     List<String> attachmentsFiles = [];
 
-    if (data?['attachments'] != null) {
+    if (data['attachments'] != null && data['attachments'] is Iterable) {
       attachmentsFiles = List<String>.from(
-        data!['attachments'].map((e) => e.toString()),
+        (data['attachments'] as Iterable).map((e) => e.toString()),
       );
     }
 
     return Chapter(
       id: snapshot.id,
-      title: data?['title']?.toString() ?? 'Untitled Chapter',
-      orderIndex: (data?['orderIndex'] is int)
-          ? data!['orderIndex'] as int
-          : int.tryParse(data!['orderIndex']?.toString() ?? '') ?? 0,
+      title: data['title']?.toString() ?? 'Untitled Chapter',
+      orderIndex: (data['orderIndex'] as num?)?.toInt() ?? 0,
       content: data['content']?.toString() ?? 'No content available.',
-      courseId: data['courseId'],
-      createdAt: data['createdAt'] ?? DateTime.now().toString(),
-      videoUrl: data['videoUrl'] ?? '',
-      createdBy: data['createdBy'] ?? 'admin',
+      courseId: data['courseId']?.toString() ?? '',
+      createdAt: data['createdAt'] is Timestamp
+          ? data['createdAt'] as Timestamp
+          : Timestamp.now(),
+      videoUrl: data['videoUrl']?.toString() ?? '',
+      createdBy: data['createdBy']?.toString() ?? 'admin',
       attachments: attachmentsFiles,
     );
   }
