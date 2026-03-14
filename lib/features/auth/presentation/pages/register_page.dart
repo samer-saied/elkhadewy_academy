@@ -149,8 +149,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter fullname';
                 }
-                if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-                  return 'Only English letters allowed'.tr(context);
+                if (!RegExp(r'^[\p{Arabic}a-zA-Z\s]+$').hasMatch(value)) {
+                  return 'Only Space, English & Arabic letters allowed'.tr(
+                    context,
+                  );
                 }
                 return null;
               },
