@@ -10,7 +10,9 @@ import '../features/course_details/presentations/cubit/chapters_cubit.dart';
 import '../features/course_details/presentations/cubit/request_show_course_cubit.dart';
 import '../features/courses/data/repositories/courses_repository.dart';
 import '../features/courses/presentations/cubit/course_cubit.dart';
+import '../features/homepage/data/repository/carousel_repository.dart';
 import '../features/homepage/data/repository/category_repository.dart';
+import '../features/homepage/presentations/cubit/carousel_cubit.dart';
 import '../features/homepage/presentations/cubit/category_cubit.dart';
 import '../features/homepage/presentations/cubit/news_cubit.dart';
 import '../features/watching_report/data/cubit/watching_report_cubit.dart';
@@ -28,6 +30,10 @@ class ServiceLocator {
     );
 
     ///////////////////   Repositories  ///////////////////
+    ///
+    getIt.registerLazySingleton<CarouselRepository>(
+      () => CarouselRepository(getIt<FirebaseFirestoreService>()),
+    );
     getIt.registerLazySingleton<CategoryRepository>(
       () => CategoryRepository(getIt<FirebaseFirestoreService>()),
     );
@@ -67,6 +73,9 @@ class ServiceLocator {
     );
     getIt.registerLazySingleton<RequestShowCourseCubit>(
       () => RequestShowCourseCubit(getIt<FirebaseFirestoreService>()),
+    );
+    getIt.registerLazySingleton<CarouselCubit>(
+      () => CarouselCubit(getIt<CarouselRepository>()),
     );
     getIt.registerLazySingleton<NewsCubit>(() => NewsCubit());
     getIt.registerLazySingleton<LocaleCubit>(() => LocaleCubit());

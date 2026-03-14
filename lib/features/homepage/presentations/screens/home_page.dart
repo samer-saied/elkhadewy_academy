@@ -11,6 +11,7 @@ import '../../../../general/widgets/headers_widgets.dart';
 import '../../../../utils/colors.dart';
 import '../../../auth/bloc/login_cubit.dart';
 import '../../../course_details/presentations/cubit/chapters_cubit.dart';
+import '../widgets/carousel/carousel_widget.dart';
 import '../widgets/category_horizontal_section_widget.dart';
 import '../widgets/continue_learning/continue_widgets.dart';
 import '../widgets/faetured_courses_section_widget.dart';
@@ -64,7 +65,7 @@ class HomePage extends StatelessWidget {
                 child: WelcomeUserWidget(),
               ),
 
-              // CarouselWidget(),
+              CarouselWidget(),
               // DividerWidget(),
               buildContinueLearningCard(),
               SectionHeaderWidget(title: "Recent News".tr(context), action: ""),

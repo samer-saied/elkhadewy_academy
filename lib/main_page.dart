@@ -19,6 +19,17 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MainWidget(pages: _pages);
+  }
+}
+
+class MainWidget extends StatelessWidget {
+  const MainWidget({super.key, required List<Widget> pages}) : _pages = pages;
+
+  final List<Widget> _pages;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),

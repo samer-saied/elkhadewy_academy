@@ -7,6 +7,7 @@ import 'features/auth/bloc/login_cubit.dart';
 import 'features/auth/bloc/register_cubit.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 import 'features/courses/presentations/cubit/course_cubit.dart';
+import 'features/homepage/presentations/cubit/carousel_cubit.dart';
 import 'features/homepage/presentations/cubit/category_cubit.dart';
 import 'features/homepage/presentations/cubit/news_cubit.dart';
 import 'features/sections/presentations/cubit/chapters_cubit.dart';
@@ -67,6 +68,9 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider<LoginCubit>(
           create: (context) => GetIt.I.get<LoginCubit>(),
+        ),
+        BlocProvider<CarouselCubit>(
+          create: (context) => GetIt.I.get<CarouselCubit>(),
         ),
       ],
 

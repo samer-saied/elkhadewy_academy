@@ -107,6 +107,7 @@ class _AddNewsFormState extends State<AddNewsForm> {
                   description: descriptionController.text,
                   link: linkController.text,
                   priority: priorityController.text,
+                  dateTime: DateTime.now().toIso8601String(),
                 ),
               );
               Navigator.pop(context);
