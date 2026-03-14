@@ -18,21 +18,6 @@ class NewsSectionWidget extends StatefulWidget {
 }
 
 class _NewsSectionWidgetState extends State<NewsSectionWidget> {
-  // late final NewsCubit _newsCubit;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // _newsCubit = NewsCubit()..fetchNewsItems();
-  //   GetIt.instance.get<NewsCubit>().fetchNewsItems();
-  // }
-
-  // @override
-  // void dispose() {
-  //   _newsCubit.close();
-  //   super.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
     // GetIt.I.get<NewsCubit>().fetchNewsItems();
@@ -164,11 +149,11 @@ class NewsCardWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (newsItem.dateTime != null)
+              if (newsItem.date != null)
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    timeago.format(DateTime.parse(newsItem.dateTime!)),
+                    timeago.format(DateTime.parse(newsItem.date!)),
                     style: textTheme.bodySmall,
                   ),
                 ),

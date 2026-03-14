@@ -79,11 +79,11 @@ class SingleNewsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          if (singleNews.dateTime != null)
+          if (singleNews.date != null)
             Align(
               alignment: Alignment.bottomRight,
               child: Text(
-                timeago.format(DateTime.parse(singleNews.dateTime!)),
+                timeago.format(DateTime.parse(singleNews.date!)),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),

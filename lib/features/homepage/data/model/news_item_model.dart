@@ -4,7 +4,7 @@ class NewsItemModel {
   final String? id;
   final String title;
   final String description;
-  final String? dateTime;
+  final String? date;
   final String? link;
   final String? priority;
 
@@ -12,7 +12,7 @@ class NewsItemModel {
     this.id,
     required this.title,
     required this.description,
-    this.dateTime,
+    this.date,
     this.link,
     this.priority = "normal",
   });
@@ -25,8 +25,8 @@ class NewsItemModel {
       id: idCode,
       title: snapshot['title'],
       description: snapshot['description'],
-      dateTime: snapshot['dateTime'] != null
-          ? DateTime.tryParse(snapshot['dateTime']).toString()
+      date: snapshot['date'] != null
+          ? DateTime.tryParse(snapshot['date']).toString()
           : DateTime.now().toString(),
       link: snapshot['link'] ?? "",
       priority: snapshot['priority'] ?? "normal",
@@ -37,7 +37,7 @@ class NewsItemModel {
     return {
       if (title != null) "title": title,
       if (description != null) "description": description,
-      if (dateTime != null) "date": dateTime,
+      if (date != null) "date": date,
       if (link != null) "link": link,
       if (priority != null) "priority": priority,
     };
