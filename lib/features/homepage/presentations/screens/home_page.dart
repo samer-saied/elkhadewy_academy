@@ -10,6 +10,7 @@ import '../../../../general/presentations/cubits/navigation_cubit.dart';
 import '../../../../general/widgets/headers_widgets.dart';
 import '../../../../utils/colors.dart';
 import '../../../auth/bloc/login_cubit.dart';
+import '../../../course_details/presentations/cubit/chapters_cubit.dart';
 import '../widgets/category_horizontal_section_widget.dart';
 import '../widgets/continue_learning/continue_widgets.dart';
 import '../widgets/faetured_courses_section_widget.dart';
@@ -37,6 +38,10 @@ class HomePage extends StatelessWidget {
             final materials = GetIt.I.get<LoginCubit>().currentUser!.materials;
             GetIt.I.get<CourseCubit>().fetchUsersCourse(
               materials: materials,
+              forceRefresh: true,
+            );
+            GetIt.I.get<ChaptersCubit>().latestChaptersFunc(
+              userMaterials: materials,
               forceRefresh: true,
             );
           });

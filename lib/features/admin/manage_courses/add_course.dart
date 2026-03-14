@@ -49,6 +49,7 @@ class AddCoursesForm extends StatefulWidget {
 class _AddCoursesFormState extends State<AddCoursesForm> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  final imgLinkController = TextEditingController();
 
   // Set default values (avoiding nulls)
   String _selectedCollage = "";
@@ -69,6 +70,7 @@ class _AddCoursesFormState extends State<AddCoursesForm> {
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
+    imgLinkController.dispose();
     super.dispose();
   }
 
@@ -133,6 +135,14 @@ class _AddCoursesFormState extends State<AddCoursesForm> {
             hint: "Write a detailed description".tr(context),
             controller: descriptionController,
             maxLines: 5,
+          ),
+          const SizedBox(height: 20),
+
+          LabeledInputFields(
+            label: 'Image Link'.tr(context),
+            hint: "Enter image URL".tr(context),
+            prefixIcon: Icons.image,
+            controller: imgLinkController,
           ),
           const SizedBox(height: 20),
 
@@ -229,7 +239,7 @@ class _AddCoursesFormState extends State<AddCoursesForm> {
         collegeTitle: collegeTitle,
         yearId: _selectedYear,
         color: "0xFF${pickerColor.hex}", // Default color or from a picker
-        imgLink: "", // Default empty image
+        imgLink: imgLinkController.text, // Default empty image
       );
 
       // Call the Cubit

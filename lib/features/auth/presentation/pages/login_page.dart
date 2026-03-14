@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../general/presentations/cubits/locale_cubit.dart';
@@ -21,12 +22,40 @@ class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _passwordController;
   late final TextEditingController _phoneController;
   final _formKey = GlobalKey<FormState>();
+  bool _rememberMe = false;
 
   @override
   void initState() {
     super.initState();
     _passwordController = TextEditingController();
     _phoneController = TextEditingController();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        _rememberMe = prefs.getBool('remember_me') ?? false;
+        if (_rememberMe) {
+          _phoneController.text = prefs.getString('saved_phone') ?? '';
+          _passwordController.text = prefs.getString('saved_password') ?? '';
+        }
+      });
+    }
+  }
+
+  Future<void> _saveCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_rememberMe) {
+      await prefs.setBool('remember_me', true);
+      await prefs.setString('saved_phone', _phoneController.text);
+      await prefs.setString('saved_password', _passwordController.text);
+    } else {
+      await prefs.setBool('remember_me', false);
+      await prefs.remove('saved_phone');
+      await prefs.remove('saved_password');
+    }
   }
 
   @override
@@ -165,9 +194,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _phoneController,
                     isPassword: false,
                     keyboardType: TextInputType.phone,
-                    validator: (value) => value == null || value.isEmpty
-                        ? 'Please enter your mobile number'.tr(context)
-                        : null,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your mobile number'.tr(context);
+                      }
+                      if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                        return 'Only English numbers allowed'.tr(context);
+                      }
+                      return null;
+                    },
                   ),
 
                   // --- 3. Password Input ---
@@ -187,7 +222,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   // --- Forgot Password Link ---
-                  const SizedBox(height: 10),
+                  // const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            _rememberMe = value ?? false;
+                          });
+                        },
+                        activeColor: AppColors.jonquil,
+                      ),
+                      Text(
+                        'Remember me'.tr(context),
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
 
                   // --- 4. Log In Button ---
                   ElevatedButton(
@@ -199,6 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
                             FocusScope.of(context).unfocus();
                             HapticFeedback.mediumImpact();
+                            _saveCredentials();
                             GetIt.I<LoginCubit>().login(
                               phone: _phoneController.text,
                               password: _passwordController.text,

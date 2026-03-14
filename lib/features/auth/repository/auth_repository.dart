@@ -37,7 +37,7 @@ class AuthRepository {
           'faculty': faculty,
           'studyYear': studyYear,
           'status': 'active',
-          'role': 'user',
+          'role': 'student',
           'createdAt': FieldValue.serverTimestamp(),
           'deviceId': deviceInfo,
           'refreshToken': false,

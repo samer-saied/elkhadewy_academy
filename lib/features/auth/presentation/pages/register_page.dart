@@ -145,9 +145,18 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _nameController,
               keyboardType: TextInputType.text,
               isEnabled: state.status != RegisterStatus.loading,
-              validator: (value) => value == null || value.isEmpty
-                  ? 'Please enter your full name'.tr(context)
-                  : null,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter fullname';
+                }
+                if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                  return 'Only English letters allowed'.tr(context);
+                }
+                return null;
+              },
+              // => value == null || value.isEmpty
+              //     ? 'Please enter your full name'.tr(context)
+              //     : null,
             ),
             LabeledInputFields(
               label: 'Mobile'.tr(context),
@@ -156,9 +165,15 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _phoneController,
               keyboardType: TextInputType.phone,
               isEnabled: state.status != RegisterStatus.loading,
-              validator: (value) => value == null || value.isEmpty
-                  ? 'Please enter your mobile number'.tr(context)
-                  : null,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your mobile number'.tr(context);
+                }
+                if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                  return 'Only English numbers allowed'.tr(context);
+                }
+                return null;
+              },
             ),
 
             LabeledInputFields(
@@ -184,9 +199,17 @@ class _RegisterPageState extends State<RegisterPage> {
               keyboardType: TextInputType.emailAddress,
 
               isEnabled: state.status != RegisterStatus.loading,
-              validator: (value) => value == null || value.isEmpty
-                  ? 'Please enter your email'.tr(context)
-                  : null,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email'.tr(context);
+                }
+                if (!RegExp(
+                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                ).hasMatch(value)) {
+                  return 'Please enter a valid email'.tr(context);
+                }
+                return null;
+              },
             ),
 
             // --- Study Data Section ---
@@ -240,7 +263,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       isExpanded: true,
                       underline: const SizedBox.shrink(),
                       value: _selectedFaculty,
-                      items: ['BIS', 'ARABIC', 'ENGLISH', 'AFP'].map((
+                      items: ['BIS', 'ARABIC', 'ENGLISH', 'AFT'].map((
                         String value,
                       ) {
                         return DropdownMenuItem<String>(

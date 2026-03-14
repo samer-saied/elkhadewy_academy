@@ -109,6 +109,7 @@ Widget buildContinueLearningCard() {
                             )
                             .then((chapter) {
                               if (chapter == null) {
+                                // ignore: use_build_context_synchronously
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text("Chapter not found"),

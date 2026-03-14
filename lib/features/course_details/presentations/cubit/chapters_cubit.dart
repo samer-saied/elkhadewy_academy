@@ -29,7 +29,14 @@ class ChaptersCubit extends Cubit<ChaptersState> {
     return chapter;
   }
 
-  Future<void> latestChaptersFunc({required List<String> userMaterials}) async {
+  Future<void> latestChaptersFunc({
+    required List<String> userMaterials,
+    bool forceRefresh = false,
+  }) async {
+    if (latestChapters.isNotEmpty && !forceRefresh) {
+      emit(ChaptersLoaded(items: latestChapters));
+      return;
+    }
     emit(ChaptersLoading());
     try {
       final List<Chapter> items = await _repository.getLatestChapters(

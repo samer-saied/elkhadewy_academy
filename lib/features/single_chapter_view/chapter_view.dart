@@ -28,6 +28,7 @@ class SingleChapterScreen extends StatefulWidget {
 
 class _SingleChapterScreenState extends State<SingleChapterScreen> {
   final _headsetPlugin = HeadsetEvent();
+
   HeadsetState? _headsetState;
   String errorMsg = "";
 

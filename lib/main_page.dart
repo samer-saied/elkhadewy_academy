@@ -31,19 +31,6 @@ class MainPage extends StatelessWidget {
         },
       ),
       bottomNavigationBar: BottomBarWidget(),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     BlocProvider.of<ThemesCubit>(context).changeTheme();
-      //     // Localizations.localeOf(context).languageCode == 'en'
-      //     //     ? BlocProvider.of<LocaleCubit>(context).changeLanguage('ar')
-      //     //     : BlocProvider.of<LocaleCubit>(context).changeLanguage('en');
-      //   },
-      //   child: Icon(
-      //     Localizations.localeOf(context).languageCode == 'en'
-      //         ? Icons.local_play
-      //         : Icons.language,
-      //   ),
-      // ),
     );
   }
 }

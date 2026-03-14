@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:screen_capture_event/screen_capture_event.dart';
 import 'package:timeago/timeago.dart' as timeago;
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
@@ -17,6 +18,7 @@ import '../../pdfviewer/web_view_screen.dart';
 import '../../watching_report/data/cubit/watching_report_cubit.dart';
 import '../../watching_report/data/model/watching_model.dart';
 import 'copy_right_widget.dart';
+import 'warning_widget.dart';
 
 class ChapterDetailsWidget extends StatelessWidget {
   final Chapter chapterModel;
@@ -296,6 +298,8 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late YoutubePlayerController _controller;
+  final ScreenCaptureEvent screenListener = ScreenCaptureEvent();
+  bool _isRecording = false;
 
   @override
   void initState() {
@@ -310,6 +314,27 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         disableDragSeek: true,
       ),
     );
+
+    ////////////// LISTEN SCREEN RECORDING  ////////////////
+    screenListener.addScreenRecordListener((recorded) {
+      ///Recorded was your record status (bool)
+      setState(() {
+        _isRecording = recorded;
+        _controller.pause();
+      });
+    });
+
+    screenListener.addScreenShotListener((filePath) {
+      ///filePath only available for Android
+      setState(() {
+        _isRecording = true;
+        _controller.pause();
+        // _controller.dispose();
+      });
+    });
+
+    ///Start watch
+    screenListener.watch();
   }
 
   @override
@@ -378,6 +403,44 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             ),
             CopyRigthsWidget(isSafeArea: true),
             CopyRigthsWidget(),
+            if (_isRecording)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withAlpha(70),
+                  child: Center(
+                    child: WarningWidget(
+                      errorMsg: "Illegal Action",
+                      errorDes: "Recording is not allowed",
+                      iconWidget: Image.asset(
+                        "assets/images/logo.png",
+                        width: 100,
+                        height: 100,
+                      ),
+                    ),
+                    // child: Column(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   children: [
+                    //     FittedBox(
+                    //       child: Image.asset(
+                    //         "assets/images/logo.png",
+                    //         width: 100,
+                    //         height: 100,
+                    //       ),
+                    //     ),
+                    //     Text(
+                    //       "Recording is not allowed",
+                    //       style: TextStyle(
+                    //         color: Colors.white,
+                    //         fontSize: 20,
+                    //         fontWeight: FontWeight.bold,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                  ),
+                ),
+              ),
           ],
         );
       },

@@ -25,6 +25,7 @@ dependencies:
   hugeicons: ^1.1.1
   meta: ^1.16.0
   permission_handler: ^12.0.1
+  screen_capture_event: ^1.2.0
   screen_protector: 1.4.13
   share_plus: ^12.0.1
   shared_preferences: ^2.5.3
