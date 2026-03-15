@@ -62,7 +62,6 @@ class ManageUsersPage extends StatelessWidget {
                   Container(
                     margin: const EdgeInsets.all(15),
                     padding: const EdgeInsets.all(25),
-                    // height: 50,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: AppColors.jonquilLight.withAlpha(70),

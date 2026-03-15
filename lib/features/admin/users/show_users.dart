@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:unimind/features/admin/users/cubit/statistic_cubit.dart';
 import 'package:unimind/features/auth/bloc/register_cubit.dart';
 import 'package:unimind/features/auth/models/user_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/colors.dart';
 import 'edit_user.dart';
@@ -116,7 +117,7 @@ class UserCardWidget extends StatelessWidget {
                 child: Text(
                   (index + 1).toString(),
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: AppColors.whiteColor,
+                    color: AppColors.blackColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -135,6 +136,31 @@ class UserCardWidget extends StatelessWidget {
                   Text("Academic Year : ${int.parse(student.studyYear) + 1}"),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SmallButtonWidget(
+                    iconName: Icons.phone,
+                    bkColor: AppColors.redWood,
+                    onTap: () {
+                      launchUrl(
+                        Uri.parse("tel:${student.phone}"),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    },
+                  ),
+                  SmallButtonWidget(
+                    iconName: Icons.chat_sharp,
+                    bkColor: AppColors.emerald,
+                    onTap: () {
+                      launchUrl(
+                        Uri.parse("https://wa.me/2${student.phone}"),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
           trailing: Wrap(
@@ -150,6 +176,54 @@ class UserCardWidget extends StatelessWidget {
                 color: student.refreshToken == true
                     ? AppColors.emerald
                     : AppColors.redWood,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SmallButtonWidget extends StatelessWidget {
+  final Color bkColor;
+  final Color? iconColor;
+  final IconData iconName;
+  final String? iconTxt;
+  final void Function()? onTap;
+  const SmallButtonWidget({
+    super.key,
+    required this.bkColor,
+    required this.iconName,
+    required this.onTap,
+    this.iconTxt,
+    this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 3),
+        decoration: iconTxt == null
+            ? BoxDecoration(color: bkColor, shape: BoxShape.circle)
+            : BoxDecoration(
+                color: bkColor,
+                borderRadius: BorderRadius.circular(25),
+              ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+          child: Row(
+            children: [
+              Icon(
+                iconName,
+                size: 18,
+                color: iconColor ?? AppColors.whiteColor,
+              ),
+              Text(
+                iconTxt ?? "",
+                style: TextStyle(color: iconColor ?? AppColors.whiteColor),
               ),
             ],
           ),
