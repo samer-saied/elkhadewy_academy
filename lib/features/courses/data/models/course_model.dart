@@ -24,17 +24,22 @@ class CourseModel {
   });
 
   factory CourseModel.fromFirestore(var snapshot) {
-    final raw =
-        ((snapshot as dynamic).data?.call() ?? (snapshot as dynamic))
-            as Map<String, dynamic>?;
-    final data = raw ?? <String, dynamic>{};
-
+    Map<String, dynamic>? raw;
     String? idValue;
-    try {
-      idValue = (snapshot as dynamic).id as String?;
-    } catch (_) {
-      idValue = null;
+
+    if (snapshot is Map<String, dynamic>) {
+      raw = snapshot;
+      idValue = snapshot['id']?.toString();
+    } else {
+      try {
+        raw = (snapshot as dynamic).data() as Map<String, dynamic>?;
+        idValue = (snapshot as dynamic).id as String?;
+      } catch (_) {
+        raw = null;
+      }
     }
+
+    final data = raw ?? <String, dynamic>{};
 
     return CourseModel(
       id: idValue,

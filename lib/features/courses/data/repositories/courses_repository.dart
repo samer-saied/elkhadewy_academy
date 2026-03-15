@@ -55,11 +55,12 @@ class CoursesRepository {
     );
   }
 
-  Future<CourseModel> getById(String id) async {
+  Future<CourseModel?> getById(String id) async {
     final doc = await _service.getDocument(
       collectionId: collectionId,
       documentId: id,
     );
+    if (!doc.exists) return null;
     return CourseModel.fromFirestore(doc);
   }
 

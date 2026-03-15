@@ -178,7 +178,7 @@ class _EditUserPageState extends State<EditUserPage> {
                 prefixIcon: Icons.lock_outline,
                 controller: _passwordController,
                 isPassword: true,
-                isPasswordVisible: false,
+                // isPasswordVisible: false,
                 validator: (value) => value == null || value.isEmpty
                     ? 'Please enter a password'.tr(context)
                     : null,

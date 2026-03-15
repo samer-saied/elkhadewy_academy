@@ -329,7 +329,9 @@ class _AddChapterFormState extends State<AddChapterForm> {
     return BlocBuilder<CourseCubit, CourseState>(
       bloc: GetIt.I<CourseCubit>(),
       builder: (context, state) {
-        final courses = GetIt.I<CourseCubit>().allCourses;
+        final courses = GetIt.I<LoginCubit>().currentUser!.role == "admin"
+            ? GetIt.I<CourseCubit>().allCourses
+            : GetIt.I<CourseCubit>().userCourses;
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(

@@ -7,7 +7,8 @@ import 'package:unimind/services/lang/app_localizations.dart';
 import '../../../utils/colors.dart';
 
 class ManageRequestsPage extends StatelessWidget {
-  const ManageRequestsPage({super.key});
+  final bool materials;
+  const ManageRequestsPage({super.key, required this.materials});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class ManageRequestsPage extends StatelessWidget {
       ),
       body: BlocBuilder<RequestShowCourseCubit, RequestShowCourseState>(
         bloc: GetIt.I<RequestShowCourseCubit>()..getPendingRequests(),
+
         builder: (context, state) {
           if (state is RequestShowCourseLoading) {
             return const Center(child: CircularProgressIndicator());

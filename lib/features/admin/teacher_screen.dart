@@ -8,6 +8,7 @@ import '../../utils/colors.dart';
 import '../more/widgets/setting_item.dart';
 import 'reports/show_reports.dart';
 import 'reports/show_reports_bydate.dart';
+import 'users/manage_requests.dart';
 
 class TeacherPage extends StatelessWidget {
   const TeacherPage({super.key});
@@ -215,6 +216,54 @@ class GetBodyTeacherPage extends StatelessWidget {
                               context,
                               AppRoutes.manageChapters,
                             );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+              ////////////////////////////  Request Courses  ////////////////////
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: AppColors.whiteColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.lightGrey,
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(
+                            0,
+                            1,
+                          ), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        SettingItem(
+                          title: "Pending Requests".tr(context),
+                          leadingIcon: Icons.pending,
+                          bgIconColor: AppColors.jonquil,
+                          leadingIconColor: AppColors.whiteColor,
+                          onTap: () {
+                            HapticFeedback.mediumImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ManageRequestsPage(materials: false),
+                              ),
+                            );
+                            // Navigator.pushNamed(
+                            //   context,
+                            //   AppRoutes.manageUsers,
+                            // );
                           },
                         ),
                       ],

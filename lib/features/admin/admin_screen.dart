@@ -306,7 +306,8 @@ class GetBodyAdminPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ManageRequestsPage(),
+                                builder: (context) =>
+                                    ManageRequestsPage(materials: false),
                               ),
                             );
                             // Navigator.pushNamed(

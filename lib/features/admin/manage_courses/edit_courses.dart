@@ -43,6 +43,7 @@ class EditCoursesForm extends StatefulWidget {
 class _EditCoursesFormState extends State<EditCoursesForm> {
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
+  late final TextEditingController imgLinkController;
   late String _selectedCollage;
   late String _selectedYear;
 
@@ -53,6 +54,7 @@ class _EditCoursesFormState extends State<EditCoursesForm> {
     descriptionController = TextEditingController(
       text: widget.courses.description,
     );
+    imgLinkController = TextEditingController(text: widget.courses.imgLink);
     _selectedCollage = widget.courses.collegeId;
     _selectedYear = widget.courses.yearId;
   }
@@ -119,6 +121,14 @@ class _EditCoursesFormState extends State<EditCoursesForm> {
           ),
           const SizedBox(height: 20),
 
+          LabeledInputFields(
+            label: 'Image Link'.tr(context),
+            hint: "Enter image URL".tr(context),
+            prefixIcon: Icons.image,
+            controller: imgLinkController,
+          ),
+          const SizedBox(height: 20),
+
           _buildLabeledDropdown(
             label: "Select College".tr(context),
             value: _selectedCollage,
@@ -173,6 +183,7 @@ class _EditCoursesFormState extends State<EditCoursesForm> {
     final updatedModel = widget.courses.copyWith(
       title: titleController.text,
       description: descriptionController.text,
+      imgLink: imgLinkController.text,
       collegeId: _selectedCollage,
       collegeTitle: collegeTitle,
       yearId: _selectedYear,

@@ -61,24 +61,58 @@ class RequestShowCourseCubit extends Cubit<RequestShowCourseState> {
 
   Future<void> getPendingRequests() async {
     emit(RequestShowCourseLoading());
-    try {
-      requestsData.clear();
-      QuerySnapshot<Object?> data = await _service.getDocuments(
-        collectionId: collectionId,
-        where: {},
-      );
+    requestsData.clear();
 
-      List<QueryDocumentSnapshot<Object?>> docs = data.docs;
-      requestsData = docs.map((doc) {
-        final map = doc.data() as Map<String, dynamic>;
-        map['docId'] = doc.id;
-        return map;
-      }).toList();
+    try {
+      if (GetIt.I<LoginCubit>().currentUser!.role == "admin") {
+        ////////////////////// ADMIN  /////////////////////
+        QuerySnapshot<Object?> data = await _service.getDocuments(
+          collectionId: collectionId,
+          where: {},
+        );
+
+        List<QueryDocumentSnapshot<Object?>> docs = data.docs;
+        requestsData = docs.map((doc) {
+          final map = doc.data() as Map<String, dynamic>;
+          map['docId'] = doc.id;
+          return map;
+        }).toList();
+      } else {
+        ////////////////////// TEACHER  /////////////////////
+        List<String> materials = GetIt.I<LoginCubit>().currentUser!.materials;
+
+        for (var material in materials) {
+          QuerySnapshot<Object?> data = await _service.getDocuments(
+            collectionId: collectionId,
+            where: {"courseId": material},
+          );
+          requestsData.addAll(data.docs.map((doc) => doc.data() as Map));
+        }
+      }
+
       emit(PendingRequestsLoaded(requests: requestsData));
     } catch (e) {
       emit(RequestShowCourseError(message: e.toString()));
     }
   }
+
+  // Future<void> getPendingMaterialRequests() async {
+  //   emit(RequestShowCourseLoading());
+  //   try {
+  //     requestsData.clear();
+  //     List<String> materials = GetIt.I<LoginCubit>().currentUser!.materials;
+  //     for (var material in materials) {
+  //       QuerySnapshot<Object?> data = await _service.getDocuments(
+  //         collectionId: collectionId,
+  //         where: {"courseId": material},
+  //       );
+  //       requestsData.addAll(data.docs.map((doc) => doc.data() as Map));
+  //     }
+  //     emit(PendingRequestsLoaded(requests: requestsData));
+  //   } catch (e) {
+  //     emit(RequestShowCourseError(message: e.toString()));
+  //   }
+  // }
 
   Future<void> acceptRequest({required Map request}) async {
     emit(RequestShowCourseLoading());
