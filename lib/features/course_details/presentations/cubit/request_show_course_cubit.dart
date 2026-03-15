@@ -86,7 +86,13 @@ class RequestShowCourseCubit extends Cubit<RequestShowCourseState> {
             collectionId: collectionId,
             where: {"courseId": material},
           );
-          requestsData.addAll(data.docs.map((doc) => doc.data() as Map));
+          requestsData.addAll(
+            data.docs.map((doc) {
+              final map = doc.data() as Map<String, dynamic>;
+              map['docId'] = doc.id;
+              return map;
+            }),
+          );
         }
       }
 
