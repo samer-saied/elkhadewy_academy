@@ -10,12 +10,20 @@ class CarouselCubit extends Cubit<CarouselState> {
   final CarouselRepository _repository;
   CarouselCubit(this._repository) : super(CarouselInitial());
 
+  List<CarouselItemModel> carouselItems = [];
+
   /// Fetch current items once (non-listening)
-  Future<void> fetchCarouselItems() async {
+  Future<void> fetchCarouselItems({bool forceRefresh = false}) async {
+    if (carouselItems.isNotEmpty && !forceRefresh) {
+      emit(CarouselLoaded(items: carouselItems));
+      return;
+    }
     emit(CarouselLoading());
     try {
+      carouselItems.clear();
       final items = await _repository.getAll();
-      emit(CarouselLoaded(items: items));
+      carouselItems.addAll(items);
+      emit(CarouselLoaded(items: carouselItems));
     } catch (e) {
       emit(CarouselOperationFailure(error: e.toString()));
     }

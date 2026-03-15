@@ -14,7 +14,11 @@ class CourseCubit extends Cubit<CourseState> {
   List<CourseModel> userCourses = [];
   List<CourseModel> allCourses = [];
 
-  Future<void> fetchCourseItems() async {
+  Future<void> fetchCourseItems({bool forceRefresh = false}) async {
+    if (allCourses.isNotEmpty && !forceRefresh) {
+      emit(CourseLoaded(items: allCourses));
+      return;
+    }
     emit(CourseLoading());
     allCourses.clear();
     try {
@@ -50,15 +54,12 @@ class CourseCubit extends Cubit<CourseState> {
       userCourses.clear();
       for (String materialId in materials) {
         final item = await _repository.getById(materialId);
-        print(item);
         if (item != null) {
           userCourses.add(item);
         }
       }
       emit(CourseLoaded(items: userCourses));
     } catch (e) {
-      print(e.toString());
-
       emit(CourseOperationFailure(error: e.toString()));
     }
   }
@@ -68,7 +69,7 @@ class CourseCubit extends Cubit<CourseState> {
     try {
       await _repository.add(item);
       emit(CourseOperationSuccess(message: 'Item added'));
-      await fetchCourseItems();
+      await fetchCourseItems(forceRefresh: true);
     } catch (e) {
       emit(CourseOperationFailure(error: e.toString()));
     }
@@ -79,7 +80,7 @@ class CourseCubit extends Cubit<CourseState> {
     try {
       await _repository.update(item);
       emit(CourseOperationSuccess(message: 'Item updated'));
-      await fetchCourseItems();
+      await fetchCourseItems(forceRefresh: true);
     } catch (e) {
       emit(CourseOperationFailure(error: e.toString()));
     }
@@ -90,7 +91,7 @@ class CourseCubit extends Cubit<CourseState> {
     try {
       await _repository.delete(id);
       emit(CourseOperationSuccess(message: 'Item deleted'));
-      await fetchCourseItems();
+      await fetchCourseItems(forceRefresh: true);
     } catch (e) {
       emit(CourseOperationFailure(error: e.toString()));
     }

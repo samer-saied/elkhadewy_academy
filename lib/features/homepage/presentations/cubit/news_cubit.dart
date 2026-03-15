@@ -14,53 +14,54 @@ class NewsCubit extends Cubit<NewsState> {
 
   /// Fetch current items once (non-listening)
   Future<void> fetchNewsItems({bool forceRefresh = false}) async {
-    emit(NewsLoading());
     if (newsItems.isNotEmpty && !forceRefresh) {
       emit(NewsLoaded(items: newsItems));
-    } else {
-      try {
-        final docs = await _service.getCollection(collectionId: 'news');
-        newsItems = docs
-            .map(
-              (doc) => NewsItemModel.fromFirestore(
-                doc.data() as Map<String, dynamic>,
-                doc.id,
-              ),
-            )
-            .toList();
-        emit(NewsLoaded(items: newsItems));
-      } catch (e) {
-        emit(NewsOperationFailure(error: e.toString()));
-      }
+      return;
     }
-  }
-
-  /// Start listening to collection changes and emit `NewsListening` updates.
-  void listenToNews({
-    String orderByField = 'priority',
-    bool descending = false,
-  }) {
+    emit(NewsLoading());
     try {
-      _service.listenToCollection(
-        collectionId: 'news',
-        orderByField: orderByField,
-        descending: descending,
-        onChange: (docs) {
-          final items = docs
-              .map(
-                (doc) => NewsItemModel.fromFirestore(
-                  doc.data() as Map<String, dynamic>,
-                  doc.id,
-                ),
-              )
-              .toList();
-          emit(NewsListening(items: items));
-        },
-      );
+      newsItems.clear();
+      final docs = await _service.getCollection(collectionId: 'news');
+      newsItems = docs
+          .map(
+            (doc) => NewsItemModel.fromFirestore(
+              doc.data() as Map<String, dynamic>,
+              doc.id,
+            ),
+          )
+          .toList();
+      emit(NewsLoaded(items: newsItems));
     } catch (e) {
       emit(NewsOperationFailure(error: e.toString()));
     }
   }
+
+  /// Start listening to collection changes and emit `NewsListening` updates.
+  // void listenToNews({
+  //   String orderByField = 'priority',
+  //   bool descending = false,
+  // }) {
+  //   try {
+  //     _service.listenToCollection(
+  //       collectionId: 'news',
+  //       orderByField: orderByField,
+  //       descending: descending,
+  //       onChange: (docs) {
+  //         final items = docs
+  //             .map(
+  //               (doc) => NewsItemModel.fromFirestore(
+  //                 doc.data() as Map<String, dynamic>,
+  //                 doc.id,
+  //               ),
+  //             )
+  //             .toList();
+  //         emit(NewsListening(items: items));
+  //       },
+  //     );
+  //   } catch (e) {
+  //     emit(NewsOperationFailure(error: e.toString()));
+  //   }
+  // }
 
   Future<void> addNewsItem({required NewsItemModel news}) async {
     emit(NewsLoading());
@@ -70,7 +71,7 @@ class NewsCubit extends Cubit<NewsState> {
         data: news.toFirestore(),
       );
       emit(NewsOperationSuccess(message: 'Item added'));
-      await fetchNewsItems();
+      await fetchNewsItems(forceRefresh: true);
     } catch (e) {
       emit(NewsOperationFailure(error: e.toString()));
     }
@@ -85,7 +86,7 @@ class NewsCubit extends Cubit<NewsState> {
         data: news.toFirestore(),
       );
       emit(NewsOperationSuccess(message: 'Item updated'));
-      await fetchNewsItems();
+      await fetchNewsItems(forceRefresh: true);
     } catch (e) {
       emit(NewsOperationFailure(error: e.toString()));
     }
@@ -96,7 +97,7 @@ class NewsCubit extends Cubit<NewsState> {
     try {
       await _service.deleteDocument(collectionId: 'news', documentId: id);
       emit(NewsOperationSuccess(message: 'Item deleted'));
-      await fetchNewsItems();
+      await fetchNewsItems(forceRefresh: true);
     } catch (e) {
       emit(NewsOperationFailure(error: e.toString()));
     }

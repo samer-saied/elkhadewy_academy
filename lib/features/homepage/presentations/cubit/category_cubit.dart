@@ -14,15 +14,16 @@ class CategoryCubit extends Cubit<CategoryState> {
   // 1. Fetch Items (One-time fetch)
   List<CategoryModel> categories = [];
 
-  Future<void> fetchItems() async {
+  Future<void> fetchItems({bool forceRefresh = false}) async {
+    if (categories.isNotEmpty && !forceRefresh) {
+      emit(CategoryLoaded(categories));
+      return;
+    }
     emit(CategoryLoading());
     try {
-      if (categories.isNotEmpty) {
-        emit(CategoryLoaded(categories));
-      } else {
-        categories = await _repository.getAll();
-        emit(CategoryLoaded(categories));
-      }
+      categories.clear();
+      categories = await _repository.getAll();
+      emit(CategoryLoaded(categories));
     } catch (e) {
       emit(CategoryError(e.toString()));
     }

@@ -42,7 +42,7 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  Future<void> refreshUserDatet() async {
+  Future<void> refreshUserData() async {
     Object result = await authRepository.refreshUserData(
       userId: currentUser!.id,
     );

@@ -35,7 +35,7 @@ class ChaptersRepository {
         collectionId: collectionID,
         filterField: 'courseId',
         filterValue: materialId,
-        limit: 2,
+        limit: 1,
       );
       chapters.addAll(docs.map((d) => Chapter.fromFirestore(d)).toList());
     }

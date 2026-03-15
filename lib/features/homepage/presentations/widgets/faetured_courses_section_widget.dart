@@ -26,7 +26,6 @@ class _FaeturedCoursesSectionWidgetState
   void initState() {
     super.initState();
     final materials = GetIt.I.get<LoginCubit>().currentUser!.materials;
-    print(materials);
     GetIt.I.get<CourseCubit>().fetchUsersCourse(materials: materials);
   }
 

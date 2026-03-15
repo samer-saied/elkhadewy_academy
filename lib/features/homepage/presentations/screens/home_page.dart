@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
           return Future.delayed(Duration.zero, () {
             HapticFeedback.mediumImpact();
             GetIt.I<NewsCubit>().fetchNewsItems(forceRefresh: true);
-            GetIt.I<LoginCubit>().refreshUserDatet();
+            GetIt.I<LoginCubit>().refreshUserData();
             final materials = GetIt.I.get<LoginCubit>().currentUser!.materials;
             GetIt.I.get<CourseCubit>().fetchUsersCourse(
               materials: materials,

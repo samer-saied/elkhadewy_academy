@@ -41,19 +41,19 @@ class CoursesRepository {
     return docs.map((d) => CourseModel.fromFirestore(d)).toList();
   }
 
-  void listen({
-    required Function(List<CourseModel>) onChange,
-    String orderBy = 'priority',
-    bool descending = false,
-  }) {
-    _service.listenToCollection(
-      collectionId: collectionId,
-      orderByField: orderBy,
-      descending: descending,
-      onChange: (docs) =>
-          onChange(docs.map((d) => CourseModel.fromFirestore(d)).toList()),
-    );
-  }
+  // void listen({
+  //   required Function(List<CourseModel>) onChange,
+  //   String orderBy = 'priority',
+  //   bool descending = false,
+  // }) {
+  //   _service.listenToCollection(
+  //     collectionId: collectionId,
+  //     orderByField: orderBy,
+  //     descending: descending,
+  //     onChange: (docs) =>
+  //         onChange(docs.map((d) => CourseModel.fromFirestore(d)).toList()),
+  //   );
+  // }
 
   Future<CourseModel?> getById(String id) async {
     final doc = await _service.getDocument(
