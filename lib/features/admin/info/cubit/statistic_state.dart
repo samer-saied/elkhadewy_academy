@@ -12,7 +12,10 @@ final class StatisticInitial extends StatisticState {}
 final class StatisticLoading extends StatisticState {}
 
 final class StatisticLoaded extends StatisticState {
-  // final Map<String, int> results;
+  final int timestamp;
+  StatisticLoaded({int? timestamp})
+    : timestamp = timestamp ?? DateTime.now().millisecondsSinceEpoch;
 
-  const StatisticLoaded();
+  @override
+  List<Object> get props => [timestamp];
 }

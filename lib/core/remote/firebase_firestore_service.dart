@@ -47,10 +47,26 @@ class FirebaseFirestoreService {
     return querySnapshot.docs;
   }
 
+  Future<List<QueryDocumentSnapshot>> getCollectionsByList({
+    required String collectionId,
+    required String filterField,
+    required dynamic filterValue,
+  }) async {
+    Query<Object?> query = FirebaseFirestore.instance.collection(collectionId);
+
+    query = query.where(filterField, arrayContains: filterValue);
+
+    final querySnapshot = await query.get();
+
+    return querySnapshot.docs;
+  }
+
   Future<List<QueryDocumentSnapshot>> getCollections4LastWatchingReport({
     required String collectionId,
     String? filterField,
     dynamic filterValue,
+    String? filterField2,
+    dynamic filterValue2,
     int? limit,
     String? orderByField,
     bool isAscending = true,
@@ -60,6 +76,9 @@ class FirebaseFirestoreService {
     if (filterField != null) {
       if (filterValue != null) {
         query = query.where(filterField, isEqualTo: filterValue);
+      }
+      if (filterField2 != null && filterValue2 != null) {
+        query = query.where(filterField2, isEqualTo: filterValue2);
       }
 
       if (orderByField != null) {
@@ -290,12 +309,39 @@ class FirebaseFirestoreService {
     required String collectionId,
     String? field,
     dynamic value,
+    String? field2,
+    dynamic value2,
   }) async {
-    final Query<Map<String, dynamic>> reference = FirebaseFirestore.instance
+    Query<Map<String, dynamic>> reference = FirebaseFirestore.instance
         .collection(collectionId)
         .where(field ?? "", isEqualTo: value);
-    final AggregateQuerySnapshot count = await reference.count().get();
 
+    if (field2 != null && value2 != null) {
+      reference = reference.where(field2, isEqualTo: value2);
+    }
+    final AggregateQuerySnapshot count = await reference.count().get();
     return count.count ?? 0;
+  }
+
+  Future<int> getDocumentsCountByList({
+    required String collectionId,
+    String? field,
+    dynamic value,
+    String? field2,
+    dynamic value2,
+  }) async {
+    try {
+      Query<Map<String, dynamic>> reference = FirebaseFirestore.instance
+          .collection(collectionId)
+          // .where(field ?? "", isEqualTo: value)
+          .where(field2 ?? "", arrayContains: value2)
+          .where(field ?? "", isEqualTo: value);
+
+      final AggregateQuerySnapshot count = await reference.count().get();
+
+      return count.count ?? 0;
+    } catch (e) {
+      return 0;
+    }
   }
 }

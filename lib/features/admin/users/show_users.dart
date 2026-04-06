@@ -1,18 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:unimind/features/admin/users/cubit/statistic_cubit.dart';
 import 'package:unimind/features/auth/bloc/register_cubit.dart';
 import 'package:unimind/features/auth/models/user_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/colors.dart';
+import '../info/cubit/statistic_cubit.dart';
 import 'edit_user.dart';
+// bloc: GetIt.I<StatisticCubit>()..getUsersData(role: role, value: value),
 
-class ShowUsersPage extends StatelessWidget {
-  final String role;
-  final String value;
-  const ShowUsersPage({super.key, required this.role, required this.value});
+class ShowUsersPage extends StatefulWidget {
+  final String title;
+  final bool isDelete;
+  final String? field;
+  final String? value;
+  const ShowUsersPage({
+    super.key,
+    required this.title,
+    required this.isDelete,
+    this.field,
+    this.value,
+  });
+
+  @override
+  State<ShowUsersPage> createState() => _ShowUsersPageState();
+}
+
+class _ShowUsersPageState extends State<ShowUsersPage> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.field == "materials" && widget.value != null) {
+      GetIt.I<StatisticCubit>().getUsersDataByMaterial(
+        materialId: widget.value!,
+      );
+    } else if (widget.field != null && widget.value != null) {
+      GetIt.I<StatisticCubit>().getUsersData(
+        role: widget.field!,
+        value: widget.value!,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +51,7 @@ class ShowUsersPage extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "$value Users",
+          widget.title.toUpperCase(),
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.whiteColor,
@@ -37,24 +66,24 @@ class ShowUsersPage extends StatelessWidget {
         ),
       ),
       body: BlocBuilder<StatisticCubit, StatisticState>(
-        bloc: GetIt.I<StatisticCubit>()..getUsersData(role: role, value: value),
+        bloc: GetIt.I<StatisticCubit>(),
         builder: (context, state) {
+          if (state is StatisticLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
           if (state is StatisticLoaded) {
-            List<UserModel> users = GetIt.I<StatisticCubit>().users;
-            if (users.isEmpty) {
-              return const Center(child: Text("No Users Found"));
-            }
             return ListView.builder(
-              itemCount: users.length,
+              itemCount: GetIt.I<StatisticCubit>().users.length,
               itemBuilder: (context, index) {
-                return UserCardWidget(index: index, student: users[index]);
+                return UserCardWidget(
+                  index: index,
+                  student: GetIt.I<StatisticCubit>().users[index],
+                  isDelete: widget.isDelete,
+                );
               },
             );
           }
-          if (state is StatisticLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return const Center(child: Text("Something went wrong"));
+          return Center(child: Text("No Data"));
         },
       ),
     );
@@ -62,16 +91,22 @@ class ShowUsersPage extends StatelessWidget {
 }
 
 class UserCardWidget extends StatelessWidget {
-  const UserCardWidget({super.key, required this.student, required this.index});
+  const UserCardWidget({
+    super.key,
+    required this.student,
+    required this.index,
+    required this.isDelete,
+  });
 
   final UserModel student;
+  final bool isDelete;
   final int index;
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(student.id.toString()),
-      direction: DismissDirection.endToStart,
+      direction: isDelete ? DismissDirection.endToStart : DismissDirection.none,
       background: Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
         color: AppColors.redWood,
@@ -94,88 +129,137 @@ class UserCardWidget extends StatelessWidget {
           GetIt.I<RegisterCubit>().deleteUser(userId: student.id);
         }
       },
-      child: Card(
-        child: ListTile(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EditUserPage(userModel: student),
-              ),
-            );
-          },
-          leading: Container(
-            padding: const EdgeInsets.all(5),
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
-              // color: AppColors.getStatusColor(status: student.status),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditUserPage(userModel: student),
             ),
-            child: Center(
-              child: FittedBox(
-                child: Text(
-                  (index + 1).toString(),
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: AppColors.blackColor,
-                    fontWeight: FontWeight.bold,
+          );
+        },
+        child: Card(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: AppColors.jonquilLight,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(5),
+                    bottomLeft: Radius.circular(5),
+                  ),
+                ),
+                width: 30,
+                height: 120,
+                child: Center(
+                  child: Text(
+                    (index + 1).toString(),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: AppColors.whiteColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-          title: Text(student.name),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(student.phone),
-              Wrap(
-                children: [
-                  Text("College : ${student.faculty}"),
-                  const SizedBox(width: 10),
-                  Text("Academic Year : ${int.parse(student.studyYear) + 1}"),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SmallButtonWidget(
-                    iconName: Icons.phone,
-                    bkColor: AppColors.redWood,
-                    onTap: () {
-                      launchUrl(
-                        Uri.parse("tel:${student.phone}"),
-                        mode: LaunchMode.externalApplication,
-                      );
-                    },
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      ////////////    USER INFO    //////////////////
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    student.name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Text(student.phone),
+                                  Wrap(
+                                    children: [
+                                      Text("College : ${student.faculty}"),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        "Academic Year : ${int.parse(student.studyYear) + 1}",
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          Column(
+                            children: [
+                              Wrap(
+                                children: [
+                                  Icon(
+                                    Icons.headphones,
+                                    color: student.statusEnableHeadset == false
+                                        ? AppColors.redWood
+                                        : AppColors.emerald,
+                                  ),
+                                  Icon(
+                                    Icons.token,
+                                    color: student.refreshToken == true
+                                        ? AppColors.emerald
+                                        : AppColors.redWood,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      ////////////    CALL & WHATSAPP BUTTONS    //////////////////
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SmallButtonWidget(
+                            iconName: Icons.phone,
+                            iconTxt: "Call",
+                            bkColor: AppColors.redWood,
+                            onTap: () {
+                              launchUrl(
+                                Uri.parse("tel:${student.phone}"),
+                                mode: LaunchMode.externalApplication,
+                              );
+                            },
+                          ),
+                          SmallButtonWidget(
+                            iconName: Icons.chat_sharp,
+                            iconTxt: "Whatsapp",
+                            bkColor: AppColors.emerald,
+                            onTap: () {
+                              launchUrl(
+                                Uri.parse("https://wa.me/2${student.phone}"),
+                                mode: LaunchMode.externalApplication,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  SmallButtonWidget(
-                    iconName: Icons.chat_sharp,
-                    bkColor: AppColors.emerald,
-                    onTap: () {
-                      launchUrl(
-                        Uri.parse("https://wa.me/2${student.phone}"),
-                        mode: LaunchMode.externalApplication,
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-          trailing: Wrap(
-            children: [
-              Icon(
-                Icons.headphones,
-                color: student.statusEnableHeadset == false
-                    ? AppColors.redWood
-                    : AppColors.emerald,
-              ),
-              Icon(
-                Icons.token,
-                color: student.refreshToken == true
-                    ? AppColors.emerald
-                    : AppColors.redWood,
+                ),
               ),
             ],
           ),
@@ -221,9 +305,12 @@ class SmallButtonWidget extends StatelessWidget {
                 size: 18,
                 color: iconColor ?? AppColors.whiteColor,
               ),
-              Text(
-                iconTxt ?? "",
-                style: TextStyle(color: iconColor ?? AppColors.whiteColor),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                child: Text(
+                  iconTxt ?? "",
+                  style: TextStyle(color: iconColor ?? AppColors.whiteColor),
+                ),
               ),
             ],
           ),

@@ -1,0 +1,309 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:unimind/utils/colors.dart';
+
+import '../../../users/show_users.dart';
+import '../../cubit/statistic_cubit.dart';
+import '../../models/info_chip_model.dart';
+import 'filter_list_widget.dart';
+import 'progress_segment_widget.dart';
+
+class CountStudMaterialsScreen extends StatefulWidget {
+  const CountStudMaterialsScreen({super.key});
+
+  @override
+  State<CountStudMaterialsScreen> createState() =>
+      _CountStudMaterialsScreenState();
+}
+
+class _CountStudMaterialsScreenState extends State<CountStudMaterialsScreen> {
+  late final StatisticCubit _statisticCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _statisticCubit = GetIt.I<StatisticCubit>();
+    // Call API exactly once when the widget is created
+    _statisticCubit.getCountStudentsByMaterial();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Count Students by Materials')),
+      body: SingleChildScrollView(
+        child: BlocProvider.value(
+          value: _statisticCubit,
+          child: Column(
+            children: [
+              //////////  Filter CARD    ///////////////////
+              const FilterScreen(),
+
+              //////////  RESULTS AND CHART AREA   /////////
+              BlocBuilder<StatisticCubit, StatisticState>(
+                builder: (context, state) {
+                  if (state is StatisticLoading || state is StatisticInitial) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 40.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  final infoChips = _statisticCubit.infoChips;
+                  final hasData = infoChips.isNotEmpty;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      //////////  TOTAL CARD STUDENTS   ///////////////////
+                      buildSectionTitle('Results'),
+                      MaterialCardInfoHeaderWidget(
+                        desc:
+                            "Total ${_statisticCubit.selectedFaculty} Students \n Year : ${_statisticCubit.selectedAcademicYear + 1}",
+                        value: hasData
+                            ? infoChips.last.totalStudents.toString()
+                            : "0",
+                      ),
+
+                      //////////  Chart CARD and Courses List ///////////////////
+                      if (state is StatisticLoaded && hasData) ...[
+                        buildSectionTitle('Chart Results'),
+                        Card(
+                          color: AppColors.whiteColor,
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            child: BarChartWidget(infoChips: infoChips),
+                          ),
+                        ),
+                        buildSectionTitle('Courses'),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: infoChips.length,
+                          itemBuilder: (context, index) {
+                            final infoChip = infoChips[index];
+                            final colorValue =
+                                int.tryParse(infoChip.courseColor) ??
+                                0xFF000000; // Fallback to black if parsing fails
+
+                            return GestureDetector(
+                              onTap: () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ShowUsersPage(
+                                      field: "materials",
+                                      value: infoChip.courseId,
+                                      title: infoChip.courseTitle,
+                                      isDelete: true,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: MaterialCardInfoWidget(
+                                color: Color(colorValue),
+                                index: index,
+                                infoChip: infoChip,
+                              ),
+                            );
+                          },
+                        ),
+                      ] else if (state is StatisticLoaded && !hasData) ...[
+                        const Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Center(child: Text('No data available')),
+                        ),
+                      ] else ...[
+                        const Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Center(
+                            child: Text('Count Students by Materials'),
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MaterialCardInfoWidget extends StatelessWidget {
+  final Color color;
+  final int index;
+  final InfoChipModel infoChip;
+
+  const MaterialCardInfoWidget({
+    super.key,
+    required this.color,
+    required this.index,
+    required this.infoChip,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    num countStudents = infoChip.countStudents;
+    num totalStudents = infoChip.totalStudents;
+    double percent = totalStudents == 0 ? 0.0 : countStudents / totalStudents;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withAlpha(20),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 90,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: color),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                (index + 1).toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    infoChip.courseTitle,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "$countStudents / $totalStudents",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CircularProgressIndicator(
+                  value: percent.isNaN || percent.isInfinite ? 0.0 : percent,
+                  strokeWidth: 8,
+                  backgroundColor: Colors.grey[200],
+                  valueColor: AlwaysStoppedAnimation<Color>(color),
+                  strokeCap: StrokeCap.round,
+                  constraints: const BoxConstraints(
+                    maxHeight: 65,
+                    maxWidth: 65,
+                    minHeight: 50,
+                    minWidth: 50,
+                  ),
+                ),
+                Text(
+                  "${(percent.isNaN || percent.isInfinite ? 0 : percent * 100).toInt()}%",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MaterialCardInfoHeaderWidget extends StatelessWidget {
+  final String desc;
+  final String value;
+
+  const MaterialCardInfoHeaderWidget({
+    super.key,
+    required this.desc,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withAlpha(20),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(height: 90, width: 20, color: AppColors.jonquil),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    desc,
+                    style: const TextStyle(
+                      color: AppColors.jonquil,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  Text(
+                    value,
+                    style: const TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.jonquil,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

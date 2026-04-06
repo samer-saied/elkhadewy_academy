@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:unimind/features/admin/users/cubit/statistic_cubit.dart';
+import 'package:unimind/features/admin/info/cubit/statistic_cubit.dart';
 import 'package:unimind/features/auth/models/user_model.dart';
 
 import '../../../utils/colors.dart';

@@ -26,14 +26,14 @@ class CoursesRepository {
     if (yearId == "All") {
       final docs = await _service.getCollectionsByField(
         collectionId: collectionId,
-        filterField: 'collegeId',
+        filterField: 'collegeTitle',
         filterValue: collegeId,
       );
       return docs.map((d) => CourseModel.fromFirestore(d)).toList();
     }
     final docs = await _service.getCollectionsByField(
       collectionId: collectionId,
-      filterField: 'collegeId',
+      filterField: 'collegeTitle',
       filterValue: collegeId,
       filterField2: 'yearId',
       filterValue2: yearId,

@@ -23,6 +23,7 @@ import 'services/service_locator.dart';
 import 'package:get_it/get_it.dart';
 import 'services/lang/app_localizations.dart';
 import 'services/themes/app_themes.dart';
+import 'core/databases/cache/cache_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,7 @@ void main() async {
 
   // Initialize service locator (GetIt)
   await ServiceLocator.init();
+  await CacheHelper().init();
   runApp(const MainApp());
   // runApp(const MainApp());
 }

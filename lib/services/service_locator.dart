@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import '../core/remote/firebase_firestore_service.dart';
-import '../features/admin/users/cubit/statistic_cubit.dart';
+import '../features/admin/info/cubit/statistic_cubit.dart';
 import '../features/auth/bloc/login_cubit.dart';
 import '../features/auth/repository/auth_repository.dart';
 import '../features/auth/bloc/register_cubit.dart';
@@ -56,11 +56,11 @@ class ServiceLocator {
       () => LoginCubit(getIt<AuthRepository>()),
     );
 
-    getIt.registerLazySingleton<CategoryCubit>(
-      () => CategoryCubit(getIt<CategoryRepository>()),
+    getIt.registerSingleton<CategoryCubit>(
+      CategoryCubit(getIt<CategoryRepository>()),
     );
-    getIt.registerLazySingleton<CourseCubit>(
-      () => CourseCubit(getIt<CoursesRepository>()),
+    getIt.registerSingleton<CourseCubit>(
+      CourseCubit(getIt<CoursesRepository>()),
     );
     getIt.registerLazySingleton<ChaptersCubit>(
       () => ChaptersCubit(getIt<ChaptersRepository>()),
@@ -77,6 +77,7 @@ class ServiceLocator {
     getIt.registerLazySingleton<CarouselCubit>(
       () => CarouselCubit(getIt<CarouselRepository>()),
     );
+
     getIt.registerLazySingleton<NewsCubit>(() => NewsCubit());
     getIt.registerLazySingleton<LocaleCubit>(() => LocaleCubit());
     getIt.registerLazySingleton<ThemesCubit>(() => ThemesCubit());

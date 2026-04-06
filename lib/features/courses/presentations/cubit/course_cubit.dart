@@ -13,6 +13,7 @@ class CourseCubit extends Cubit<CourseState> {
 
   List<CourseModel> userCourses = [];
   List<CourseModel> allCourses = [];
+  List<CourseModel> specificCourses = [];
 
   Future<void> fetchCourseItems({bool forceRefresh = false}) async {
     if (allCourses.isNotEmpty && !forceRefresh) {
@@ -34,8 +35,8 @@ class CourseCubit extends Cubit<CourseState> {
   Future<void> fetchSpecificCourses(String collegeId, String yearId) async {
     emit(CourseLoading());
     try {
-      final items = await _repository.getSpecificCourses(collegeId, yearId);
-      emit(CourseLoaded(items: items));
+      specificCourses = await _repository.getSpecificCourses(collegeId, yearId);
+      emit(CourseLoaded(items: specificCourses));
     } catch (e) {
       emit(CourseOperationFailure(error: e.toString()));
     }

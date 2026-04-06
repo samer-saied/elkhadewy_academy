@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:unimind/features/admin/users/cubit/statistic_cubit.dart';
+import 'package:unimind/features/admin/info/cubit/statistic_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
 import '../../../utils/colors.dart';
+import '../../auth/models/user_model.dart';
 import 'search_users.dart';
 import 'show_users.dart';
 
@@ -52,133 +53,146 @@ class ManageUsersPage extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: BlocBuilder<StatisticCubit, StatisticState>(
-          bloc: GetIt.I<StatisticCubit>()..getUsersCount(),
-          builder: (context, state) {
-            if (state is StatisticLoaded) {
-              Map<String, int> results = GetIt.I<StatisticCubit>().results;
-              return Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.all(15),
-                    padding: const EdgeInsets.all(25),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColors.jonquilLight.withAlpha(70),
-                      borderRadius: BorderRadius.circular(10),
+        child: BlocProvider.value(
+          value: GetIt.I<StatisticCubit>()..getUsersStatusCount(),
+          child: BlocBuilder<StatisticCubit, StatisticState>(
+            bloc: GetIt.I<StatisticCubit>(),
+            builder: (context, state) {
+              if (state is StatisticLoaded) {
+                Map<String, int> results = GetIt.I<StatisticCubit>().results;
+                return Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(25),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: AppColors.jonquilLight.withAlpha(70),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            results["users"]?.toString() ?? "0",
+                            style: Theme.of(context).textTheme.titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 26,
+                                ),
+                          ),
+                          SizedBox(height: 3),
+                          Text(
+                            "Total Users",
+                            style: Theme.of(context).textTheme.titleMedium!
+                                .copyWith(color: AppColors.blackColor),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Column(
+                    Row(
                       children: [
-                        Text(
-                          results["users"]?.toString() ?? "0",
-                          style: Theme.of(context).textTheme.titleLarge!
-                              .copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 26,
+                        NumberLabelWidget(
+                          number: results["admins"] ?? 0,
+                          text: "Admins",
+                          labelColor: AppColors.raisinBlack,
+                          onTapFunc: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowUsersPage(
+                                  field: "role",
+                                  value: "admin",
+                                  title: "admin",
+                                  isDelete: true,
+                                ),
                               ),
+                            );
+                          },
                         ),
-                        SizedBox(height: 3),
-                        Text(
-                          "Total Users",
-                          style: Theme.of(context).textTheme.titleMedium!
-                              .copyWith(color: AppColors.blackColor),
+                        NumberLabelWidget(
+                          number: results["students"] ?? 0,
+                          text: "Students",
+                          labelColor: AppColors.lightprussianBlue,
+                          onTapFunc: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowUsersPage(
+                                  field: "role",
+                                  value: "student",
+                                  title: "student",
+                                  isDelete: true,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        NumberLabelWidget(
+                          number: results["teachers"] ?? 0,
+                          text: "Teachers",
+                          labelColor: AppColors.emerald,
+                          onTapFunc: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowUsersPage(
+                                  field: "role",
+                                  value: "teacher",
+                                  title: "teacher",
+                                  isDelete: true,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
-                  ),
-                  Row(
-                    children: [
-                      NumberLabelWidget(
-                        number: results["admins"] ?? 0,
-                        text: "Admins",
-                        labelColor: AppColors.raisinBlack,
-                        onTapFunc: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ShowUsersPage(
-                                role: "role",
-                                value: "admin",
+                    Row(
+                      children: [
+                        NumberLabelWidget(
+                          number: results["activeStudents"] ?? 0,
+                          text: "Active",
+                          labelColor: AppColors.jonquil,
+                          onTapFunc: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowUsersPage(
+                                  field: "status",
+                                  value: "active",
+                                  title: "active",
+                                  isDelete: true,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                      NumberLabelWidget(
-                        number: results["students"] ?? 0,
-                        text: "Students",
-                        labelColor: AppColors.lightprussianBlue,
-                        onTapFunc: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ShowUsersPage(
-                                role: "role",
-                                value: "student",
+                            );
+                          },
+                        ),
+                        NumberLabelWidget(
+                          number: results["blockedStudents"] ?? 0,
+                          text: "Blocked",
+                          labelColor: AppColors.redWood,
+                          onTapFunc: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowUsersPage(
+                                  field: "status",
+                                  value: "blocked",
+                                  title: "blocked",
+                                  isDelete: true,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                      NumberLabelWidget(
-                        number: results["teachers"] ?? 0,
-                        text: "Teachers",
-                        labelColor: AppColors.emerald,
-                        onTapFunc: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ShowUsersPage(
-                                role: "role",
-                                value: "teacher",
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      NumberLabelWidget(
-                        number: results["activeStudents"] ?? 0,
-                        text: "Active",
-                        labelColor: AppColors.jonquil,
-                        onTapFunc: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ShowUsersPage(
-                                role: "status",
-                                value: "active",
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      NumberLabelWidget(
-                        number: results["blockedStudents"] ?? 0,
-                        text: "Blocked",
-                        labelColor: AppColors.redWood,
-                        onTapFunc: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ShowUsersPage(
-                                role: "status",
-                                value: "blocked",
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            }
-            return Center(child: CircularProgressIndicator());
-          },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }
+              return Center(child: CircularProgressIndicator());
+            },
+          ),
         ),
       ),
     );

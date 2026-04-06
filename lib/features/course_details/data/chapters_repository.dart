@@ -12,6 +12,8 @@ class ChaptersRepository {
       collectionId: collectionID,
       filterField: 'courseId',
       filterValue: courseId,
+      isAscending: true,
+      orderByField: 'createdAt',
     );
     return docs.map((d) => Chapter.fromFirestore(d)).toList();
   }

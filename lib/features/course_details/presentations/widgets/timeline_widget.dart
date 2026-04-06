@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:timelines_plus/timelines_plus.dart';
+import 'package:unimind/core/databases/cache/cache_helper.dart';
 import 'package:unimind/features/course_details/presentations/cubit/request_show_course_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
@@ -49,6 +50,10 @@ class ChaptersCourseWidget extends StatelessWidget {
                           listener: (context, state) {
                             if (state is RequestShowCourseLoaded) {
                               if (state.isSuccess) {
+                                CacheHelper().saveData(
+                                  key: 'requested_course_${course.id}',
+                                  value: true,
+                                );
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(state.message),
@@ -66,12 +71,20 @@ class ChaptersCourseWidget extends StatelessWidget {
                             }
                           },
                           builder: (context, state) {
+                            final bool hasRequested =
+                                CacheHelper().getData(
+                                  key: 'requested_course_${course.id}',
+                                ) ??
+                                false;
+
                             if (state is RequestShowCourseInitial) {
                               return ElevatedButton(
-                                onPressed: () {
-                                  GetIt.I<RequestShowCourseCubit>()
-                                      .requestShowCourse(course: course);
-                                },
+                                onPressed: hasRequested
+                                    ? null
+                                    : () {
+                                        GetIt.I<RequestShowCourseCubit>()
+                                            .requestShowCourse(course: course);
+                                      },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -85,16 +98,27 @@ class ChaptersCourseWidget extends StatelessWidget {
                                         color: AppColors.whiteColor,
                                       ),
                                     ),
-                                    Text("Request it now".tr(context)),
+                                    Text(
+                                      hasRequested
+                                          ? "pending request".tr(context)
+                                          : "Request it now".tr(context),
+                                    ),
                                   ],
                                 ),
                               );
                             }
+                            if (state is RequestShowCourseLoading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
                             return ElevatedButton(
-                              onPressed: () {
-                                GetIt.I<RequestShowCourseCubit>()
-                                    .requestShowCourse(course: course);
-                              },
+                              onPressed: hasRequested
+                                  ? null
+                                  : () {
+                                      GetIt.I<RequestShowCourseCubit>()
+                                          .requestShowCourse(course: course);
+                                    },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -108,7 +132,11 @@ class ChaptersCourseWidget extends StatelessWidget {
                                       color: AppColors.whiteColor,
                                     ),
                                   ),
-                                  Text("Request it now".tr(context)),
+                                  Text(
+                                    hasRequested
+                                        ? "pending request".tr(context)
+                                        : "Request it now".tr(context),
+                                  ),
                                 ],
                               ),
                             );
@@ -217,6 +245,7 @@ class TimeLineWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
               color: color,
               fontWeight: FontWeight.bold,
+              fontSize: 14,
             ),
           ),
         ),

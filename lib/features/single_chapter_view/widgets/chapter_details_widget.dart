@@ -417,27 +417,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                         height: 100,
                       ),
                     ),
-                    // child: Column(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   crossAxisAlignment: CrossAxisAlignment.center,
-                    //   children: [
-                    //     FittedBox(
-                    //       child: Image.asset(
-                    //         "assets/images/logo.png",
-                    //         width: 100,
-                    //         height: 100,
-                    //       ),
-                    //     ),
-                    //     Text(
-                    //       "Recording is not allowed",
-                    //       style: TextStyle(
-                    //         color: Colors.white,
-                    //         fontSize: 20,
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
                   ),
                 ),
               ),

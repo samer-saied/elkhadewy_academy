@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:unimind/features/admin/info/screens/count_students/count_stud_materials_screen.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
 import '../../core/navigation/app_routes.dart';
@@ -394,6 +395,65 @@ class GetBodyAdminPage extends StatelessWidget {
                       children: [
                         SettingItem(
                           title: "Reports By User".tr(context),
+                          leadingIcon: Icons.bar_chart_sharp,
+                          bgIconColor: AppColors.jonquil,
+                          leadingIconColor: AppColors.whiteColor,
+                          onTap: () {
+                            HapticFeedback.mediumImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowReportsPage(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: AppColors.whiteColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.lightGrey,
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(
+                            0,
+                            1,
+                          ), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        SettingItem(
+                          title: "Sort Students By Materials".tr(context),
+                          leadingIcon: Icons.bar_chart_sharp,
+                          bgIconColor: AppColors.jonquil,
+                          leadingIconColor: AppColors.whiteColor,
+                          onTap: () {
+                            HapticFeedback.mediumImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CountStudMaterialsScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                        SettingItem(
+                          title: "Sort Students By Role".tr(context),
                           leadingIcon: Icons.bar_chart_sharp,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,

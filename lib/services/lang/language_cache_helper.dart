@@ -1,10 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageCacheHelper {
-   late SharedPreferences sharedPreferences;
+  late SharedPreferences sharedPreferences;
 
   Future<SharedPreferences> init() async {
-   return    await SharedPreferences.getInstance();
+    return await SharedPreferences.getInstance();
   }
 
   Future<void> cacheLanguageCode(String languageCode) async {

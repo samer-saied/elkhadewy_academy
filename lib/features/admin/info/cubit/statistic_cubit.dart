@@ -1,0 +1,172 @@
+import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+
+import '../../../../core/remote/firebase_firestore_service.dart';
+import '../../../auth/models/user_model.dart';
+import '../../../courses/data/models/course_model.dart';
+import '../../../courses/presentations/cubit/course_cubit.dart';
+import '../models/info_chip_model.dart';
+
+part 'statistic_state.dart';
+
+class StatisticCubit extends Cubit<StatisticState> {
+  final FirebaseFirestoreService _service;
+
+  StatisticCubit(this._service) : super(StatisticInitial());
+
+  final String collectionID = 'users';
+  Map<String, int> results = {};
+  List<UserModel> users = [];
+  List<InfoChipModel> infoChips = [];
+  String selectedFaculty = "AFT";
+  int selectedAcademicYear = 1;
+
+  /// Get All Users Count ///////
+  Future<void> getUsersStatusCount() async {
+    emit(StatisticLoading());
+    int users = await _service.getDocumentsCount(collectionId: collectionID);
+
+    int students = await _service.getDocumentsCount(
+      collectionId: collectionID,
+      field: "role",
+      value: "student",
+    );
+    int admins = await _service.getDocumentsCount(
+      collectionId: collectionID,
+      field: "role",
+      value: "admin",
+    );
+    int teachers = await _service.getDocumentsCount(
+      collectionId: collectionID,
+      field: "role",
+      value: "teacher",
+    );
+    int activeStudents = await _service.getDocumentsCount(
+      collectionId: collectionID,
+      field: "status",
+      value: "active",
+    );
+    int blockedStudents = await _service.getDocumentsCount(
+      collectionId: collectionID,
+      field: "status",
+      value: "blocked",
+    );
+
+    results = {
+      "users": users,
+      "admins": admins,
+      "students": students,
+      "teachers": teachers,
+      "activeStudents": activeStudents,
+      "blockedStudents": blockedStudents,
+    };
+
+    emit(StatisticLoaded());
+  }
+
+  Future<int> getCourseStudentsCount(String courseId) async {
+    int count = await _service.getDocumentsCountByList(
+      collectionId: 'users',
+      field: "role",
+      value: "student",
+      field2: 'materials',
+      value2: courseId,
+    );
+    return count;
+  }
+
+  Future<List<UserModel>> getUsersData({
+    required String role,
+    required String value,
+  }) async {
+    emit(StatisticLoading());
+    try {
+      final List<QueryDocumentSnapshot> docs = await _service
+          .getCollectionsByField(
+            collectionId: collectionID,
+
+            filterField: role,
+            filterValue: value,
+            filterField2: "role",
+            filterValue2: "student",
+          );
+      users = docs.map((doc) => UserModel.fromFirestore(doc)).toList();
+      emit(StatisticLoaded());
+      return users;
+    } catch (e) {
+      emit(StatisticLoaded());
+      return [];
+    }
+  }
+
+  Future<List<UserModel>> getUsersDataByMaterial({
+    required String materialId,
+  }) async {
+    emit(StatisticLoading());
+    try {
+      final List<QueryDocumentSnapshot> docs = await _service
+          .getCollectionsByList(
+            collectionId: collectionID,
+            filterField: 'materials',
+            filterValue: materialId,
+          );
+      users = docs.map((doc) => UserModel.fromFirestore(doc)).toList();
+
+      emit(StatisticLoaded());
+      return users;
+    } catch (e) {
+      emit(StatisticLoaded());
+      return [];
+    }
+  }
+
+  getCountStudentsByMaterial() async {
+    emit(StatisticLoading());
+    infoChips.clear();
+
+    await GetIt.I.get<CourseCubit>().fetchSpecificCourses(
+      selectedFaculty,
+      selectedAcademicYear.toString(),
+    );
+
+    List<CourseModel> courses = GetIt.I.get<CourseCubit>().specificCourses;
+
+    int totalCount = await _service.getDocumentsCount(
+      collectionId: 'users',
+      field: 'faculty',
+      value: selectedFaculty.toUpperCase(),
+      field2: 'studyYear',
+      value2: (selectedAcademicYear - 1).toString(),
+    );
+
+    for (var course in courses) {
+      int count = await getCourseStudentsCount(course.id!);
+
+      infoChips.add(
+        InfoChipModel(
+          countStudents: count,
+          totalStudents: totalCount,
+          courseTitle: course.title,
+          courseId: course.id ?? "None",
+          courseColor: course.color.toString(),
+          courseDescription: course.description,
+        ),
+      );
+    }
+
+    emit(StatisticLoaded());
+  }
+
+  changeSelectedFaculty(String faculty) {
+    selectedFaculty = faculty;
+    getCountStudentsByMaterial();
+  }
+
+  changeSelectedAcademicYear(int index) {
+    selectedAcademicYear = index;
+    getCountStudentsByMaterial();
+  }
+}
