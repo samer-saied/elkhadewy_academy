@@ -21,8 +21,8 @@ class StatisticCubit extends Cubit<StatisticState> {
   Map<String, int> results = {};
   List<UserModel> users = [];
   List<InfoChipModel> infoChips = [];
-  String selectedFaculty = "AFT";
-  int selectedAcademicYear = 1;
+  String selectedFaculty = "BIS";
+  int selectedAcademicYear = 0;
 
   /// Get All Users Count ///////
   Future<void> getUsersStatusCount() async {
@@ -78,9 +78,37 @@ class StatisticCubit extends Cubit<StatisticState> {
     return count;
   }
 
+  Future<List<UserModel>> getUsersDataBySearch({
+    required String searchValue,
+    required String searchField,
+  }) async {
+    if (searchValue.trim().isEmpty || searchValue.trim().length < 3) {
+      users.clear();
+      emit(StatisticLoaded());
+      return [];
+    }
+    emit(StatisticLoading());
+    try {
+      final List<QueryDocumentSnapshot> docs = await _service
+          .getCollectionBySearch(
+            collectionId: collectionID,
+            searchValue: searchValue,
+            searchField: searchField,
+          );
+      users = docs.map((doc) => UserModel.fromFirestore(doc)).toList();
+      emit(StatisticLoaded());
+      return users;
+    } catch (e) {
+      emit(StatisticLoaded());
+      return [];
+    }
+  }
+
   Future<List<UserModel>> getUsersData({
     required String role,
     required String value,
+    String? role2,
+    String? value2,
   }) async {
     emit(StatisticLoading());
     try {
@@ -90,8 +118,8 @@ class StatisticCubit extends Cubit<StatisticState> {
 
             filterField: role,
             filterValue: value,
-            filterField2: "role",
-            filterValue2: "student",
+            filterField2: role2,
+            filterValue2: value2,
           );
       users = docs.map((doc) => UserModel.fromFirestore(doc)).toList();
       emit(StatisticLoaded());
@@ -112,6 +140,8 @@ class StatisticCubit extends Cubit<StatisticState> {
             collectionId: collectionID,
             filterField: 'materials',
             filterValue: materialId,
+            filterField2: 'role',
+            filterValue2: 'student',
           );
       users = docs.map((doc) => UserModel.fromFirestore(doc)).toList();
 
@@ -144,17 +174,15 @@ class StatisticCubit extends Cubit<StatisticState> {
 
     for (var course in courses) {
       int count = await getCourseStudentsCount(course.id!);
-
-      infoChips.add(
-        InfoChipModel(
-          countStudents: count,
-          totalStudents: totalCount,
-          courseTitle: course.title,
-          courseId: course.id ?? "None",
-          courseColor: course.color.toString(),
-          courseDescription: course.description,
-        ),
+      InfoChipModel infoCard = InfoChipModel(
+        countStudents: count,
+        totalStudents: totalCount,
+        courseTitle: course.title,
+        courseId: course.id ?? "None",
+        courseColor: course.color.toString(),
+        courseDescription: course.description,
       );
+      infoChips.add(infoCard);
     }
 
     emit(StatisticLoaded());

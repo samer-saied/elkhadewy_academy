@@ -100,6 +100,7 @@ class _CountStudMaterialsScreenState extends State<CountStudMaterialsScreen> {
                                       value: infoChip.courseId,
                                       title: infoChip.courseTitle,
                                       isDelete: true,
+                                      isAll: false,
                                     ),
                                   ),
                                 );

@@ -11,6 +11,7 @@ import 'reports/show_reports.dart';
 import 'reports/show_reports_bydate.dart';
 import 'users/manage_requests.dart';
 import 'users/manage_users.dart';
+import 'users/search_users.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -90,7 +91,7 @@ class GetBodyAdminPage extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 45),
-                          child: Divider(height: 0, color: AppColors.grey),
+                          child: Divider(height: 0, color: AppColors.lightGrey),
                         ),
                         SettingItem(
                           title: "Manage News Section".tr(context),
@@ -227,54 +228,6 @@ class GetBodyAdminPage extends StatelessWidget {
                 ],
               ),
 
-              ////////////////////////////  USERS  ////////////////////
-              Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: AppColors.whiteColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.lightGrey,
-                          spreadRadius: 1,
-                          blurRadius: 1,
-                          offset: const Offset(
-                            0,
-                            1,
-                          ), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        SettingItem(
-                          title: "Manage Users".tr(context),
-                          leadingIcon: Icons.people,
-                          bgIconColor: AppColors.jonquil,
-                          leadingIconColor: AppColors.whiteColor,
-                          onTap: () {
-                            HapticFeedback.mediumImpact();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ManageUsersPage(),
-                              ),
-                            );
-                            // Navigator.pushNamed(
-                            //   context,
-                            //   AppRoutes.manageUsers,
-                            // );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ),
-
               ////////////////////////////  Request Courses  ////////////////////
               Column(
                 children: [
@@ -315,6 +268,89 @@ class GetBodyAdminPage extends StatelessWidget {
                             //   context,
                             //   AppRoutes.manageUsers,
                             // );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+
+              ////////////////////////////  USERS  ////////////////////
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: AppColors.whiteColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.lightGrey,
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(
+                            0,
+                            1,
+                          ), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        SettingItem(
+                          title: "Manage Users by Role".tr(context),
+                          leadingIcon: Icons.people,
+                          bgIconColor: AppColors.jonquil,
+                          leadingIconColor: AppColors.whiteColor,
+                          onTap: () {
+                            HapticFeedback.mediumImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ManageUsersPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 45),
+                          child: Divider(height: 0, color: AppColors.lightGrey),
+                        ),
+                        SettingItem(
+                          title: "Manage Users By Materials".tr(context),
+                          leadingIcon: Icons.people_outline,
+                          bgIconColor: AppColors.jonquil,
+                          leadingIconColor: AppColors.whiteColor,
+                          onTap: () {
+                            HapticFeedback.mediumImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CountStudMaterialsScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 45),
+                          child: Divider(height: 0, color: AppColors.lightGrey),
+                        ),
+                        SettingItem(
+                          title: "Search Users".tr(context),
+                          leadingIcon: Icons.person_search,
+                          bgIconColor: AppColors.jonquil,
+                          leadingIconColor: AppColors.whiteColor,
+                          onTap: () {
+                            HapticFeedback.mediumImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SearchUsersPage(),
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -415,64 +451,64 @@ class GetBodyAdminPage extends StatelessWidget {
                 ],
               ),
 
-              Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: AppColors.whiteColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.lightGrey,
-                          spreadRadius: 1,
-                          blurRadius: 1,
-                          offset: const Offset(
-                            0,
-                            1,
-                          ), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        SettingItem(
-                          title: "Sort Students By Materials".tr(context),
-                          leadingIcon: Icons.bar_chart_sharp,
-                          bgIconColor: AppColors.jonquil,
-                          leadingIconColor: AppColors.whiteColor,
-                          onTap: () {
-                            HapticFeedback.mediumImpact();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    CountStudMaterialsScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                        SettingItem(
-                          title: "Sort Students By Role".tr(context),
-                          leadingIcon: Icons.bar_chart_sharp,
-                          bgIconColor: AppColors.jonquil,
-                          leadingIconColor: AppColors.whiteColor,
-                          onTap: () {
-                            HapticFeedback.mediumImpact();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ShowReportsPage(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ),
+              // Column(
+              //   children: [
+              //     Container(
+              //       padding: const EdgeInsets.only(left: 15, right: 15),
+              //       decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(5),
+              //         color: AppColors.whiteColor,
+              //         boxShadow: [
+              //           BoxShadow(
+              //             color: AppColors.lightGrey,
+              //             spreadRadius: 1,
+              //             blurRadius: 1,
+              //             offset: const Offset(
+              //               0,
+              //               1,
+              //             ), // changes position of shadow
+              //           ),
+              //         ],
+              //       ),
+              //       child: Column(
+              //         children: [
+              //           SettingItem(
+              //             title: "Sort Students By Materials".tr(context),
+              //             leadingIcon: Icons.bar_chart_sharp,
+              //             bgIconColor: AppColors.jonquil,
+              //             leadingIconColor: AppColors.whiteColor,
+              //             onTap: () {
+              //               HapticFeedback.mediumImpact();
+              //               Navigator.push(
+              //                 context,
+              //                 MaterialPageRoute(
+              //                   builder: (context) =>
+              //                       CountStudMaterialsScreen(),
+              //                 ),
+              //               );
+              //             },
+              //           ),
+              //           SettingItem(
+              //             title: "Sort Students By Role".tr(context),
+              //             leadingIcon: Icons.bar_chart_sharp,
+              //             bgIconColor: AppColors.jonquil,
+              //             leadingIconColor: AppColors.whiteColor,
+              //             onTap: () {
+              //               HapticFeedback.mediumImpact();
+              //               Navigator.push(
+              //                 context,
+              //                 MaterialPageRoute(
+              //                   builder: (context) => ShowReportsPage(),
+              //                 ),
+              //               );
+              //             },
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     const SizedBox(height: 10),
+              //   ],
+              // ),
 
               ///
               ///

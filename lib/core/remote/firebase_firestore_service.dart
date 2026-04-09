@@ -47,14 +47,34 @@ class FirebaseFirestoreService {
     return querySnapshot.docs;
   }
 
+  Future<List<QueryDocumentSnapshot>> getCollectionBySearch({
+    required String collectionId,
+    required String searchValue,
+    required String searchField,
+  }) async {
+    Query<Object?> query = FirebaseFirestore.instance
+        .collection(collectionId)
+        .where(searchField, isGreaterThanOrEqualTo: searchValue)
+        .where(searchField, isLessThanOrEqualTo: '$searchValue\uf8ff');
+
+    final querySnapshot = await query.get();
+    return querySnapshot.docs;
+  }
+
   Future<List<QueryDocumentSnapshot>> getCollectionsByList({
     required String collectionId,
     required String filterField,
     required dynamic filterValue,
+    String? filterField2,
+    dynamic filterValue2,
   }) async {
     Query<Object?> query = FirebaseFirestore.instance.collection(collectionId);
 
     query = query.where(filterField, arrayContains: filterValue);
+
+    if (filterField2 != null && filterValue2 != null) {
+      query = query.where(filterField2, isEqualTo: filterValue2);
+    }
 
     final querySnapshot = await query.get();
 
@@ -333,9 +353,8 @@ class FirebaseFirestoreService {
     try {
       Query<Map<String, dynamic>> reference = FirebaseFirestore.instance
           .collection(collectionId)
-          // .where(field ?? "", isEqualTo: value)
-          .where(field2 ?? "", arrayContains: value2)
-          .where(field ?? "", isEqualTo: value);
+          .where(field ?? "", isEqualTo: value)
+          .where(field2 ?? "", arrayContains: value2);
 
       final AggregateQuerySnapshot count = await reference.count().get();
 

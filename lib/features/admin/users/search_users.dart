@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:unimind/features/admin/info/cubit/statistic_cubit.dart';
-import 'package:unimind/features/auth/models/user_model.dart';
 
 import '../../../utils/colors.dart';
-import 'edit_user.dart';
+import '../../auth/models/user_model.dart';
+import '../info/screens/count_students/filter_list_widget.dart';
+import 'widgets/user_card_widget.dart';
 
 String searchValue = "";
 
@@ -80,16 +81,23 @@ class SearchUsersPage extends StatelessWidget {
                   borderSide: const BorderSide(color: Colors.red),
                 ),
               ),
-              onSubmitted: (value) {
+              onChanged: (value) {
                 searchValue = value;
-                GetIt.I<StatisticCubit>().getUsersData(
-                  role: "phone",
-                  value: value,
+                GetIt.I<StatisticCubit>().getUsersDataBySearch(
+                  searchValue: value,
+                  searchField: "phone",
                 );
               },
+              // onSubmitted: (value) {
+              //   searchValue = value;
+              //   GetIt.I<StatisticCubit>().getUsersData(
+              //     role: "phone",
+              //     value: value,
+              //   );
+              // },
             ),
           ),
-
+          buildSectionTitle('Results'),
           BlocBuilder<StatisticCubit, StatisticState>(
             bloc: GetIt.I<StatisticCubit>()
               ..getUsersData(role: "phone", value: searchValue),
@@ -106,6 +114,7 @@ class SearchUsersPage extends StatelessWidget {
                       return UserCardWidget(
                         index: index,
                         student: users[index],
+                        isDelete: false,
                       );
                     },
                   ),
@@ -119,83 +128,16 @@ class SearchUsersPage extends StatelessWidget {
                   ),
                 );
               }
+              if (state is StatisticInitial) {
+                return const Center(
+                  child: Text("Please enter at least 3 characters"),
+                );
+              }
+
               return const Center(child: Text("Something went wrong"));
             },
           ),
         ],
-      ),
-    );
-  }
-}
-
-class UserCardWidget extends StatelessWidget {
-  const UserCardWidget({super.key, required this.student, required this.index});
-
-  final UserModel student;
-  final int index;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditUserPage(userModel: student),
-            ),
-          );
-        },
-        leading: Container(
-          padding: const EdgeInsets.all(5),
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            // color: AppColors.getStatusColor(status: student.status),
-          ),
-          child: Center(
-            child: FittedBox(
-              child: Text(
-                (index + 1).toString(),
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: AppColors.whiteColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ),
-        title: Text(student.name),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(student.phone),
-            Wrap(
-              children: [
-                Text("College : ${student.faculty}"),
-                const SizedBox(width: 10),
-                Text("Academic Year : ${int.parse(student.studyYear) + 1}"),
-              ],
-            ),
-          ],
-        ),
-        trailing: Wrap(
-          children: [
-            Icon(
-              Icons.headphones,
-              color: student.statusEnableHeadset == false
-                  ? AppColors.redWood
-                  : AppColors.emerald,
-            ),
-            Icon(
-              Icons.token,
-              color: student.refreshToken == true
-                  ? AppColors.emerald
-                  : AppColors.redWood,
-            ),
-          ],
-        ),
       ),
     );
   }

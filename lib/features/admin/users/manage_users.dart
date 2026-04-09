@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:unimind/features/admin/info/cubit/statistic_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
 import '../../../utils/colors.dart';
-import '../../auth/models/user_model.dart';
-import 'search_users.dart';
+import '../info/screens/count_students/filter_list_widget.dart';
 import 'show_users.dart';
 
 class ManageUsersPage extends StatelessWidget {
@@ -21,7 +19,7 @@ class ManageUsersPage extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "Manage Users".tr(context),
+          "Manage Users by Role".tr(context),
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.whiteColor,
@@ -34,23 +32,23 @@ class ManageUsersPage extends StatelessWidget {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          MaterialButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchUsersPage(),
-                ),
-              );
-            },
-            child: HugeIcon(
-              icon: HugeIcons.strokeRoundedSearch02,
-              size: 24,
-              color: AppColors.whiteColor,
-            ),
-          ),
-        ],
+        // actions: [
+        //   MaterialButton(
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //           builder: (context) => const SearchUsersPage(),
+        //         ),
+        //       );
+        //     },
+        //     child: HugeIcon(
+        //       icon: HugeIcons.strokeRoundedSearch02,
+        //       size: 24,
+        //       color: AppColors.whiteColor,
+        //     ),
+        //   ),
+        // ],
       ),
       body: Center(
         child: BlocProvider.value(
@@ -62,6 +60,8 @@ class ManageUsersPage extends StatelessWidget {
                 Map<String, int> results = GetIt.I<StatisticCubit>().results;
                 return Column(
                   children: [
+                    buildSectionTitle('Total Users'),
+
                     Container(
                       margin: const EdgeInsets.all(15),
                       padding: const EdgeInsets.all(25),
@@ -77,24 +77,27 @@ class ManageUsersPage extends StatelessWidget {
                             style: Theme.of(context).textTheme.titleLarge!
                                 .copyWith(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 26,
+                                  fontSize: 36,
                                 ),
                           ),
                           SizedBox(height: 3),
                           Text(
-                            "Total Users",
+                            "Users",
                             style: Theme.of(context).textTheme.titleMedium!
                                 .copyWith(color: AppColors.blackColor),
                           ),
                         ],
                       ),
                     ),
+                    buildSectionTitle('Roles'),
+
                     Row(
                       children: [
                         NumberLabelWidget(
                           number: results["admins"] ?? 0,
                           text: "Admins",
                           labelColor: AppColors.raisinBlack,
+                          icon: Icons.admin_panel_settings,
                           onTapFunc: () {
                             Navigator.push(
                               context,
@@ -104,6 +107,7 @@ class ManageUsersPage extends StatelessWidget {
                                   value: "admin",
                                   title: "admin",
                                   isDelete: true,
+                                  isAll: true,
                                 ),
                               ),
                             );
@@ -122,6 +126,7 @@ class ManageUsersPage extends StatelessWidget {
                                   value: "student",
                                   title: "student",
                                   isDelete: true,
+                                  isAll: true,
                                 ),
                               ),
                             );
@@ -130,7 +135,8 @@ class ManageUsersPage extends StatelessWidget {
                         NumberLabelWidget(
                           number: results["teachers"] ?? 0,
                           text: "Teachers",
-                          labelColor: AppColors.emerald,
+                          icon: Icons.book,
+                          labelColor: AppColors.jonquil,
                           onTapFunc: () {
                             Navigator.push(
                               context,
@@ -140,6 +146,7 @@ class ManageUsersPage extends StatelessWidget {
                                   value: "teacher",
                                   title: "teacher",
                                   isDelete: true,
+                                  isAll: true,
                                 ),
                               ),
                             );
@@ -147,12 +154,14 @@ class ManageUsersPage extends StatelessWidget {
                         ),
                       ],
                     ),
+                    buildSectionTitle('Status'),
+
                     Row(
                       children: [
                         NumberLabelWidget(
                           number: results["activeStudents"] ?? 0,
                           text: "Active",
-                          labelColor: AppColors.jonquil,
+                          labelColor: AppColors.emerald,
                           onTapFunc: () {
                             Navigator.push(
                               context,
@@ -162,6 +171,7 @@ class ManageUsersPage extends StatelessWidget {
                                   value: "active",
                                   title: "active",
                                   isDelete: true,
+                                  isAll: true,
                                 ),
                               ),
                             );
@@ -180,6 +190,7 @@ class ManageUsersPage extends StatelessWidget {
                                   value: "blocked",
                                   title: "blocked",
                                   isDelete: true,
+                                  isAll: true,
                                 ),
                               ),
                             );
@@ -203,6 +214,7 @@ class NumberLabelWidget extends StatelessWidget {
   final int number;
   final Color labelColor;
   final String text;
+  final IconData icon;
   final void Function()? onTapFunc;
   const NumberLabelWidget({
     super.key,
@@ -210,6 +222,7 @@ class NumberLabelWidget extends StatelessWidget {
     required this.labelColor,
     required this.text,
     this.onTapFunc,
+    this.icon = Icons.person,
   });
 
   @override
@@ -222,26 +235,42 @@ class NumberLabelWidget extends StatelessWidget {
           padding: const EdgeInsets.all(15),
           // height: 50,
           decoration: BoxDecoration(
-            color: labelColor.withAlpha(70),
+            color: labelColor.withAlpha(50),
             borderRadius: BorderRadius.circular(10),
           ),
 
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                number.toString(),
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 26,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(icon, color: labelColor, size: 28),
+                        Text(
+                          number.toString(),
+                          style: Theme.of(context).textTheme.titleLarge!
+                              .copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28,
+                                color: labelColor,
+                              ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 3),
+                    Text(
+                      text,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleMedium!.copyWith(color: labelColor),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 3),
-              Text(
-                text,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium!.copyWith(color: AppColors.blackColor),
-              ),
+              Icon(Icons.arrow_forward_ios, size: 18, color: labelColor),
             ],
           ),
         ),
