@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:unimind/features/homepage/data/model/category_model.dart';
+import 'package:unimind/features/homepage/presentations/cubit/category_cubit.dart';
 import 'package:unimind/utils/colors.dart';
 
 import '../../cubit/statistic_cubit.dart';
@@ -71,7 +73,7 @@ class BuildFacultyFilters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> faculties = ["BIS", "English", "Arabic", "AFT"];
+    final List<CategoryModel> faculties = GetIt.I<CategoryCubit>().categories;
 
     return SizedBox(
       height: 50,
@@ -83,13 +85,14 @@ class BuildFacultyFilters extends StatelessWidget {
             separatorBuilder: (context, index) => const SizedBox(width: 10),
             itemBuilder: (context, index) {
               final isSelected =
-                  GetIt.I<StatisticCubit>().selectedFaculty == faculties[index];
+                  GetIt.I<StatisticCubit>().selectedFaculty.toUpperCase() ==
+                  faculties[index].title.toUpperCase();
               return _CustomFilterChip(
-                label: faculties[index],
+                label: faculties[index].title,
                 isSelected: isSelected,
                 onSelected: (bool selected) {
                   GetIt.I<StatisticCubit>().changeSelectedFaculty(
-                    faculties[index],
+                    faculties[index].title,
                   );
                 },
                 // Medicine chip has a specific border/shade as seen in the image

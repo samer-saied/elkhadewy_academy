@@ -89,7 +89,7 @@ class CourseGridCardWidget extends StatelessWidget {
                         bottomRight: Radius.circular(7),
                       ),
                       color: course.color == null
-                          ? AppColors.jonquil
+                          ? AppColors.raisinBlack
                           : Color(int.parse(course.color!)),
                     ),
                     child: Padding(
@@ -105,6 +105,7 @@ class CourseGridCardWidget extends StatelessWidget {
                                   .title,
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
                           color: AppColors.whiteColor,
+                          fontSize: 16,
                         ),
                       ),
                     ),
@@ -116,12 +117,12 @@ class CourseGridCardWidget extends StatelessWidget {
                   left: 0,
                   right: 0,
                   child: Container(
-                    constraints: BoxConstraints(minHeight: 50),
+                    constraints: BoxConstraints(minHeight: 60),
                     padding: EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.blackColor.withAlpha(30),
+                          AppColors.blackColor.withAlpha(70),
                           AppColors.blackColor,
                         ],
                         begin: Alignment.topCenter,
@@ -131,12 +132,18 @@ class CourseGridCardWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 3.0),
                       child: Center(
-                        child: Text(
-                          course.title,
-                          style: Theme.of(context).textTheme.titleSmall!
-                              .copyWith(color: AppColors.whiteColor),
-                          textAlign: TextAlign.center,
-                          maxLines: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            course.title,
+                            style: Theme.of(context).textTheme.titleSmall!
+                                .copyWith(
+                                  color: AppColors.whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                            textAlign: TextAlign.center,
+                            maxLines: 3,
+                          ),
                         ),
                       ),
                     ),

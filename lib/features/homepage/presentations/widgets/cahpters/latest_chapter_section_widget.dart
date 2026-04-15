@@ -59,7 +59,10 @@ class LatestChapterSectionWidget extends StatelessWidget {
                       return LatestChapterCardWidget(
                         chapter: latestChapters[index],
                         cardColor:
-                            course!.color == null || course.color!.isEmpty
+                            course == null ||
+                                course.color == null ||
+                                course.color!.isEmpty ||
+                                course.color == ""
                             ? AppColors.jonquil
                             : Color(int.parse(course.color.toString())),
                         course: course,

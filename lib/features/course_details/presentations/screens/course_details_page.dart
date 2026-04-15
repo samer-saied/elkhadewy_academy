@@ -14,6 +14,7 @@ class CourseDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(course.title);
     Color courseColor = Helper.getCourseColor(course.color);
     return Scaffold(
       appBar: PreferredSize(

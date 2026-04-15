@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:unimind/features/watching_report/data/cubit/watching_report_cubit.dart';
+import 'package:unimind/general/widgets/headers_widgets.dart';
 
 import '../../../utils/colors.dart';
 import '../../watching_report/widgets/watched_report_card_widget.dart';
@@ -42,25 +43,45 @@ class _ShowReportsByDatePageState extends State<ShowReportsByDatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Watching Report By Date'), centerTitle: true),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: Text(
-              "Select Date : ${selectedDate.toString().split(' ')[0]}",
-              style: TextStyle(color: AppColors.jonquil, fontSize: 18),
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              elevation: 1,
+              color: AppColors.whiteColor,
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: InkWell(
+                  onTap: () => _selectDate(context),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Select Date : ${selectedDate.toString().split(' ')[0]}",
+                        style: TextStyle(
+                          color: AppColors.jonquil,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => _selectDate(context),
+                        icon: Icon(
+                          Icons.date_range,
+                          color: AppColors.jonquil,
+                          size: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: ElevatedButton(
-              onPressed: () => _selectDate(context),
-              child: const Text('Select Date'),
-            ),
-          ),
-          Expanded(
-            child: BlocBuilder<WatchingReportCubit, WatchingReportState>(
+            ////////////// RESULTS //////////////
+            BlocBuilder<WatchingReportCubit, WatchingReportState>(
               bloc: GetIt.I<WatchingReportCubit>()
                 ..getWatchingReportsByDate(
                   selectedDate: selectedDate.toString().split(' ')[0],
@@ -73,21 +94,68 @@ class _ShowReportsByDatePageState extends State<ShowReportsByDatePage> {
                       child: Center(child: Text('No Watching Reports Found')),
                     );
                   }
-                  return ListView.builder(
-                    itemCount: state.reports.length,
-                    itemBuilder: (context, index) {
-                      return WatchedReportCardWidget(
-                        number: index.toString(),
-                        report: state.reports[index],
-                      );
-                    },
+                  ////////////// RESULTS //////////////
+                  return Column(
+                    children: [
+                      ////////////// TOTAL COUNT //////////////
+                      Card(
+                        elevation: 1,
+                        color: AppColors.whiteColor,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Total Reports",
+                                style: TextStyle(
+                                  color: AppColors.jonquil,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                  color: AppColors.jonquil,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  state.reports.length.toString(),
+                                  style: TextStyle(
+                                    color: AppColors.whiteColor,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      ////////////// RESULTS LIST //////////////
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: state.reports.length,
+                        itemBuilder: (context, index) {
+                          return WatchedReportCardWidget(
+                            number: index.toString(),
+                            report: state.reports[index],
+                          );
+                        },
+                      ),
+                    ],
                   );
                 }
-                return const Center(child: CircularProgressIndicator());
+                return SizedBox(
+                  height: 200,
+                  child: const Center(child: CircularProgressIndicator()),
+                );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

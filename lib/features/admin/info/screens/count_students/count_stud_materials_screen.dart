@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:unimind/utils/colors.dart';
 
+import '../../../../../general/widgets/no_data_widget.dart';
 import '../../../users/show_users.dart';
 import '../../cubit/statistic_cubit.dart';
 import '../../models/info_chip_model.dart';
@@ -31,7 +32,7 @@ class _CountStudMaterialsScreenState extends State<CountStudMaterialsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Count Students by Materials')),
+      appBar: AppBar(title: const Text('Students by Materials')),
       body: SingleChildScrollView(
         child: BlocProvider.value(
           value: _statisticCubit,
@@ -59,7 +60,7 @@ class _CountStudMaterialsScreenState extends State<CountStudMaterialsScreen> {
                       buildSectionTitle('Results'),
                       MaterialCardInfoHeaderWidget(
                         desc:
-                            "Total ${_statisticCubit.selectedFaculty} Students \n Year : ${_statisticCubit.selectedAcademicYear + 1}",
+                            "${_statisticCubit.selectedFaculty} Students \n Year : ${_statisticCubit.selectedAcademicYear + 1}",
                         value: hasData
                             ? infoChips.last.totalStudents.toString()
                             : "0",
@@ -116,7 +117,7 @@ class _CountStudMaterialsScreenState extends State<CountStudMaterialsScreen> {
                       ] else if (state is StatisticLoaded && !hasData) ...[
                         const Padding(
                           padding: EdgeInsets.all(20.0),
-                          child: Center(child: Text('No data available')),
+                          child: NoDataWidget(noDataTxt: "No Data Found"),
                         ),
                       ] else ...[
                         const Padding(
@@ -284,19 +285,19 @@ class MaterialCardInfoHeaderWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    desc,
-                    style: const TextStyle(
-                      color: AppColors.jonquil,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  Text(
                     value,
                     style: const TextStyle(
                       fontSize: 34,
                       fontWeight: FontWeight.bold,
                       color: AppColors.jonquil,
+                    ),
+                  ),
+                  Text(
+                    desc,
+                    style: const TextStyle(
+                      color: AppColors.grey,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
                   ),
                 ],

@@ -55,7 +55,8 @@ class FirebaseFirestoreService {
     Query<Object?> query = FirebaseFirestore.instance
         .collection(collectionId)
         .where(searchField, isGreaterThanOrEqualTo: searchValue)
-        .where(searchField, isLessThanOrEqualTo: '$searchValue\uf8ff');
+        .where(searchField, isLessThanOrEqualTo: '$searchValue\uf8ff')
+        .limit(10);
 
     final querySnapshot = await query.get();
     return querySnapshot.docs;

@@ -19,25 +19,52 @@ class CoursesRepository {
     return docs.map((d) => CourseModel.fromFirestore(d)).toList();
   }
 
-  Future<List<CourseModel>> getSpecificCourses(
+  Future<List<CourseModel>> getSpecificCoursesByCollegeId(
     String collegeId,
     String yearId,
   ) async {
     if (yearId == "All") {
       final docs = await _service.getCollectionsByField(
         collectionId: collectionId,
-        filterField: 'collegeTitle',
+        filterField: 'collegeId',
         filterValue: collegeId,
       );
       return docs.map((d) => CourseModel.fromFirestore(d)).toList();
     }
     final docs = await _service.getCollectionsByField(
       collectionId: collectionId,
-      filterField: 'collegeTitle',
+      filterField: 'collegeId',
       filterValue: collegeId,
       filterField2: 'yearId',
-      filterValue2: yearId,
+      filterValue2: yearId.toString(),
     );
+
+    return docs.map((d) => CourseModel.fromFirestore(d)).toList();
+  }
+
+  Future<List<CourseModel>> getSpecificCoursesByCourseTitle(
+    String collegeTitle,
+    String yearId,
+  ) async {
+    if (yearId == "All") {
+      final docs = await _service.getCollectionsByField(
+        collectionId: collectionId,
+        filterField: 'collegeTitle',
+        filterValue: collegeTitle,
+      );
+      return docs.map((d) => CourseModel.fromFirestore(d)).toList();
+    }
+    final docs = await _service.getCollectionsByField(
+      collectionId: collectionId,
+      filterField: 'collegeTitle',
+      filterValue: collegeTitle,
+      filterField2: 'yearId',
+      filterValue2: yearId.toString(),
+    );
+    // print(collectionId);
+    // print(collegeId);
+    // print(yearId);
+
     return docs.map((d) => CourseModel.fromFirestore(d)).toList();
   }
 

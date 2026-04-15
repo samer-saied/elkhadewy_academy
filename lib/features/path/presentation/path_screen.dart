@@ -71,6 +71,7 @@ class _SelectPathScreenState extends State<SelectPathScreen> {
                         itemCount: categories.length,
                         itemBuilder: (context, index) {
                           final college = categories[index];
+
                           return CollegeCard(
                             college: college,
                             isSelected: _selectedCollegeId == college.id,

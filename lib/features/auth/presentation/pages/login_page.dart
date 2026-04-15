@@ -37,9 +37,21 @@ class _LoginScreenState extends State<LoginScreen> {
     if (mounted) {
       setState(() {
         _rememberMe = prefs.getBool('remember_me') ?? false;
+        final autoSignInAllowed = prefs.getBool('auto_signin_allowed') ?? true;
+
         if (_rememberMe) {
           _phoneController.text = prefs.getString('saved_phone') ?? '';
           _passwordController.text = prefs.getString('saved_password') ?? '';
+
+          // Trigger auto sign-in if credentials are fully loaded and allowed
+          if (autoSignInAllowed &&
+              _phoneController.text.isNotEmpty &&
+              _passwordController.text.isNotEmpty) {
+            GetIt.I<LoginCubit>().login(
+              phone: _phoneController.text,
+              password: _passwordController.text,
+            );
+          }
         }
       });
     }
@@ -49,10 +61,12 @@ class _LoginScreenState extends State<LoginScreen> {
     final prefs = await SharedPreferences.getInstance();
     if (_rememberMe) {
       await prefs.setBool('remember_me', true);
+      await prefs.setBool('auto_signin_allowed', true);
       await prefs.setString('saved_phone', _phoneController.text);
       await prefs.setString('saved_password', _passwordController.text);
     } else {
       await prefs.setBool('remember_me', false);
+      await prefs.remove('auto_signin_allowed');
       await prefs.remove('saved_phone');
       await prefs.remove('saved_password');
     }

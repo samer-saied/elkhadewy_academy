@@ -53,6 +53,13 @@ class _CopyRigthsWidgetState extends State<CopyRigthsWidget> {
         child: Text(
           GetIt.I<LoginCubit>().currentUser!.phone,
           style: TextStyle(
+            shadows: [
+              Shadow(
+                color: AppColors.raisinBlack,
+                blurRadius: 50,
+                offset: Offset(0, 0),
+              ),
+            ],
             color:
                 widget.color?.withValues(alpha: 0.6) ??
                 AppColors.whiteColor.withValues(alpha: 0.6),

@@ -156,10 +156,11 @@ class StatisticCubit extends Cubit<StatisticState> {
   getCountStudentsByMaterial() async {
     emit(StatisticLoading());
     infoChips.clear();
-
-    await GetIt.I.get<CourseCubit>().fetchSpecificCourses(
+    print(selectedFaculty);
+    print(selectedAcademicYear.toString());
+    await GetIt.I.get<CourseCubit>().fetchSpecificCoursesByCollegeTitle(
       selectedFaculty,
-      selectedAcademicYear.toString(),
+      (selectedAcademicYear + 1).toString(),
     );
 
     List<CourseModel> courses = GetIt.I.get<CourseCubit>().specificCourses;
@@ -169,7 +170,7 @@ class StatisticCubit extends Cubit<StatisticState> {
       field: 'faculty',
       value: selectedFaculty.toUpperCase(),
       field2: 'studyYear',
-      value2: (selectedAcademicYear - 1).toString(),
+      value2: (selectedAcademicYear).toString(),
     );
 
     for (var course in courses) {

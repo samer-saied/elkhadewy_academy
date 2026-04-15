@@ -78,7 +78,6 @@ class _SingleChapterScreenState extends State<SingleChapterScreen> {
   @override
   Widget build(BuildContext context) {
     // ScrollController scrollController = ScrollController();
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),

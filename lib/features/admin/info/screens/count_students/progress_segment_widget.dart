@@ -27,22 +27,9 @@ class BarChartWidget extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
 
-                  // rodStackItems: [
-                  //   BarChartRodStackItem(
-                  //     e.countStudents.toDouble(),
-                  //     e.countStudents.toDouble(),
-                  //     Colors.grey.withAlpha(10),
-                  //   ),
-                  //   BarChartRodStackItem(
-                  //     e.totalStudents.toDouble(),
-                  //     e.totalStudents.toDouble(),
-                  //     Colors.grey.withAlpha(10),
-                  //   ),
-                  // ],
                   toY: e.countStudents.toDouble(),
                   gradient: LinearGradient(
                     colors: [
-                      // Color(int.parse(e.courseColor)).withAlpha(100),
                       Color(int.tryParse(e.courseColor) ?? 0xFF000000),
                       Color(int.tryParse(e.courseColor) ?? 0xFF000000),
                     ],
@@ -65,35 +52,5 @@ class BarChartWidget extends StatelessWidget {
         curve: Curves.bounceInOut, // Optional
       ),
     );
-    //   return AspectRatio(
-    //     aspectRatio: 1.3,
-    //     child: AspectRatio(
-    //       aspectRatio: 1,
-    //       child: PieChart(
-    //         PieChartData(
-    //           pieTouchData: PieTouchData(
-    //             touchCallback: (FlTouchEvent event, pieTouchResponse) {
-    //               setState(() {
-    //                 if (!event.isInterestedForInteractions ||
-    //                     pieTouchResponse == null ||
-    //                     pieTouchResponse.touchedSection == null) {
-    //                   touchedIndex = -1;
-    //                   return;
-    //                 }
-    //                 touchedIndex =
-    //                     pieTouchResponse.touchedSection!.touchedSectionIndex;
-    //               });
-    //             },
-    //           ),
-    //           borderData: FlBorderData(show: false),
-    //           titleSunbeamLayout: true,
-    //           sectionsSpace: 0,
-    //           centerSpaceRadius: 0,
-    //           sections: sections,
-    //         ),
-    //       ),
-    //     ),
-    //   );
-    // }
   }
 }

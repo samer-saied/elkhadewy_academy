@@ -32,10 +32,34 @@ class CourseCubit extends Cubit<CourseState> {
   }
 
   /// Fetch specific courses once (non-listening)
-  Future<void> fetchSpecificCourses(String collegeId, String yearId) async {
+  Future<void> fetchSpecificCoursesByCollegeId(
+    String collegeId,
+    String yearId,
+  ) async {
     emit(CourseLoading());
     try {
-      specificCourses = await _repository.getSpecificCourses(collegeId, yearId);
+      specificCourses = await _repository.getSpecificCoursesByCollegeId(
+        collegeId,
+        yearId,
+      );
+      emit(CourseLoaded(items: specificCourses));
+    } catch (e) {
+      emit(CourseOperationFailure(error: e.toString()));
+    }
+  }
+
+  /// Fetch specific courses once (non-listening)
+  Future<void> fetchSpecificCoursesByCollegeTitle(
+    String collegeTitle,
+    String yearId,
+  ) async {
+    emit(CourseLoading());
+    try {
+      specificCourses = await _repository.getSpecificCoursesByCourseTitle(
+        collegeTitle,
+        yearId,
+      );
+      print("---------length----------" + specificCourses.length.toString());
       emit(CourseLoaded(items: specificCourses));
     } catch (e) {
       emit(CourseOperationFailure(error: e.toString()));

@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:unimind/features/auth/bloc/login_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/navigation/app_routes.dart';
 import '../../general/presentations/cubits/navigation_cubit.dart';
@@ -256,14 +257,19 @@ class GetBody extends StatelessWidget {
                   title: "Logout".tr(context),
                   leadingIcon: Icons.logout,
                   bgIconColor: AppColors.jonquil,
-                  onTap: () {
+                  onTap: () async {
                     //////////////////    removeAutoSignIn();
                     HapticFeedback.mediumImpact();
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      AppRoutes.login,
-                      (route) => false,
-                    );
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool('auto_signin_allowed', false);
+                    
+                    if (context.mounted) {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        AppRoutes.login,
+                        (route) => false,
+                      );
+                    }
                     GetIt.I<NavigationCubit>().updateIndex(0);
                   },
                 ),
