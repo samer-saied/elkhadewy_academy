@@ -35,7 +35,6 @@ class ChapterDetailsWidget extends StatelessWidget {
       (element) => element.id == chapterModel.courseId,
     );
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
       child: SizedBox(
         width: double.infinity,
         child: Column(
@@ -88,7 +87,7 @@ class ChapterDetailsWidget extends StatelessWidget {
                     ///
                   },
                   child: Container(
-                    margin: const EdgeInsets.only(right: 12, left: 12),
+                    margin: const EdgeInsets.only(right: 5, left: 5),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 6,
@@ -270,12 +269,18 @@ class ChapterDetailsWidget extends StatelessWidget {
                         letterSpacing: 0.5,
                       ),
                     ),
-                    Text(
-                      currentCourse.title,
-                      style: TextStyle(
-                        color: AppColors.darkGrey,
-                        fontSize: 12,
-                        letterSpacing: 0.5,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5.0,
+                        vertical: 3,
+                      ),
+                      child: Text(
+                        currentCourse.title,
+                        style: TextStyle(
+                          color: AppColors.darkGrey,
+                          fontSize: 12,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -288,12 +293,18 @@ class ChapterDetailsWidget extends StatelessWidget {
                         letterSpacing: 0.5,
                       ),
                     ),
-                    Text(
-                      currentCourse.collegeTitle,
-                      style: TextStyle(
-                        color: AppColors.darkGrey,
-                        fontSize: 12,
-                        letterSpacing: 0.5,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5.0,
+                        vertical: 3,
+                      ),
+                      child: Text(
+                        currentCourse.collegeTitle,
+                        style: TextStyle(
+                          color: AppColors.darkGrey,
+                          fontSize: 12,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -306,27 +317,33 @@ class ChapterDetailsWidget extends StatelessWidget {
                         letterSpacing: 0.5,
                       ),
                     ),
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 16,
-                          child: const Icon(
-                            Icons.person,
-                            color: AppColors.whiteColor,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Text(
-                            chapterModel.createdBy,
-                            style: TextStyle(
-                              color: AppColors.raisinBlack,
-                              fontSize: 12,
-                              letterSpacing: 0.5,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5.0,
+                        vertical: 3,
+                      ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 16,
+                            child: const Icon(
+                              Icons.person,
+                              color: AppColors.whiteColor,
                             ),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Text(
+                              chapterModel.createdBy,
+                              style: TextStyle(
+                                color: AppColors.raisinBlack,
+                                fontSize: 12,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

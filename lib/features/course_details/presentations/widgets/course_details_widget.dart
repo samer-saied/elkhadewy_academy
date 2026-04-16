@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
+import '../../../../utils/colors.dart';
 import '../../../courses/data/models/course_model.dart';
 
 class CourseDetailsWidget extends StatelessWidget {
@@ -32,6 +33,8 @@ class CourseDetailsWidget extends StatelessWidget {
           // ),
           // SizedBox(height: 7),
           Card(
+            color: AppColors.whiteColor,
+
             child: ListTile(
               title: Text("${"Description".tr(context)} : "),
               subtitle: Text(course.description),

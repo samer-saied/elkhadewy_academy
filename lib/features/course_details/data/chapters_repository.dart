@@ -37,6 +37,10 @@ class ChaptersRepository {
         collectionId: collectionID,
         filterField: 'courseId',
         filterValue: materialId,
+        filterField2: 'createdAt',
+        filterValue2: DateTime.now().subtract(Duration(days: 7)),
+        isAscending: false,
+        orderByField: 'createdAt',
         limit: 1,
       );
       chapters.addAll(docs.map((d) => Chapter.fromFirestore(d)).toList());

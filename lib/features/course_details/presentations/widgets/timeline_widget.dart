@@ -28,6 +28,7 @@ class ChaptersCourseWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(5.0),
       child: Card(
+        color: AppColors.whiteColor,
         elevation: 3,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -199,6 +200,7 @@ class _ChaptersChipsWidgetState extends State<ChaptersChipsWidget> {
           );
         }
         return Card(
+          color: AppColors.whiteColor,
           child: SizedBox(
             height: 300,
             child: LoadingWidget(isFullWidth: true, numRows: 4),
@@ -218,6 +220,7 @@ class TimeLineWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Timeline.tileBuilder(
+      reverse: true,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       theme: TimelineThemeData(

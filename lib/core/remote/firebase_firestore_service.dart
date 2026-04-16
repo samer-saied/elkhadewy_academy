@@ -9,6 +9,7 @@ class FirebaseFirestoreService {
     dynamic isLessThan,
     String? filterField2,
     dynamic filterValue2,
+    String? filterOperator2,
     int? limit,
     String? orderByField,
     bool isAscending = true,
@@ -31,7 +32,7 @@ class FirebaseFirestoreService {
     }
 
     if (filterField2 != null && filterValue2 != null) {
-      query = query.where(filterField2, isEqualTo: filterValue2);
+      query = query.where(filterField2, isGreaterThanOrEqualTo: filterValue2);
     }
 
     if (orderByField != null) {
@@ -341,6 +342,27 @@ class FirebaseFirestoreService {
       reference = reference.where(field2, isEqualTo: value2);
     }
     final AggregateQuerySnapshot count = await reference.count().get();
+    return count.count ?? 0;
+  }
+
+  Future<int> getDocumentsCountsByDate({
+    required String collectionId,
+    String? field,
+    dynamic valueDate,
+  }) async {
+    AggregateQuerySnapshot count = await FirebaseFirestore.instance
+        .collection(collectionId)
+        .orderBy("startDate", descending: true)
+        .where(field ?? "", isGreaterThanOrEqualTo: valueDate.toString())
+        .where(
+          field ?? "",
+          isLessThanOrEqualTo: valueDate
+              .subtract(const Duration(days: -1))
+              .toString(),
+        )
+        .count()
+        .get();
+
     return count.count ?? 0;
   }
 

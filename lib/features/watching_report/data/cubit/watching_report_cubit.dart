@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 
@@ -16,7 +17,9 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
 
   List<WatchingReport> watchingReports = [];
   late WatchingReport lastWatchingReports;
+  List<Map<String, dynamic>> weeklyCountReport = [];
   bool isContinue = false;
+  List<Map<String, dynamic>> dailyCounts = [];
 
   Future<void> getWatchingReports({required String userId}) async {
     emit(WatchingReportLoading());
@@ -122,5 +125,33 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
       collectionId: collectionID,
       data: watchingReport.toJson(),
     );
+  }
+
+  Future<void> getWeeklyCountReport() async {
+    emit(WatchingReportLoading());
+
+    try {
+      // Get current date at midnight
+      dailyCounts.clear();
+      DateTime now = DateTime.now();
+
+      for (int i = 0; i < 7; i++) {
+        int snapshot = await _service.getDocumentsCountsByDate(
+          collectionId: collectionID,
+          field: 'startDate',
+          valueDate: now,
+        );
+
+        dailyCounts.add({
+          "date": now.toString().split(' ')[0],
+          "counts": snapshot,
+        });
+        now = now.subtract(const Duration(days: 1));
+      }
+
+      emit(WatchingReportLoaded(reports: watchingReports));
+    } catch (e) {
+      emit(WatchingReportError(message: e.toString()));
+    }
   }
 }
