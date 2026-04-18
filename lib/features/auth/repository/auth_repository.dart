@@ -73,7 +73,7 @@ class AuthRepository {
 
         if (user.deviceId != deviceInfo) {
           if (user.refreshToken == true ||
-              DateTime.now().isBefore(DateTime(2026, 04, 21))) {
+              DateTime.now().isBefore(DateTime(2026, 04, 25))) {
             await _service.updateDocument(
               collectionId: collectionId,
               documentId: snapshot.docs.first.id,

