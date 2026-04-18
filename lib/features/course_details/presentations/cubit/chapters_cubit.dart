@@ -20,7 +20,6 @@ class ChaptersCubit extends Cubit<ChaptersState> {
       final List<Chapter> items = await _repository.getCourseChapters(courseId);
       emit(ChaptersLoaded(items: items));
     } catch (e) {
-      print(e);
       emit(ChaptersFailure(error: e.toString()));
     }
   }

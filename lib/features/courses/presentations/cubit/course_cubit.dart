@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 
+import '../../../auth/bloc/login_cubit.dart';
 import '../../data/models/course_model.dart';
 import '../../data/repositories/courses_repository.dart';
 
@@ -59,7 +61,6 @@ class CourseCubit extends Cubit<CourseState> {
         collegeTitle,
         yearId,
       );
-      print("---------length----------" + specificCourses.length.toString());
       emit(CourseLoaded(items: specificCourses));
     } catch (e) {
       emit(CourseOperationFailure(error: e.toString()));
@@ -86,6 +87,19 @@ class CourseCubit extends Cubit<CourseState> {
       emit(CourseLoaded(items: userCourses));
     } catch (e) {
       emit(CourseOperationFailure(error: e.toString()));
+    }
+  }
+
+  Future<CourseModel?> findLocalCourse(String courseId) async {
+    if (userCourses.isEmpty) {
+      await fetchUsersCourse(
+        materials: GetIt.I<LoginCubit>().currentUser!.materials,
+      );
+    }
+    try {
+      return userCourses.firstWhere((element) => element.id == courseId);
+    } catch (_) {
+      return null;
     }
   }
 

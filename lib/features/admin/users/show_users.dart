@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:unimind/features/auth/bloc/login_cubit.dart';
 
 import '../../../utils/colors.dart';
 import '../info/cubit/statistic_cubit.dart';
@@ -97,6 +98,7 @@ class _ShowUsersPageState extends State<ShowUsersPage> {
                   index: index,
                   student: GetIt.I<StatisticCubit>().users[index],
                   isDelete: widget.isDelete,
+                  isAdmin: GetIt.I<LoginCubit>().currentUser!.role == "admin",
                 );
               },
             );

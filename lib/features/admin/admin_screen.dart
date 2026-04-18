@@ -6,9 +6,10 @@ import '../../core/navigation/app_routes.dart';
 import '../../general/widgets/headers_widgets.dart';
 import '../../utils/colors.dart';
 import '../more/widgets/setting_item.dart';
-import 'charts/chart_report_screen.dart';
+import 'reports/charts/chart_report_screen.dart';
 import 'info/screens/count_students/count_stud_materials_screen.dart';
 import 'reports/show_reports_bydate.dart';
+import 'reports/show_reports_byuser.dart';
 import 'users/manage_requests.dart';
 import 'users/manage_users.dart';
 import 'users/search_users.dart';
@@ -387,8 +388,8 @@ class GetBodyAdminPage extends StatelessWidget {
                     child: Column(
                       children: [
                         SettingItem(
-                          title: "Views Report By Date".tr(context),
-                          leadingIcon: Icons.bar_chart_sharp,
+                          title: "Date-Based Reports".tr(context),
+                          leadingIcon: Icons.date_range_rounded,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,
                           onTap: () {
@@ -406,7 +407,7 @@ class GetBodyAdminPage extends StatelessWidget {
                           child: Divider(height: 0, color: AppColors.lightGrey),
                         ),
                         SettingItem(
-                          title: "Period views Chart".tr(context),
+                          title: "Weekly Analytics Chart".tr(context),
                           leadingIcon: Icons.bar_chart_sharp,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,
@@ -425,7 +426,7 @@ class GetBodyAdminPage extends StatelessWidget {
                           child: Divider(height: 0, color: AppColors.lightGrey),
                         ),
                         SettingItem(
-                          title: "Views Report by User".tr(context),
+                          title: "User-Specific Reports".tr(context),
                           leadingIcon: Icons.bar_chart_sharp,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,
@@ -434,7 +435,7 @@ class GetBodyAdminPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ShowReportsByDatePage(),
+                                builder: (context) => ShowReportsByUserPage(),
                               ),
                             );
                           },

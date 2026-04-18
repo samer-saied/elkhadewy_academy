@@ -156,8 +156,6 @@ class StatisticCubit extends Cubit<StatisticState> {
   getCountStudentsByMaterial() async {
     emit(StatisticLoading());
     infoChips.clear();
-    print(selectedFaculty);
-    print(selectedAcademicYear.toString());
     await GetIt.I.get<CourseCubit>().fetchSpecificCoursesByCollegeTitle(
       selectedFaculty,
       (selectedAcademicYear + 1).toString(),

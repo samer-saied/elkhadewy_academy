@@ -11,7 +11,8 @@ import 'filter_list_widget.dart';
 import 'progress_segment_widget.dart';
 
 class CountStudMaterialsScreen extends StatefulWidget {
-  const CountStudMaterialsScreen({super.key});
+  final bool? isAdmin;
+  const CountStudMaterialsScreen({super.key, this.isAdmin = false});
 
   @override
   State<CountStudMaterialsScreen> createState() =>

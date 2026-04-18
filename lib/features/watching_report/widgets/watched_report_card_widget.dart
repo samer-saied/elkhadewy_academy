@@ -9,12 +9,14 @@ class WatchedReportCardWidget extends StatelessWidget {
   final String number;
   final WatchingReport report;
   final double? widgetSize;
+  final Color? color;
 
   const WatchedReportCardWidget({
     super.key,
     required this.number,
     required this.report,
     this.widgetSize,
+    this.color,
   });
 
   @override
@@ -46,7 +48,7 @@ class WatchedReportCardWidget extends StatelessWidget {
               color:
                   // report.courseColor.isEmpty || report.courseColor == ""
                   //     ?
-                  AppColors.jonquil,
+                  color ?? AppColors.jonquil,
               // : Color(int.parse(report.courseColor.toString())),
             ),
           ),

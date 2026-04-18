@@ -232,7 +232,7 @@ class NumberLabelWidget extends StatelessWidget {
         onTap: onTapFunc ?? () {},
         child: Container(
           margin: const EdgeInsets.all(7),
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           // height: 50,
           decoration: BoxDecoration(
             color: labelColor.withAlpha(50),
@@ -246,19 +246,22 @@ class NumberLabelWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Icon(icon, color: labelColor, size: 28),
-                        Text(
-                          number.toString(),
-                          style: Theme.of(context).textTheme.titleLarge!
-                              .copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 28,
-                                color: labelColor,
-                              ),
-                        ),
-                      ],
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        children: [
+                          Icon(icon, color: labelColor, size: 28),
+                          Text(
+                            number.toString(),
+                            style: Theme.of(context).textTheme.titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 28,
+                                  color: labelColor,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 3),
                     Text(

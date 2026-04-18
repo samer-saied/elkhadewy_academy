@@ -57,7 +57,6 @@ class AuthRepository {
   }) async {
     try {
       String deviceInfo = await DeviceInfo().getUniqueId();
-
       QuerySnapshot snapshot = await _service.getDocuments(
         collectionId: collectionId,
         where: {'phone': phone, 'password': password},
@@ -73,7 +72,8 @@ class AuthRepository {
         }
 
         if (user.deviceId != deviceInfo) {
-          if (user.refreshToken == true) {
+          if (user.refreshToken == true ||
+              DateTime.now().isBefore(DateTime(2026, 04, 21))) {
             await _service.updateDocument(
               collectionId: collectionId,
               documentId: snapshot.docs.first.id,

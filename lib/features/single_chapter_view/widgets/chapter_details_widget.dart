@@ -13,6 +13,7 @@ import '../../../utils/helper.dart';
 import '../../auth/bloc/login_cubit.dart';
 import '../../auth/models/user_model.dart';
 import '../../course_details/data/chapter_model.dart';
+import '../../courses/data/models/course_model.dart';
 import '../../courses/presentations/cubit/course_cubit.dart';
 import '../../pdfviewer/web_view_screen.dart';
 import '../../watching_report/data/cubit/watching_report_cubit.dart';
@@ -20,7 +21,7 @@ import '../../watching_report/data/model/watching_model.dart';
 import 'copy_right_widget.dart';
 import 'warning_widget.dart';
 
-class ChapterDetailsWidget extends StatelessWidget {
+class ChapterDetailsWidget extends StatefulWidget {
   final Chapter chapterModel;
   final DateTime startWatchingTime;
   const ChapterDetailsWidget({
@@ -30,10 +31,46 @@ class ChapterDetailsWidget extends StatelessWidget {
   });
 
   @override
+  State<ChapterDetailsWidget> createState() => _ChapterDetailsWidgetState();
+}
+
+class _ChapterDetailsWidgetState extends State<ChapterDetailsWidget> {
+  CourseModel? currentCourse;
+
+  @override
+  void initState() {
+    super.initState();
+    GetIt.I<CourseCubit>().findLocalCourse(widget.chapterModel.courseId).then((
+      val,
+    ) {
+      if (mounted) {
+        setState(() {
+          currentCourse =
+              val ??
+              CourseModel(
+                title: "Unknown",
+                description: "",
+                collegeId: "",
+                collegeTitle: "Unknown",
+                yearId: "",
+                color: "0xFFD69E33",
+              );
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final currentCourse = GetIt.I<CourseCubit>().userCourses.firstWhere(
-      (element) => element.id == chapterModel.courseId,
-    );
+    if (currentCourse == null) {
+      return const Padding(
+        padding: EdgeInsets.all(40.0),
+        child: Center(
+          child: CircularProgressIndicator(color: AppColors.jonquil),
+        ),
+      );
+    }
+
     return SingleChildScrollView(
       child: SizedBox(
         width: double.infinity,
@@ -49,23 +86,24 @@ class ChapterDetailsWidget extends StatelessWidget {
                     DateTime endWatchingTime = DateTime.now();
                     UserModel? currentUser = GetIt.I<LoginCubit>().currentUser;
                     if (endWatchingTime
-                            .difference(startWatchingTime)
+                            .difference(widget.startWatchingTime)
                             .inSeconds >
                         60) {
                       WatchingReport currentWatchingReport = WatchingReport(
-                        chapterId: chapterModel.id.toString(),
-                        chapterName: chapterModel.title,
-                        courseId: chapterModel.courseId,
-                        courseName: currentCourse.title,
+                        chapterId: widget.chapterModel.id.toString(),
+                        chapterName: widget.chapterModel.title,
+                        courseId: widget.chapterModel.courseId,
+                        courseName: currentCourse!.title,
                         courseColor:
-                            currentCourse.color ?? AppColors.jonquil.toString(),
+                            currentCourse!.color ??
+                            AppColors.jonquil.toString(),
                         userId: currentUser!.id,
                         userPhone: currentUser.phone,
                         userName: currentUser.name,
                         endDate: endWatchingTime,
-                        startDate: startWatchingTime,
+                        startDate: widget.startWatchingTime,
                         videoWatchedDuration: endWatchingTime
-                            .difference(startWatchingTime)
+                            .difference(widget.startWatchingTime)
                             .inSeconds
                             .toString(),
                         videoWatchedFinished: true,
@@ -94,10 +132,10 @@ class ChapterDetailsWidget extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color:
-                          currentCourse.color == null ||
-                              currentCourse.color!.isEmpty
+                          currentCourse!.color == null ||
+                              currentCourse!.color!.isEmpty
                           ? AppColors.jonquil
-                          : Color(int.parse(currentCourse.color!)),
+                          : Color(int.parse(currentCourse!.color!)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(Icons.arrow_back, color: AppColors.whiteColor),
@@ -110,14 +148,14 @@ class ChapterDetailsWidget extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color:
-                        currentCourse.color == null ||
-                            currentCourse.color!.isEmpty
+                        currentCourse!.color == null ||
+                            currentCourse!.color!.isEmpty
                         ? AppColors.jonquil
-                        : Color(int.parse(currentCourse.color!)),
+                        : Color(int.parse(currentCourse!.color!)),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
-                    "${"CHAPTER".tr(context)} ${chapterModel.orderIndex}",
+                    "${"CHAPTER".tr(context)} ${widget.chapterModel.orderIndex}",
                     style: TextStyle(
                       color: AppColors.whiteColor,
                       fontWeight: FontWeight.bold,
@@ -142,7 +180,7 @@ class ChapterDetailsWidget extends StatelessWidget {
                     const SizedBox(height: 20),
                     // 3. Lesson Title
                     Text(
-                      chapterModel.title,
+                      widget.chapterModel.title,
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -159,13 +197,15 @@ class ChapterDetailsWidget extends StatelessWidget {
                         _buildMetadataItem(
                           icon: Icons.calendar_today_outlined,
                           text: DateFormat.yMMMd().format(
-                            chapterModel.createdAt.toDate(),
+                            widget.chapterModel.createdAt.toDate(),
                           ),
                           color: AppColors.blackColor,
                         ),
                         _buildMetadataItem(
                           icon: Icons.schedule,
-                          text: timeago.format(chapterModel.createdAt.toDate()),
+                          text: timeago.format(
+                            widget.chapterModel.createdAt.toDate(),
+                          ),
                           color: AppColors.blackColor,
                         ),
                       ],
@@ -174,7 +214,7 @@ class ChapterDetailsWidget extends StatelessWidget {
 
                     // 5. Lesson Description
                     Text(
-                      chapterModel.content,
+                      widget.chapterModel.content,
                       style: TextStyle(
                         fontSize: 16,
                         height: 1.6,
@@ -182,12 +222,12 @@ class ChapterDetailsWidget extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    if (chapterModel.attachments.isNotEmpty)
+                    if (widget.chapterModel.attachments.isNotEmpty)
                       SectionHeaderSmallWidget(title: "Attachments"),
-                    if (chapterModel.attachments.isNotEmpty)
+                    if (widget.chapterModel.attachments.isNotEmpty)
                       Column(
                         children: List.generate(
-                          chapterModel.attachments.length,
+                          widget.chapterModel.attachments.length,
                           (index) {
                             return GestureDetector(
                               onTap: () {
@@ -195,7 +235,9 @@ class ChapterDetailsWidget extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => WebViewScreen(
-                                      url: chapterModel.attachments[index],
+                                      url: widget
+                                          .chapterModel
+                                          .attachments[index],
                                     ),
                                   ),
                                 );
@@ -275,7 +317,7 @@ class ChapterDetailsWidget extends StatelessWidget {
                         vertical: 3,
                       ),
                       child: Text(
-                        currentCourse.title,
+                        currentCourse!.title,
                         style: TextStyle(
                           color: AppColors.darkGrey,
                           fontSize: 12,
@@ -299,7 +341,7 @@ class ChapterDetailsWidget extends StatelessWidget {
                         vertical: 3,
                       ),
                       child: Text(
-                        currentCourse.collegeTitle,
+                        currentCourse!.collegeTitle,
                         style: TextStyle(
                           color: AppColors.darkGrey,
                           fontSize: 12,
@@ -334,7 +376,7 @@ class ChapterDetailsWidget extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: Text(
-                              chapterModel.createdBy,
+                              widget.chapterModel.createdBy,
                               style: TextStyle(
                                 color: AppColors.raisinBlack,
                                 fontSize: 12,
@@ -541,10 +583,12 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               // _controller.addListener(listener);
             },
             onEnded: (metaData) {
-              final currentCourse = GetIt.I<CourseCubit>().userCourses
-                  .firstWhere(
-                    (element) => element.id == widget.chapterModel.courseId,
-                  );
+              CourseModel? currentCourse;
+              try {
+                currentCourse = GetIt.I<CourseCubit>().userCourses.firstWhere(
+                  (element) => element.id == widget.chapterModel.courseId,
+                );
+              } catch (_) {}
               DateTime endWatchingTime = DateTime.now();
               UserModel? currentUser = GetIt.I<LoginCubit>().currentUser;
               if (endWatchingTime
@@ -556,7 +600,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                   chapterName: widget.chapterModel.title,
                   courseId: widget.chapterModel.courseId,
                   courseName: widget.chapterModel.title,
-                  courseColor: currentCourse.color ?? "0xFFD69E33",
+                  courseColor: currentCourse?.color ?? "0xFFD69E33",
                   userId: currentUser!.id,
                   userPhone: currentUser.phone,
                   userName: currentUser.name,

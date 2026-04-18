@@ -13,11 +13,13 @@ class UserCardWidget extends StatelessWidget {
     required this.student,
     required this.index,
     required this.isDelete,
+    required this.isAdmin,
   });
 
   final UserModel student;
   final bool isDelete;
   final int index;
+  final bool isAdmin;
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +49,16 @@ class UserCardWidget extends StatelessWidget {
         }
       },
       child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditUserPage(userModel: student),
-            ),
-          );
-        },
+        onTap: isAdmin
+            ? () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditUserPage(userModel: student),
+                  ),
+                );
+              }
+            : null,
         child: Card(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:unimind/features/watching_report/data/cubit/watching_report_cubit.dart';
-import 'package:unimind/general/widgets/headers_widgets.dart';
 
 import '../../../utils/colors.dart';
 import '../../watching_report/widgets/watched_report_card_widget.dart';

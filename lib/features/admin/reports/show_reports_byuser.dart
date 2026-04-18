@@ -4,25 +4,24 @@ import 'package:get_it/get_it.dart';
 import 'package:unimind/features/admin/info/cubit/statistic_cubit.dart';
 
 import '../../../utils/colors.dart';
-import '../../auth/bloc/login_cubit.dart';
 import '../../auth/models/user_model.dart';
 import '../info/screens/count_students/filter_list_widget.dart';
-import 'widgets/user_card_widget.dart';
+import 'widgets/report_card_widget.dart';
 
 String searchValue = "";
 
-class SearchUsersPage extends StatelessWidget {
-  const SearchUsersPage({super.key});
+class ShowReportsByUserPage extends StatelessWidget {
+  const ShowReportsByUserPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.jonquil,
+        backgroundColor: AppColors.prussianBlue,
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "Search Users",
+          "User Reports",
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.whiteColor,
@@ -43,7 +42,7 @@ class SearchUsersPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             child: Text(
               "Enter User Phone Number",
-              style: TextStyle(color: AppColors.jonquil, fontSize: 18),
+              style: TextStyle(color: AppColors.prussianBlue, fontSize: 18),
             ),
           ),
           Padding(
@@ -71,7 +70,7 @@ class SearchUsersPage extends StatelessWidget {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: AppColors.jonquil),
+                  borderSide: const BorderSide(color: AppColors.prussianBlue),
                 ),
                 errorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -112,12 +111,9 @@ class SearchUsersPage extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: users.length,
                     itemBuilder: (context, index) {
-                      return UserCardWidget(
+                      return ReportCardWidget(
                         index: index,
                         student: users[index],
-                        isDelete: false,
-                        isAdmin:
-                            GetIt.I<LoginCubit>().currentUser!.role == "admin",
                       );
                     },
                   ),

@@ -6,8 +6,10 @@ import '../../core/navigation/app_routes.dart';
 import '../../general/widgets/headers_widgets.dart';
 import '../../utils/colors.dart';
 import '../more/widgets/setting_item.dart';
-import 'reports/show_reports.dart';
+import 'info/screens/count_students/count_stud_materials_screen.dart';
+import 'reports/charts/chart_report_screen.dart';
 import 'reports/show_reports_bydate.dart';
+import 'reports/show_reports_byuser.dart';
 import 'users/manage_requests.dart';
 
 class TeacherPage extends StatelessWidget {
@@ -278,6 +280,96 @@ class GetBodyTeacherPage extends StatelessWidget {
               ///
               ///
               ////////////////////////////  Statistics  ////////////////////
+
+              ////////////////////////////  USERS  ////////////////////
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: AppColors.whiteColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.lightGrey,
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(
+                            0,
+                            1,
+                          ), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        // SettingItem(
+                        //   title: "Manage Users by Role".tr(context),
+                        //   leadingIcon: Icons.people,
+                        //   bgIconColor: AppColors.jonquil,
+                        //   leadingIconColor: AppColors.whiteColor,
+                        //   onTap: () {
+                        //     HapticFeedback.mediumImpact();
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => ManageUsersPage(),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 45),
+                        //   child: Divider(height: 0, color: AppColors.lightGrey),
+                        // ),
+                        SettingItem(
+                          title: "Manage Users By Materials".tr(context),
+                          leadingIcon: Icons.people_outline,
+                          bgIconColor: AppColors.jonquil,
+                          leadingIconColor: AppColors.whiteColor,
+                          onTap: () {
+                            HapticFeedback.mediumImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CountStudMaterialsScreen(),
+                              ),
+                            );
+                          },
+                        ),
+
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 45),
+                        //   child: Divider(height: 0, color: AppColors.lightGrey),
+                        // ),
+                        // SettingItem(
+                        //   title: "Search Users".tr(context),
+                        //   leadingIcon: Icons.person_search,
+                        //   bgIconColor: AppColors.jonquil,
+                        //   leadingIconColor: AppColors.whiteColor,
+                        //   onTap: () {
+                        //     HapticFeedback.mediumImpact();
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => SearchUsersPage(),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+
+              ///
+              ///
+              ///
+              ///
+              ////////////////////////////  Statistics  ////////////////////
               Column(
                 children: [
                   Container(
@@ -300,8 +392,8 @@ class GetBodyTeacherPage extends StatelessWidget {
                     child: Column(
                       children: [
                         SettingItem(
-                          title: "Reports By Date",
-                          leadingIcon: Icons.bar_chart_sharp,
+                          title: "Date-Based Reports".tr(context),
+                          leadingIcon: Icons.date_range_rounded,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,
                           onTap: () {
@@ -314,35 +406,12 @@ class GetBodyTeacherPage extends StatelessWidget {
                             );
                           },
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ),
-              Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: AppColors.whiteColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.lightGrey,
-                          spreadRadius: 1,
-                          blurRadius: 1,
-                          offset: const Offset(
-                            0,
-                            1,
-                          ), // changes position of shadow
+                        Padding(
+                          padding: const EdgeInsets.only(left: 45),
+                          child: Divider(height: 0, color: AppColors.lightGrey),
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
                         SettingItem(
-                          title: "Reports By User",
+                          title: "Weekly Analytics Chart".tr(context),
                           leadingIcon: Icons.bar_chart_sharp,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,
@@ -351,7 +420,26 @@ class GetBodyTeacherPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ShowReportsPage(),
+                                builder: (context) => ChartReportScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 45),
+                          child: Divider(height: 0, color: AppColors.lightGrey),
+                        ),
+                        SettingItem(
+                          title: "User-Specific Reports".tr(context),
+                          leadingIcon: Icons.bar_chart_sharp,
+                          bgIconColor: AppColors.jonquil,
+                          leadingIconColor: AppColors.whiteColor,
+                          onTap: () {
+                            HapticFeedback.mediumImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowReportsByUserPage(),
                               ),
                             );
                           },
@@ -362,49 +450,6 @@ class GetBodyTeacherPage extends StatelessWidget {
                   const SizedBox(height: 10),
                 ],
               ),
-
-              ///
-              ///
-              ///
-              ///
-              ////////////////////////////  USERS  ////////////////////
-              // Column(
-              //   children: [
-              //     Container(
-              //       padding: const EdgeInsets.only(left: 15, right: 15),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(5),
-              //         color: AppColors.whiteColor,
-              //         boxShadow: [
-              //           BoxShadow(
-              //             color: AppColors.lightGrey,
-              //             spreadRadius: 1,
-              //             blurRadius: 1,
-              //             offset: const Offset(
-              //               0,
-              //               1,
-              //             ), // changes position of shadow
-              //           ),
-              //         ],
-              //       ),
-              //       child: Column(
-              //         children: [
-              //           SettingItem(
-              //             title: "Reset Factory".tr(context),
-              //             leadingIcon: Icons.delete_forever,
-              //             bgIconColor: AppColors.redWood,
-              //             leadingIconColor: AppColors.whiteColor,
-              //             onTap: () {
-              //               HapticFeedback.mediumImpact();
-              //               // Get.to(() => const ResetFactoryScreen());
-              //             },
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //     const SizedBox(height: 10),
-              //   ],
-              // ),
             ],
           ),
         ],

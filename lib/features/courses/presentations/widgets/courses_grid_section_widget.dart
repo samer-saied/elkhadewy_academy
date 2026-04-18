@@ -54,10 +54,10 @@ class CoursesGirdSectionWidget extends StatelessWidget {
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 200.0,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 15.0,
+            mainAxisSpacing: 15.0,
             childAspectRatio: 3 / 4,
           ),
           itemCount: 6,

@@ -170,9 +170,9 @@ class _AddChapterFormState extends State<AddChapterForm> {
                       hint:
                           'Write a detailed description of the chapter content and its objectives…',
                       controller: _contentController,
-                      validator: (v) => (v == null || v.trim().isEmpty)
-                          ? 'Description is required'
-                          : null,
+                      // validator: (v) => (v == null || v.trim().isEmpty)
+                      //     ? 'Description is required'
+                      //     : null,
                     ),
                     const SizedBox(height: 14),
 

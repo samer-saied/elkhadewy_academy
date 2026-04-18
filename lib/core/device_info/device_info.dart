@@ -89,9 +89,9 @@ class DeviceInfo {
   Future<String> getUniqueId() async {
     await initPlatformState();
     if (Platform.isAndroid) {
-      return "${deviceData['manufacturer']}-${deviceData['brand']}-${deviceData['fingerprint']}-${deviceData['serialNumber']}-${deviceData['isPhysicalDevice']}";
+      return "${deviceData['manufacturer']}-${deviceData['brand']}-${deviceData['model']}-${deviceData['name']}-${deviceData['id']}-${deviceData['isPhysicalDevice']}";
     } else if (Platform.isIOS) {
-      return "${deviceData['name']}-${deviceData['systemName']}-${deviceData['model']}-${deviceData['systemName']}-${deviceData['identifierForVendor']}";
+      return "${deviceData['name']}-${deviceData['systemName']}-${deviceData['model']}";
     } else {
       return "${deviceData['type']}-${deviceData['systemName']}-${deviceData['deviceId']}";
     }
