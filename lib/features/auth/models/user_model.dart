@@ -88,4 +88,39 @@ class UserModel {
       'statusEnableHeadset': statusEnableHeadset,
     };
   }
+
+  UserModel copyWith({
+    String? name,
+    String? email,
+    String? phone,
+    String? password,
+    String? faculty,
+    String? studyYear,
+    String? role,
+    List<String>? materials,
+    Timestamp? createdAt,
+    Timestamp? updatedAt,
+    String? deviceId,
+    String? status,
+    bool? refreshToken,
+    bool? statusEnableHeadset,
+  }) {
+    return UserModel(
+      id: id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      password: password ?? this.password,
+      faculty: faculty ?? this.faculty,
+      studyYear: studyYear ?? this.studyYear,
+      role: role ?? this.role,
+      materials: materials ?? this.materials,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deviceId: deviceId ?? this.deviceId,
+      status: status ?? this.status,
+      refreshToken: refreshToken ?? this.refreshToken,
+      statusEnableHeadset: statusEnableHeadset ?? this.statusEnableHeadset,
+    );
+  }
 }

@@ -434,7 +434,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   final ScreenCaptureEvent screenListener = ScreenCaptureEvent();
   bool _isRecording = false;
   String totalDuration = "";
-
   @override
   void initState() {
     super.initState();
@@ -505,10 +504,18 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           maxScale: 4,
           minScale: 1,
           child: YoutubePlayer(
+            liveUIColor: AppColors.jonquil,
+            aspectRatio: 16 / 9,
             controller: _controller,
-            showVideoProgressIndicator: true,
-            progressIndicatorColor: AppColors.jonquil,
 
+            showVideoProgressIndicator: true,
+            progressIndicatorColor: Colors.black,
+            progressColors: ProgressBarColors(
+              playedColor: Colors.black,
+              handleColor: Colors.black,
+              bufferedColor: Colors.black,
+              backgroundColor: Colors.black,
+            ),
             topActions: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -531,6 +538,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                         const RemainingDuration(),
                       ],
                     ),
+                    Spacer(),
                     Icon(Icons.hd, color: AppColors.whiteColor),
                   ],
                 ),

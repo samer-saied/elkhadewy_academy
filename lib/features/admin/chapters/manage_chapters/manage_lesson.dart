@@ -7,7 +7,9 @@ import 'package:timeago/timeago.dart' as timeago;
 import '../../../../utils/colors.dart';
 import '../../../course_details/data/chapter_model.dart';
 import '../../../course_details/presentations/cubit/chapters_cubit.dart';
-import '../../../courses/presentations/cubit/course_cubit.dart';
+import '../add_chapter/add_chapter.dart';
+import '../add_chapter/drop_down_widget.dart';
+import 'simple_title_widget.dart';
 
 class ManageChapters extends StatefulWidget {
   const ManageChapters({super.key});
@@ -25,16 +27,12 @@ class _ManageChaptersState extends State<ManageChapters> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: Text(
-              "Select the course",
-              style: TextStyle(color: AppColors.jonquil, fontSize: 18),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: _buildCourseDropdown(context),
+          /////////////   SELECT WIDGET   ////////////////////////
+          SimpleTitleWidget(title: "Select the course"),
+          /////////////   SELECT DORPDOWN   ////////////////////////
+          BuildCourseDropDown(
+            selectedCourseId: _selectedCourseId,
+            onChanged: (v) => setState(() => _selectedCourseId = v),
           ),
           // Padding(
           //   padding: const EdgeInsets.all(8.0),
@@ -80,49 +78,6 @@ class _ManageChaptersState extends State<ManageChapters> {
     );
   }
 
-  //////////////////  COURSES DROPDOWN //////////////////
-  Widget _buildCourseDropdown(BuildContext context) {
-    return BlocBuilder<CourseCubit, CourseState>(
-      bloc: GetIt.I<CourseCubit>()..fetchCourseItems(),
-      builder: (context, state) {
-        final courses = GetIt.I<CourseCubit>().allCourses;
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(40),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              value: _selectedCourseId,
-              hint: Text(
-                'Select the appropriate course',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge!.copyWith(color: AppColors.grey),
-              ),
-              items: courses.map((course) {
-                return DropdownMenuItem<String>(
-                  value: course.id,
-                  child: Text(course.title),
-                );
-              }).toList(),
-              onChanged: (v) => setState(() => _selectedCourseId = v),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   Widget _chapterCard(BuildContext context, Chapter chapter) {
     return Dismissible(
       key: Key(chapter.id.toString()),
@@ -143,83 +98,93 @@ class _ManageChaptersState extends State<ManageChapters> {
           );
         }
       },
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.sizeOf(context).height / 7,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7),
-          border: Border.all(color: AppColors.lightGrey.withAlpha(90)),
-        ),
-        width: MediaQuery.sizeOf(context).width,
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(7),
-                  bottomLeft: Radius.circular(7),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddEditChapterPage(chapter: chapter),
+            ),
+          );
+        },
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.sizeOf(context).height / 7,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(7),
+            border: Border.all(color: AppColors.lightGrey.withAlpha(90)),
+          ),
+          width: MediaQuery.sizeOf(context).width,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(7),
+                    bottomLeft: Radius.circular(7),
+                  ),
+                  child: Container(width: 10, color: AppColors.jonquil),
                 ),
-                child: Container(width: 10, color: AppColors.jonquil),
-              ),
-              Expanded(
-                child: Stack(
-                  children: <Widget>[
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Center(
-                        child: Opacity(
-                          opacity: 0.15,
-                          child: HugeIcon(
-                            icon: HugeIcons.strokeRoundedDashboardSquareAdd,
-                            size: MediaQuery.sizeOf(context).height / 8,
-                            color: AppColors.jonquil,
+                Expanded(
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Center(
+                          child: Opacity(
+                            opacity: 0.15,
+                            child: HugeIcon(
+                              icon: HugeIcons.strokeRoundedDashboardSquareAdd,
+                              size: MediaQuery.sizeOf(context).height / 8,
+                              color: AppColors.jonquil,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                chapter.title,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  chapter.title,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
 
-                              SizedBox(height: 3),
-                              Text(
-                                chapter.content,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 5),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Text(
-                              timeago.format(chapter.createdAt.toDate()),
-                              style: Theme.of(context).textTheme.bodySmall,
+                                SizedBox(height: 3),
+                                Text(
+                                  chapter.content,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 5),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Text(
+                                timeago.format(chapter.createdAt.toDate()),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

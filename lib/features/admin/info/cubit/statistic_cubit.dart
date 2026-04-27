@@ -21,7 +21,7 @@ class StatisticCubit extends Cubit<StatisticState> {
   Map<String, int> results = {};
   List<UserModel> users = [];
   List<InfoChipModel> infoChips = [];
-  String selectedFaculty = "BIS";
+  String selectedFacultyValue = "BIS";
   int selectedAcademicYear = 0;
 
   /// Get All Users Count ///////
@@ -153,11 +153,12 @@ class StatisticCubit extends Cubit<StatisticState> {
     }
   }
 
-  getCountStudentsByMaterial() async {
+  getCountStudentsByFaculty({String? selectedFaculty}) async {
     emit(StatisticLoading());
     infoChips.clear();
+
     await GetIt.I.get<CourseCubit>().fetchSpecificCoursesByCollegeTitle(
-      selectedFaculty,
+      selectedFaculty ?? selectedFacultyValue,
       (selectedAcademicYear + 1).toString(),
     );
 
@@ -166,7 +167,7 @@ class StatisticCubit extends Cubit<StatisticState> {
     int totalCount = await _service.getDocumentsCount(
       collectionId: 'users',
       field: 'faculty',
-      value: selectedFaculty.toUpperCase(),
+      value: selectedFacultyValue.toUpperCase(),
       field2: 'studyYear',
       value2: (selectedAcademicYear).toString(),
     );
@@ -187,13 +188,35 @@ class StatisticCubit extends Cubit<StatisticState> {
     emit(StatisticLoaded());
   }
 
+  getCountStudentsByMaterial([String? courseId]) async {
+    emit(StatisticLoading());
+
+    infoChips.clear();
+    if (courseId != null) {
+      int count = await getCourseStudentsCount(courseId);
+      CourseModel? course = await GetIt.I.get<CourseCubit>().findLocalCourse(
+        courseId,
+      );
+      InfoChipModel infoCard = InfoChipModel(
+        countStudents: count,
+        totalStudents: 0,
+        courseTitle: course?.title ?? "Unknown Course",
+        courseId: course?.id ?? "None",
+        courseColor: course?.color.toString() ?? "0xFF000000",
+        courseDescription: course?.description ?? "",
+      );
+      infoChips.add(infoCard);
+    }
+    emit(StatisticLoaded());
+  }
+
   changeSelectedFaculty(String faculty) {
-    selectedFaculty = faculty;
-    getCountStudentsByMaterial();
+    selectedFacultyValue = faculty;
+    getCountStudentsByFaculty();
   }
 
   changeSelectedAcademicYear(int index) {
     selectedAcademicYear = index;
-    getCountStudentsByMaterial();
+    getCountStudentsByFaculty();
   }
 }

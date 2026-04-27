@@ -91,16 +91,61 @@ class _ShowUsersPageState extends State<ShowUsersPage> {
                 ),
               );
             }
-            return ListView.builder(
-              itemCount: GetIt.I<StatisticCubit>().users.length,
-              itemBuilder: (context, index) {
-                return UserCardWidget(
-                  index: index,
-                  student: GetIt.I<StatisticCubit>().users[index],
-                  isDelete: widget.isDelete,
-                  isAdmin: GetIt.I<LoginCubit>().currentUser!.role == "admin",
-                );
-              },
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Card(
+                    elevation: 1,
+                    color: AppColors.whiteColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Total Reports",
+                            style: TextStyle(
+                              color: AppColors.jonquil,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: AppColors.jonquil,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              GetIt.I<StatisticCubit>().users.length.toString(),
+                              style: TextStyle(
+                                color: AppColors.whiteColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: GetIt.I<StatisticCubit>().users.length,
+                    itemBuilder: (context, index) {
+                      return UserCardWidget(
+                        index: index,
+                        student: GetIt.I<StatisticCubit>().users[index],
+                        isDelete: widget.isDelete,
+                        isAdmin:
+                            GetIt.I<LoginCubit>().currentUser!.role == "admin",
+                      );
+                    },
+                  ),
+                ],
+              ),
             );
           }
           return Center(child: Text("No Data"));

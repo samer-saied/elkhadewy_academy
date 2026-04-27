@@ -96,7 +96,8 @@ class LatestChapterCardWidget extends StatelessWidget {
                             ],
                           ),
                           SizedBox(height: 5),
-                          Text(course!.title, style: textTheme.bodyMedium),
+                          if (course != null)
+                            Text(course!.title, style: textTheme.bodyMedium),
                           Expanded(
                             child: Align(
                               alignment: Alignment.bottomRight,

@@ -55,6 +55,7 @@ class CourseListCardWidget extends StatelessWidget {
                         ? CachedNetworkImage(
                             imageUrl: course.imgLink!,
                             fit: BoxFit.cover,
+                            memCacheWidth: 200,
                           )
                         : Image.asset(
                             "assets/logo/logo_light.jpg",

@@ -8,6 +8,7 @@ import '../../utils/colors.dart';
 import '../more/widgets/setting_item.dart';
 import 'reports/charts/chart_report_screen.dart';
 import 'info/screens/count_students/count_stud_materials_screen.dart';
+import 'reports/log_report/log_report_screen.dart';
 import 'reports/show_reports_bydate.dart';
 import 'reports/show_reports_byuser.dart';
 import 'users/manage_requests.dart';
@@ -427,7 +428,7 @@ class GetBodyAdminPage extends StatelessWidget {
                         ),
                         SettingItem(
                           title: "User-Specific Reports".tr(context),
-                          leadingIcon: Icons.bar_chart_sharp,
+                          leadingIcon: Icons.toc_outlined,
                           bgIconColor: AppColors.jonquil,
                           leadingIconColor: AppColors.whiteColor,
                           onTap: () {
@@ -447,107 +448,49 @@ class GetBodyAdminPage extends StatelessWidget {
                 ],
               ),
 
-              // Column(
-              //   children: [
-              //     Container(
-              //       padding: const EdgeInsets.only(left: 15, right: 15),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(5),
-              //         color: AppColors.whiteColor,
-              //         boxShadow: [
-              //           BoxShadow(
-              //             color: AppColors.lightGrey,
-              //             spreadRadius: 1,
-              //             blurRadius: 1,
-              //             offset: const Offset(
-              //               0,
-              //               1,
-              //             ), // changes position of shadow
-              //           ),
-              //         ],
-              //       ),
-              //       child: Column(
-              //         children: [
-              //           SettingItem(
-              //             title: "Reports By User".tr(context),
-              //             leadingIcon: Icons.bar_chart_sharp,
-              //             bgIconColor: AppColors.jonquil,
-              //             leadingIconColor: AppColors.whiteColor,
-              //             onTap: () {
-              //               HapticFeedback.mediumImpact();
-              //               Navigator.push(
-              //                 context,
-              //                 MaterialPageRoute(
-              //                   builder: (context) => ShowReportsPage(),
-              //                 ),
-              //               );
-              //             },
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //     const SizedBox(height: 10),
-              //   ],
-              // ),
-
-              // Column(
-              //   children: [
-              //     Container(
-              //       padding: const EdgeInsets.only(left: 15, right: 15),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(5),
-              //         color: AppColors.whiteColor,
-              //         boxShadow: [
-              //           BoxShadow(
-              //             color: AppColors.lightGrey,
-              //             spreadRadius: 1,
-              //             blurRadius: 1,
-              //             offset: const Offset(
-              //               0,
-              //               1,
-              //             ), // changes position of shadow
-              //           ),
-              //         ],
-              //       ),
-              //       child: Column(
-              //         children: [
-              //           SettingItem(
-              //             title: "Sort Students By Materials".tr(context),
-              //             leadingIcon: Icons.bar_chart_sharp,
-              //             bgIconColor: AppColors.jonquil,
-              //             leadingIconColor: AppColors.whiteColor,
-              //             onTap: () {
-              //               HapticFeedback.mediumImpact();
-              //               Navigator.push(
-              //                 context,
-              //                 MaterialPageRoute(
-              //                   builder: (context) =>
-              //                       CountStudMaterialsScreen(),
-              //                 ),
-              //               );
-              //             },
-              //           ),
-              //           SettingItem(
-              //             title: "Sort Students By Role".tr(context),
-              //             leadingIcon: Icons.bar_chart_sharp,
-              //             bgIconColor: AppColors.jonquil,
-              //             leadingIconColor: AppColors.whiteColor,
-              //             onTap: () {
-              //               HapticFeedback.mediumImpact();
-              //               Navigator.push(
-              //                 context,
-              //                 MaterialPageRoute(
-              //                   builder: (context) => ShowReportsPage(),
-              //                 ),
-              //               );
-              //             },
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //     const SizedBox(height: 10),
-              //   ],
-              // ),
+              ////////////////////////////  Log Reports  ////////////////////
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: AppColors.whiteColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.lightGrey,
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(
+                            0,
+                            1,
+                          ), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        SettingItem(
+                          title: "Sign In Log Report".tr(context),
+                          leadingIcon: Icons.login,
+                          bgIconColor: AppColors.jonquil,
+                          leadingIconColor: AppColors.whiteColor,
+                          onTap: () {
+                            HapticFeedback.mediumImpact();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LogReportScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
 
               ///
               ///

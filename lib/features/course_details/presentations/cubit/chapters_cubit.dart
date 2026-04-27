@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../auth/bloc/login_cubit.dart';
 import '../../data/chapter_model.dart';
 import '../../data/chapters_repository.dart';
 
@@ -33,7 +36,15 @@ class ChaptersCubit extends Cubit<ChaptersState> {
     required List<String> userMaterials,
     bool forceRefresh = false,
   }) async {
-    if (latestChapters.isNotEmpty && !forceRefresh) {
+    final prefs = await SharedPreferences.getInstance();
+    String phone = prefs.getString('last_login_phone') ?? "unknown";
+    String currentUserPhone =
+        GetIt.I<LoginCubit>().currentUser?.phone ?? "unknown";
+    print("phone: $phone");
+    print("currentUserPhone: $currentUserPhone");
+    if (latestChapters.isNotEmpty &&
+        !forceRefresh &&
+        currentUserPhone == phone) {
       emit(ChaptersLoaded(items: latestChapters));
       return;
     }

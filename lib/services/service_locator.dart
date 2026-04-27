@@ -2,9 +2,11 @@ import 'package:get_it/get_it.dart';
 
 import '../core/remote/firebase_firestore_service.dart';
 import '../features/admin/info/cubit/statistic_cubit.dart';
-import '../features/auth/bloc/login_cubit.dart';
+import '../features/auth/bloc/log_report_cubit.dart';
+import 'package:unimind/features/auth/bloc/login_cubit.dart';
 import '../features/auth/repository/auth_repository.dart';
 import '../features/auth/bloc/register_cubit.dart';
+import '../features/auth/repository/log_repository.dart';
 import '../features/course_details/data/chapters_repository.dart';
 import '../features/course_details/presentations/cubit/chapters_cubit.dart';
 import '../features/course_details/presentations/cubit/request_show_course_cubit.dart';
@@ -46,8 +48,10 @@ class ServiceLocator {
     getIt.registerLazySingleton<AuthRepository>(
       () => AuthRepository(getIt<FirebaseFirestoreService>()),
     );
+    getIt.registerLazySingleton<LogRepository>(
+      () => LogRepository(getIt<FirebaseFirestoreService>()),
+    );
     ///////////////////   CUBITS    ///////////////////////////
-    getIt.registerLazySingleton<NavigationCubit>(() => NavigationCubit());
     getIt.registerLazySingleton<RegisterCubit>(
       () => RegisterCubit(getIt<AuthRepository>()),
     );
@@ -56,11 +60,15 @@ class ServiceLocator {
       () => LoginCubit(getIt<AuthRepository>()),
     );
 
-    getIt.registerSingleton<CategoryCubit>(
-      CategoryCubit(getIt<CategoryRepository>()),
+    getIt.registerLazySingleton<LogReportCubit>(
+      () => LogReportCubit(getIt<LogRepository>()),
     );
-    getIt.registerSingleton<CourseCubit>(
-      CourseCubit(getIt<CoursesRepository>()),
+
+    getIt.registerLazySingleton<CategoryCubit>(
+      () => CategoryCubit(getIt<CategoryRepository>()),
+    );
+    getIt.registerLazySingleton<CourseCubit>(
+      () => CourseCubit(getIt<CoursesRepository>()),
     );
     getIt.registerLazySingleton<ChaptersCubit>(
       () => ChaptersCubit(getIt<ChaptersRepository>()),
@@ -79,7 +87,8 @@ class ServiceLocator {
     );
 
     getIt.registerLazySingleton<NewsCubit>(() => NewsCubit());
-    getIt.registerLazySingleton<LocaleCubit>(() => LocaleCubit());
-    getIt.registerLazySingleton<ThemesCubit>(() => ThemesCubit());
+    getIt.registerSingleton<LocaleCubit>(LocaleCubit());
+    getIt.registerSingleton<ThemesCubit>(ThemesCubit());
+    getIt.registerSingleton<NavigationCubit>(NavigationCubit());
   }
 }

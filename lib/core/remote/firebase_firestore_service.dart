@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class FirebaseFirestoreService {
   Future<List<QueryDocumentSnapshot>> getCollectionsByField({
@@ -13,6 +14,7 @@ class FirebaseFirestoreService {
     int? limit,
     String? orderByField,
     bool isAscending = true,
+    DocumentSnapshot? startAfterDocument,
   }) async {
     Query<Object?> query = FirebaseFirestore.instance.collection(collectionId);
 
@@ -41,6 +43,10 @@ class FirebaseFirestoreService {
 
     if (limit != null) {
       query = query.limit(limit);
+    }
+
+    if (startAfterDocument != null) {
+      query = query.startAfterDocument(startAfterDocument);
     }
 
     final querySnapshot = await query.get();
@@ -123,19 +129,26 @@ class FirebaseFirestoreService {
     required String collectionId,
     String? orderByField,
     bool descending = false,
+    DocumentSnapshot? startAfterDocument,
+    int? limit,
   }) async {
     final CollectionReference reference = FirebaseFirestore.instance.collection(
       collectionId,
     );
+    Query query = reference;
+
     if (orderByField != null) {
-      final querySnapshot = await reference
-          .orderBy(orderByField, descending: descending)
-          .get();
-      return querySnapshot.docs;
-    } else {
-      final querySnapshot = await reference.get();
-      return querySnapshot.docs;
+      query = query.orderBy(orderByField, descending: descending);
     }
+    if (limit != null) {
+      query = query.limit(limit);
+    }
+    if (startAfterDocument != null) {
+      query = query.startAfterDocument(startAfterDocument);
+    }
+
+    final querySnapshot = await query.get();
+    return querySnapshot.docs;
   }
 
   Future<List<QueryDocumentSnapshot>> getSubCollection({
@@ -191,6 +204,32 @@ class FirebaseFirestoreService {
         .orderBy(orderByField, descending: descending)
         .snapshots()
         .listen((event) => onChange(event.docs));
+  }
+
+  Future<List<QueryDocumentSnapshot>> getDocumentsByIds({
+    required String collectionId,
+    required List<String> documentIds,
+  }) async {
+    if (documentIds.isEmpty) return [];
+
+    List<QueryDocumentSnapshot> allDocs = [];
+
+    // Firestore whereIn supports up to 10 items at a time.
+    for (int i = 0; i < documentIds.length; i += 10) {
+      final chunk = documentIds.sublist(
+        i,
+        i + 10 > documentIds.length ? documentIds.length : i + 10,
+      );
+
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection(collectionId)
+          .where(FieldPath.documentId, whereIn: chunk)
+          .get();
+
+      allDocs.addAll(querySnapshot.docs);
+    }
+
+    return allDocs;
   }
 
   Future<DocumentSnapshot> getDocument({
@@ -335,14 +374,52 @@ class FirebaseFirestoreService {
     dynamic value2,
   }) async {
     Query<Map<String, dynamic>> reference = FirebaseFirestore.instance
-        .collection(collectionId)
-        .where(field ?? "", isEqualTo: value);
+        .collection(collectionId);
+
+    if (field != null) {
+      reference = reference.where(field, isEqualTo: value);
+    }
 
     if (field2 != null && value2 != null) {
       reference = reference.where(field2, isEqualTo: value2);
     }
-    final AggregateQuerySnapshot count = await reference.count().get();
-    return count.count ?? 0;
+    try {
+      final AggregateQuerySnapshot count = await reference.count().get();
+      return count.count ?? 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  Future<int> getDocumentsCountWithFilter({
+    required String collectionId,
+    String? filterField,
+    dynamic isGreaterThanOrEqualTo,
+    dynamic isLessThan,
+  }) async {
+    Query<Map<String, dynamic>> reference = FirebaseFirestore.instance
+        .collection(collectionId);
+    if (filterField != null) {
+      if (isGreaterThanOrEqualTo != null) {
+        reference = reference.where(
+          filterField,
+          isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
+        );
+      }
+      if (isLessThan != null) {
+        reference = reference.where(filterField, isLessThan: isLessThan);
+      }
+    }
+    try {
+      final AggregateQuerySnapshot count = await reference.count().get();
+      debugPrint(
+        'getDocumentsCountWithFilter: collection=$collectionId, field=$filterField, gte=$isGreaterThanOrEqualTo, lt=$isLessThan => count=${count.count}',
+      );
+      return count.count ?? 0;
+    } catch (e) {
+      debugPrint('getDocumentsCountWithFilter ERROR: $e');
+      return 0;
+    }
   }
 
   Future<int> getDocumentsCountsByDate({
@@ -350,19 +427,22 @@ class FirebaseFirestoreService {
     String? field,
     dynamic valueDate,
   }) async {
-    AggregateQuerySnapshot count = await FirebaseFirestore.instance
+    Query<Map<String, dynamic>> reference = FirebaseFirestore.instance
         .collection(collectionId)
-        .orderBy("startDate", descending: true)
-        .where(field ?? "", isGreaterThanOrEqualTo: valueDate.toString())
-        .where(
-          field ?? "",
-          isLessThanOrEqualTo: valueDate
-              .subtract(const Duration(days: -1))
-              .toString(),
-        )
-        .count()
-        .get();
+        .orderBy("startDate", descending: true);
 
+    if (field != null) {
+      reference = reference
+          .where(field, isGreaterThanOrEqualTo: valueDate.toString())
+          .where(
+            field,
+            isLessThanOrEqualTo: valueDate
+                .subtract(const Duration(days: -1))
+                .toString(),
+          );
+    }
+
+    AggregateQuerySnapshot count = await reference.count().get();
     return count.count ?? 0;
   }
 

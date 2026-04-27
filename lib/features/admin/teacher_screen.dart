@@ -6,8 +6,7 @@ import '../../core/navigation/app_routes.dart';
 import '../../general/widgets/headers_widgets.dart';
 import '../../utils/colors.dart';
 import '../more/widgets/setting_item.dart';
-import 'info/screens/count_students/count_stud_materials_screen.dart';
-import 'reports/charts/chart_report_screen.dart';
+import 'info/screens/count_students/teacher_count_stud_materials_screen.dart';
 import 'reports/show_reports_bydate.dart';
 import 'reports/show_reports_byuser.dart';
 import 'users/manage_requests.dart';
@@ -54,119 +53,6 @@ class GetBodyTeacherPage extends StatelessWidget {
           ///    User Menu ( Statistics )
           Column(
             children: [
-              ///
-              ///
-              ///      Add News Post
-              // Column(
-              //   children: [
-              //     Container(
-              //       padding: const EdgeInsets.only(left: 15, right: 15),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(5),
-              //         color: AppColors.whiteColor,
-              //         boxShadow: [
-              //           BoxShadow(
-              //             color: AppColors.lightGrey,
-              //             spreadRadius: 1,
-              //             blurRadius: 1,
-              //             offset: const Offset(
-              //               0,
-              //               1,
-              //             ), // changes position of shadow
-              //           ),
-              //         ],
-              //       ),
-              //       child: Column(
-              //         children: [
-              //           SettingItem(
-              //             title: "Add New News post".tr(context),
-              //             leadingIcon: Icons.campaign,
-              //             bgIconColor: AppColors.jonquil,
-              //             leadingIconColor: AppColors.whiteColor,
-              //             onTap: () {
-              //               HapticFeedback.mediumImpact();
-              //               Navigator.pushNamed(context, '/AddNewsPage');
-              //             },
-              //           ),
-              //           Padding(
-              //             padding: const EdgeInsets.only(left: 45),
-              //             child: Divider(height: 0, color: AppColors.grey),
-              //           ),
-              //           SettingItem(
-              //             title: "Manage News Section".tr(context),
-              //             leadingIcon: Icons.edit_rounded,
-              //             bgIconColor: AppColors.jonquil,
-              //             leadingIconColor: AppColors.whiteColor,
-              //             onTap: () {
-              //               HapticFeedback.mediumImpact();
-              //               Navigator.pushNamed(context, AppRoutes.manageNews);
-              //             },
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //     const SizedBox(height: 10),
-              //   ],
-              // ),
-
-              ///
-              ///
-              ///      Add Materials
-              // Column(
-              //   children: [
-              //     Container(
-              //       padding: const EdgeInsets.only(left: 15, right: 15),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(5),
-              //         color: AppColors.whiteColor,
-              //         boxShadow: [
-              //           BoxShadow(
-              //             color: AppColors.lightGrey,
-              //             spreadRadius: 1,
-              //             blurRadius: 1,
-              //             offset: const Offset(
-              //               0,
-              //               1,
-              //             ), // changes position of shadow
-              //           ),
-              //         ],
-              //       ),
-              //       child: Column(
-              //         children: [
-              //           SettingItem(
-              //             title: "Add New Course".tr(context),
-              //             leadingIcon: Icons.bookmark_add_rounded,
-              //             bgIconColor: AppColors.jonquil,
-              //             leadingIconColor: AppColors.whiteColor,
-              //             onTap: () {
-              //               HapticFeedback.mediumImpact();
-              //               Navigator.pushNamed(context, AppRoutes.addCourse);
-              //             },
-              //           ),
-              //           Padding(
-              //             padding: const EdgeInsets.only(left: 45),
-              //             child: Divider(height: 0, color: AppColors.lightGrey),
-              //           ),
-              //           SettingItem(
-              //             title: "Manage Courses".tr(context),
-              //             leadingIcon: Icons.edit,
-              //             bgIconColor: AppColors.jonquil,
-              //             leadingIconColor: AppColors.whiteColor,
-              //             onTap: () {
-              //               HapticFeedback.mediumImpact();
-              //               Navigator.pushNamed(
-              //                 context,
-              //                 AppRoutes.manageCourse,
-              //               );
-              //             },
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //     const SizedBox(height: 10),
-              //   ],
-              // ),
-
               ///
               ///
               ///
@@ -333,7 +219,7 @@ class GetBodyTeacherPage extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    CountStudMaterialsScreen(),
+                                    CountStudMaterialsTeacherScreen(),
                               ),
                             );
                           },
@@ -410,25 +296,25 @@ class GetBodyTeacherPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 45),
                           child: Divider(height: 0, color: AppColors.lightGrey),
                         ),
-                        SettingItem(
-                          title: "Weekly Analytics Chart".tr(context),
-                          leadingIcon: Icons.bar_chart_sharp,
-                          bgIconColor: AppColors.jonquil,
-                          leadingIconColor: AppColors.whiteColor,
-                          onTap: () {
-                            HapticFeedback.mediumImpact();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ChartReportScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 45),
-                          child: Divider(height: 0, color: AppColors.lightGrey),
-                        ),
+                        // SettingItem(
+                        //   title: "Weekly Analytics Chart".tr(context),
+                        //   leadingIcon: Icons.bar_chart_sharp,
+                        //   bgIconColor: AppColors.jonquil,
+                        //   leadingIconColor: AppColors.whiteColor,
+                        //   onTap: () {
+                        //     HapticFeedback.mediumImpact();
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => ChartReportScreen(),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 45),
+                        //   child: Divider(height: 0, color: AppColors.lightGrey),
+                        // ),
                         SettingItem(
                           title: "User-Specific Reports".tr(context),
                           leadingIcon: Icons.bar_chart_sharp,
@@ -450,6 +336,100 @@ class GetBodyTeacherPage extends StatelessWidget {
                   const SizedBox(height: 10),
                 ],
               ),
+
+              ////////////////////////////  Log Reports  ////////////////////
+              // Column(
+              //   children: [
+              //     Container(
+              //       padding: const EdgeInsets.only(left: 15, right: 15),
+              //       decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(5),
+              //         color: AppColors.whiteColor,
+              //         boxShadow: [
+              //           BoxShadow(
+              //             color: AppColors.lightGrey,
+              //             spreadRadius: 1,
+              //             blurRadius: 1,
+              //             offset: const Offset(
+              //               0,
+              //               1,
+              //             ), // changes position of shadow
+              //           ),
+              //         ],
+              //       ),
+              //       child: Column(
+              //         children: [
+              //           SettingItem(
+              //             title: "Log Reports".tr(context),
+              //             leadingIcon: Icons.login,
+              //             bgIconColor: AppColors.jonquil,
+              //             leadingIconColor: AppColors.whiteColor,
+              //             onTap: () {
+              //               HapticFeedback.mediumImpact();
+              //               Navigator.push(
+              //                 context,
+              //                 MaterialPageRoute(
+              //                   builder: (context) => LogReportScreen(),
+              //                 ),
+              //               );
+              //             },
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     const SizedBox(height: 10),
+              //   ],
+              // ),
+
+              ////////////////////////////  Refresh all users  ////////////////////
+              // Column(
+              //   children: [
+              //     Container(
+              //       padding: const EdgeInsets.only(left: 15, right: 15),
+              //       decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(5),
+              //         color: AppColors.whiteColor,
+              //         boxShadow: [
+              //           BoxShadow(
+              //             color: AppColors.lightGrey,
+              //             spreadRadius: 1,
+              //             blurRadius: 1,
+              //             offset: const Offset(
+              //               0,
+              //               1,
+              //             ), // changes position of shadow
+              //           ),
+              //         ],
+              //       ),
+              //       child: Column(
+              //         children: [
+              //           SettingItem(
+              //             title: "Active refresh 4 All users".tr(context),
+              //             leadingIcon: Icons.login,
+              //             bgIconColor: AppColors.jonquil,
+              //             leadingIconColor: AppColors.whiteColor,
+              //             onTap: () async {
+              //               HapticFeedback.mediumImpact();
+              //               List<UserModel> users =
+              //                   await GetIt.I<StatisticCubit>()
+              //                       .getUsersDataBySearch(
+              //                         searchValue: "active",
+              //                         searchField: "status",
+              //                       );
+              //               for (var i = 0; i < users.length; i++) {
+              //                 print("${i + 1} ${users[i].name}");
+              //                 await GetIt.I<RegisterCubit>().updateUser(
+              //                   users[i].copyWith(refreshToken: true),
+              //                 );
+              //               }
+              //             },
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     const SizedBox(height: 10),
+              //   ],
+              // ),
             ],
           ),
         ],

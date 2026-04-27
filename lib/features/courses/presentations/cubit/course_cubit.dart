@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../auth/bloc/login_cubit.dart';
 import '../../data/models/course_model.dart';
@@ -44,6 +45,7 @@ class CourseCubit extends Cubit<CourseState> {
         collegeId,
         yearId,
       );
+
       emit(CourseLoaded(items: specificCourses));
     } catch (e) {
       emit(CourseOperationFailure(error: e.toString()));
@@ -72,17 +74,20 @@ class CourseCubit extends Cubit<CourseState> {
     bool forceRefresh = false,
   }) async {
     emit(CourseLoading());
-    if (userCourses.isNotEmpty && !forceRefresh) {
+    final prefs = await SharedPreferences.getInstance();
+    String? phone = prefs.getString('last_login_phone') ?? "unknown";
+    String currentUserPhone = GetIt.I<LoginCubit>().currentUser?.phone ?? "";
+    print("phone: $phone");
+    print("currentUserPhone: $currentUserPhone");
+    if (userCourses.isNotEmpty && !forceRefresh && currentUserPhone == phone) {
       emit(CourseLoaded(items: userCourses));
       return;
     }
     try {
       userCourses.clear();
-      for (String materialId in materials) {
-        final item = await _repository.getById(materialId);
-        if (item != null) {
-          userCourses.add(item);
-        }
+      if (materials.isNotEmpty) {
+        final items = await _repository.getByIds(materials);
+        userCourses.addAll(items);
       }
       emit(CourseLoaded(items: userCourses));
     } catch (e) {
@@ -134,5 +139,12 @@ class CourseCubit extends Cubit<CourseState> {
     } catch (e) {
       emit(CourseOperationFailure(error: e.toString()));
     }
+  }
+
+  void clearCourses() {
+    userCourses.clear();
+    allCourses.clear();
+    specificCourses.clear();
+    emit(CourseInitial());
   }
 }

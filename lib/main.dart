@@ -3,9 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/navigation/app_routes.dart';
 import 'core/protect_screen/protect_screen.dart';
-import 'features/auth/bloc/login_cubit.dart';
+import 'features/auth/bloc/log_report_cubit.dart';
+import 'package:unimind/features/auth/bloc/login_cubit.dart';
 import 'features/auth/bloc/register_cubit.dart';
-import 'features/auth/presentation/pages/login_page.dart';
 import 'features/courses/presentations/cubit/course_cubit.dart';
 import 'features/homepage/presentations/cubit/carousel_cubit.dart';
 import 'features/homepage/presentations/cubit/category_cubit.dart';
@@ -74,6 +74,9 @@ class MainApp extends StatelessWidget {
         BlocProvider<CarouselCubit>(
           create: (context) => GetIt.I.get<CarouselCubit>(),
         ),
+        BlocProvider<LogReportCubit>(
+          create: (context) => GetIt.I.get<LogReportCubit>(),
+        ),
       ],
 
       child: MainAppWidget(),
@@ -101,7 +104,7 @@ class MainAppWidget extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               debugShowCheckedModeBanner: false,
-              home: LoginScreen(),
+              initialRoute: AppRoutes.login,
               onGenerateRoute: appOnGenerateRoute,
               theme: AppThemes.lightTheme,
               // darkTheme: AppThemes.darkTheme,

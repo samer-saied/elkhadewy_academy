@@ -21,6 +21,8 @@ class CoursesGirdSectionWidget extends StatelessWidget {
     return BlocBuilder<CourseCubit, CourseState>(
       bloc: GetIt.I.get<CourseCubit>()
         ..fetchSpecificCoursesByCollegeId(collegeId, yearId),
+      buildWhen: (previous, current) =>
+          current is CourseLoaded || current is CourseLoading,
       builder: (context, state) {
         if (state is CourseLoaded) {
           final items = state.items;

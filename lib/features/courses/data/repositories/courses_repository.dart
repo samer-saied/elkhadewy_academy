@@ -91,6 +91,14 @@ class CoursesRepository {
     return CourseModel.fromFirestore(doc);
   }
 
+  Future<List<CourseModel>> getByIds(List<String> ids) async {
+    final docs = await _service.getDocumentsByIds(
+      collectionId: collectionId,
+      documentIds: ids,
+    );
+    return docs.map((d) => CourseModel.fromFirestore(d)).toList();
+  }
+
   Future<void> add(CourseModel model) async {
     await _service.addDocument(
       collectionId: collectionId,

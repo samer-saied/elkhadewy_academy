@@ -10,6 +10,7 @@ class ChaptersRepository {
   final String subCollectionId = 'courseId';
   final Map<String, Chapter> _cache =
       {}; // simple in-memory cache keyed by 'courseId/chapterId'
+  final Map<String, List<Chapter>> _listCache = {}; // cached lists by courseId
 
   ChaptersRepository(this._service);
 
@@ -31,15 +32,22 @@ class ChaptersRepository {
     String? orderBy,
     bool descending = false,
   }) async {
+    if (_listCache.containsKey(courseId)) {
+      return _listCache[courseId]!;
+    }
+
     final docs = await _service.getCollectionsByField(
       collectionId: collectionId,
       filterField: subCollectionId,
       filterValue: courseId,
     );
-    return docs.map((d) {
+    final items = docs.map((d) {
       Chapter chapterData = Chapter.fromFirestore(d);
       return chapterData;
     }).toList();
+
+    _listCache[courseId] = items;
+    return items;
   }
 
   // /// Return a cached chapter if available, otherwise null.
@@ -91,6 +99,7 @@ class ChaptersRepository {
           FirebaseFirestore.instance.collection(collectionId).doc().id,
       data: chapter.toFirestore(),
     );
+    _listCache.remove(courseId);
   }
 
   Future<void> update(String courseId, Chapter chapter) async {
@@ -107,6 +116,7 @@ class ChaptersRepository {
     // invalidate cache for this chapter
     final key = '\$courseId/\$chapter.id';
     _cache.remove(key);
+    _listCache.remove(courseId);
   }
 
   Future<void> delete(String courseId, String chapterId) async {
@@ -117,5 +127,6 @@ class ChaptersRepository {
       subDocumentId: chapterId,
     );
     _cache.remove('\$courseId/\$chapterId');
+    _listCache.remove(courseId);
   }
 }

@@ -30,7 +30,7 @@ class ChartReportScreen extends StatelessWidget {
                       children: [
                         SectionHeaderSmallWidget(
                           title: "Weekly Chart",
-                          color: AppColors.prussianBlue,
+                          color: AppColors.jonquil,
                         ),
                       ],
                     ),
@@ -78,8 +78,8 @@ class ChartReportScreen extends StatelessWidget {
                                   toY: e["counts"].toDouble(),
                                   gradient: LinearGradient(
                                     colors: [
-                                      AppColors.prussianBlue,
-                                      AppColors.prussianBlue,
+                                      AppColors.jonquilLight,
+                                      AppColors.jonquil,
                                     ],
                                     begin: Alignment.bottomCenter,
                                     end: Alignment.topCenter,
@@ -105,7 +105,7 @@ class ChartReportScreen extends StatelessWidget {
                       children: [
                         SectionHeaderSmallWidget(
                           title: "Weekly Reports",
-                          color: AppColors.prussianBlue,
+                          color: AppColors.jonquil,
                         ),
                       ],
                     ),
@@ -119,40 +119,10 @@ class ChartReportScreen extends StatelessWidget {
                         String formattedDate = DateFormat(
                           'EEE d MMMM y',
                         ).format(dateTime);
-                        return Card(
-                          elevation: 1,
-                          color: AppColors.whiteColor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  formattedDate,
-                                  style: TextStyle(
-                                    color: AppColors.prussianBlue,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.prussianBlue,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Text(
-                                    element["counts"].toString(),
-                                    style: TextStyle(
-                                      color: AppColors.whiteColor,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        return TotalInfoWidget(
+                          infoTotaltxt: element["counts"].toString(),
+                          infoTxt: formattedDate,
+                          color: AppColors.jonquil,
                         );
                       },
                     ),
@@ -162,6 +132,57 @@ class ChartReportScreen extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class TotalInfoWidget extends StatelessWidget {
+  final String infoTxt;
+  final String infoTotaltxt;
+  final Color? color;
+  const TotalInfoWidget({
+    super.key,
+    required this.infoTxt,
+    required this.infoTotaltxt,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 1,
+      color: AppColors.whiteColor,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              infoTxt,
+              style: TextStyle(
+                color: color ?? AppColors.prussianBlue,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: color ?? AppColors.prussianBlue,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                infoTotaltxt,
+                style: TextStyle(
+                  color: AppColors.whiteColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

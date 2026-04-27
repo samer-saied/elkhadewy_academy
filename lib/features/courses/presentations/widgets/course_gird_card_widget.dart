@@ -53,6 +53,7 @@ class CourseGridCardWidget extends StatelessWidget {
                           ? CachedNetworkImage(
                               imageUrl: course.imgLink!,
                               fit: BoxFit.cover,
+                              memCacheWidth: 400,
                               errorWidget: (context, url, error) => Center(
                                 child: HugeIcon(
                                   icon: HugeIcons.strokeRoundedImageCrop,

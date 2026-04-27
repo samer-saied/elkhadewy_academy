@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:unimind/features/courses/data/models/course_model.dart';
 import 'package:unimind/utils/colors.dart';
 
-import '../../../../../general/widgets/no_data_widget.dart';
+import '../../../../auth/bloc/login_cubit.dart';
+import '../../../../courses/presentations/cubit/course_cubit.dart';
+import '../../../chapters/manage_chapters/simple_title_widget.dart';
 import '../../../users/show_users.dart';
 import '../../cubit/statistic_cubit.dart';
 import '../../models/info_chip_model.dart';
-import 'filter_list_widget.dart';
-import 'progress_segment_widget.dart';
 
-class CountStudMaterialsScreen extends StatefulWidget {
+class CountStudMaterialsTeacherScreen extends StatefulWidget {
   final bool? isAdmin;
-  const CountStudMaterialsScreen({super.key, this.isAdmin = false});
+  const CountStudMaterialsTeacherScreen({super.key, this.isAdmin = false});
 
   @override
-  State<CountStudMaterialsScreen> createState() =>
+  State<CountStudMaterialsTeacherScreen> createState() =>
       _CountStudMaterialsScreenState();
 }
 
-class _CountStudMaterialsScreenState extends State<CountStudMaterialsScreen> {
+class _CountStudMaterialsScreenState
+    extends State<CountStudMaterialsTeacherScreen> {
   late final StatisticCubit _statisticCubit;
 
   @override
   void initState() {
     super.initState();
     _statisticCubit = GetIt.I<StatisticCubit>();
-    // Call API exactly once when the widget is created
-    _statisticCubit.getCountStudentsByFaculty();
   }
 
   @override
@@ -35,105 +35,70 @@ class _CountStudMaterialsScreenState extends State<CountStudMaterialsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Students by Materials')),
       body: SingleChildScrollView(
-        child: BlocProvider.value(
-          value: _statisticCubit,
-          child: Column(
-            children: [
-              //////////  Filter CARD    ///////////////////
-              const FilterScreen(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //////////  Filter CARD    ///////////////////
+            /////////////   SELECT WIDGET   ////////////////////////
+            SimpleTitleWidget(title: "Select the course"),
 
-              //////////  RESULTS AND CHART AREA   /////////
-              BlocBuilder<StatisticCubit, StatisticState>(
-                builder: (context, state) {
-                  if (state is StatisticLoading || state is StatisticInitial) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-
-                  final infoChips = _statisticCubit.infoChips;
-                  final hasData = infoChips.isNotEmpty;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      //////////  TOTAL CARD STUDENTS   ///////////////////
-                      buildSectionTitle('Results'),
-                      MaterialCardInfoHeaderWidget(
-                        desc:
-                            "${_statisticCubit.selectedFacultyValue} Students \n Year : ${_statisticCubit.selectedAcademicYear + 1}",
-                        value: hasData
-                            ? infoChips.last.totalStudents.toString()
-                            : "0",
-                      ),
-
-                      //////////  Chart CARD and Courses List ///////////////////
-                      if (state is StatisticLoaded && hasData) ...[
-                        buildSectionTitle('Chart Results'),
-                        Card(
-                          color: AppColors.whiteColor,
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: BarChartWidget(infoChips: infoChips),
-                          ),
-                        ),
-                        buildSectionTitle('Courses'),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: infoChips.length,
-                          itemBuilder: (context, index) {
-                            final infoChip = infoChips[index];
-                            final colorValue =
-                                int.tryParse(infoChip.courseColor) ??
-                                0xFF000000; // Fallback to black if parsing fails
-
-                            return GestureDetector(
-                              onTap: () async {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ShowUsersPage(
-                                      field: "materials",
-                                      value: infoChip.courseId,
-                                      title: infoChip.courseTitle,
-                                      isDelete: true,
-                                      isAll: false,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: MaterialCardInfoWidget(
-                                color: Color(colorValue),
-                                index: index,
-                                infoChip: infoChip,
-                              ),
-                            );
-                          },
-                        ),
-                      ] else if (state is StatisticLoaded && !hasData) ...[
-                        const Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: NoDataWidget(noDataTxt: "No Data Found"),
-                        ),
-                      ] else ...[
-                        const Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Center(
-                            child: Text('Count Students by Materials'),
-                          ),
-                        ),
-                      ],
-                    ],
+            //////////  RESULTS AND CHART AREA   /////////
+            BlocBuilder<StatisticCubit, StatisticState>(
+              bloc: _statisticCubit,
+              builder: (context, state) {
+                if (state is StatisticInitial) {
+                  return const Center(child: Text('Choose a Course To Start'));
+                }
+                if (state is StatisticLoading) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40.0),
+                    child: Center(child: CircularProgressIndicator()),
                   );
-                },
-              ),
-            ],
-          ),
+                }
+
+                if (state is StatisticLoaded) {
+                  final courses =
+                      GetIt.I<LoginCubit>().currentUser!.role == "admin"
+                      ? GetIt.I<CourseCubit>().allCourses
+                      : GetIt.I<CourseCubit>().userCourses;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: courses.length,
+                    itemBuilder: (context, index) {
+                      final course = courses[index];
+                      final colorValue =
+                          int.tryParse(course.color!) ??
+                          0xFF000000; // Fallback to black if parsing fails
+
+                      return GestureDetector(
+                        onTap: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ShowUsersPage(
+                                field: "materials",
+                                value: course.id,
+                                title: course.title,
+                                isDelete: true,
+                                isAll: false,
+                              ),
+                            ),
+                          );
+                        },
+                        child: SimpleMaterialCardInfoWidget(
+                          color: Color(colorValue),
+                          index: index,
+                          course: course,
+                        ),
+                      );
+                    },
+                  );
+                }
+                return const Center(child: Text('Choose a Course To Start'));
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -241,6 +206,83 @@ class MaterialCardInfoWidget extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SimpleMaterialCardInfoWidget extends StatelessWidget {
+  final Color color;
+  final int index;
+  final CourseModel course;
+
+  const SimpleMaterialCardInfoWidget({
+    super.key,
+    required this.color,
+    required this.index,
+    required this.course,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withAlpha(20),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 90,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: color),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                (index + 1).toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    course.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Faculty: ${course.collegeTitle} - Year: ${course.yearId}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

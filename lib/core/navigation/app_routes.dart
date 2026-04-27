@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../features/admin/chapters/manage_chapters/manage_lesson.dart';
 import '../../features/admin/manage_courses/add_course.dart';
@@ -8,6 +10,7 @@ import '../../features/admin/manage_courses/manage_courses.dart';
 import '../../features/admin/manage_news/edit_news.dart';
 import '../../features/admin/manage_news/manage_news.dart';
 import '../../features/admin/teacher_screen.dart';
+import 'package:unimind/features/auth/bloc/login_cubit.dart';
 import '../../features/courses/data/models/course_model.dart';
 import '../../features/admin/chapters/add_chapter/add_chapter.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
@@ -55,7 +58,10 @@ Route<dynamic>? appOnGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
     case AppRoutes.login:
       return MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
+        builder: (context) => BlocProvider.value(
+          value: GetIt.I<LoginCubit>(),
+          child: const LoginScreen(),
+        ),
         settings: settings,
       );
     case AppRoutes.main:
@@ -120,7 +126,7 @@ Route<dynamic>? appOnGenerateRoute(RouteSettings settings) {
 
     case AppRoutes.addChapter:
       return MaterialPageRoute(
-        builder: (context) => const AddChapterPage(),
+        builder: (context) => const AddEditChapterPage(),
         settings: settings,
       );
 

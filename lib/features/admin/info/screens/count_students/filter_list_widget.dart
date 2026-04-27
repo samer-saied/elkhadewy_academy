@@ -85,7 +85,8 @@ class BuildFacultyFilters extends StatelessWidget {
             separatorBuilder: (context, index) => const SizedBox(width: 10),
             itemBuilder: (context, index) {
               final isSelected =
-                  GetIt.I<StatisticCubit>().selectedFaculty.toUpperCase() ==
+                  GetIt.I<StatisticCubit>().selectedFacultyValue
+                      .toUpperCase() ==
                   faculties[index].title.toUpperCase();
               return _CustomFilterChip(
                 label: faculties[index].title,

@@ -13,6 +13,8 @@ class CoursesVListSectionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CourseCubit, CourseState>(
       bloc: GetIt.I.get<CourseCubit>(),
+      buildWhen: (previous, current) =>
+          current is CourseLoaded || current is CourseLoading,
       builder: (context, state) {
         if (state is CourseLoaded) {
           return ListView.builder(

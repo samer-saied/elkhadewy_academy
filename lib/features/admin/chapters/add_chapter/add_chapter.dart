@@ -13,9 +13,11 @@ import '../../../auth/presentation/widgets/auth_widgets.dart';
 import '../../../course_details/data/chapter_model.dart';
 import '../../../course_details/presentations/cubit/chapters_cubit.dart';
 import '../../../courses/presentations/cubit/course_cubit.dart';
+import 'drop_down_widget.dart';
 
-class AddChapterPage extends StatelessWidget {
-  const AddChapterPage({super.key});
+class AddEditChapterPage extends StatelessWidget {
+  final Chapter? chapter;
+  const AddEditChapterPage({super.key, this.chapter});
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +27,24 @@ class AddChapterPage extends StatelessWidget {
         backgroundColor: AppColors.jonquil,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          'Add New Chapter',
-          style: TextStyle(
+        title: Text(
+          chapter == null
+              ? 'Add New Chapter'.tr(context)
+              : 'Edit Chapter'.tr(context),
+          style: const TextStyle(
             color: AppColors.whiteColor,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      body: const AddChapterForm(),
+      body: AddChapterForm(chapter: chapter),
     );
   }
 }
 
 class AddChapterForm extends StatefulWidget {
-  const AddChapterForm({super.key});
+  final Chapter? chapter;
+  const AddChapterForm({super.key, this.chapter});
 
   @override
   State<AddChapterForm> createState() => _AddChapterFormState();
@@ -61,6 +66,18 @@ class _AddChapterFormState extends State<AddChapterForm> {
     super.initState();
     _linkController.addListener(() => setState(() {}));
     GetIt.I<CourseCubit>().fetchCourseItems();
+
+    if (widget.chapter != null) {
+      final ch = widget.chapter!;
+      _selectedCourseId = ch.courseId;
+      _titleController.text = ch.title;
+      _indexController.text = ch.orderIndex.toString();
+      _contentController.text = ch.content;
+      _linkController.text = ch.videoUrl;
+      for (var attachment in ch.attachments) {
+        _attachmentControllers.add(TextEditingController(text: attachment));
+      }
+    }
   }
 
   @override
@@ -88,20 +105,26 @@ class _AddChapterFormState extends State<AddChapterForm> {
     }
 
     final chapter = Chapter(
+      id: widget.chapter?.id,
       title: _titleController.text.trim(),
       orderIndex: int.tryParse(_indexController.text.trim()) ?? 0,
       content: _contentController.text.trim(),
       courseId: _selectedCourseId!,
-      createdAt: Timestamp.now(),
+      createdAt: widget.chapter?.createdAt ?? Timestamp.now(),
       videoUrl: _linkController.text.trim(),
-      createdBy: GetIt.I<LoginCubit>().currentUser!.name,
+      createdBy:
+          widget.chapter?.createdBy ?? GetIt.I<LoginCubit>().currentUser!.name,
       attachments: _attachmentControllers
           .map((c) => c.text.trim())
           .where((text) => text.isNotEmpty)
           .toList(),
     );
 
-    GetIt.I<ChaptersCubit>().addChapter(_selectedCourseId!, chapter);
+    if (widget.chapter == null) {
+      GetIt.I<ChaptersCubit>().addChapter(_selectedCourseId!, chapter);
+    } else {
+      GetIt.I<ChaptersCubit>().updateChapter(_selectedCourseId!, chapter);
+    }
   }
 
   @override
@@ -185,7 +208,15 @@ class _AddChapterFormState extends State<AddChapterForm> {
                       ),
                     ),
                     const SizedBox(height: 14),
-                    _buildCourseDropdown(),
+                    /////////////////   DROPDOWN MENU WIDGET   ////////////////////////////
+                    _selectedCourseId != null
+                        ? BuildCourseDropDown(
+                            selectedCourseId: _selectedCourseId!,
+                            onChanged: (v) {
+                              _selectedCourseId = v;
+                            },
+                          )
+                        : CircularProgressIndicator(),
                     const SizedBox(height: 28),
 
                     // ── Video URL ────────────────────────────────────
@@ -322,50 +353,6 @@ class _AddChapterFormState extends State<AddChapterForm> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildCourseDropdown() {
-    return BlocBuilder<CourseCubit, CourseState>(
-      bloc: GetIt.I<CourseCubit>(),
-      builder: (context, state) {
-        final courses = GetIt.I<LoginCubit>().currentUser!.role == "admin"
-            ? GetIt.I<CourseCubit>().allCourses
-            : GetIt.I<CourseCubit>().userCourses;
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(40),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              value: _selectedCourseId,
-              hint: Text(
-                'Select the appropriate course',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge!.copyWith(color: AppColors.grey),
-              ),
-              items: courses.map((course) {
-                return DropdownMenuItem<String>(
-                  value: course.id,
-                  child: Text(course.title),
-                );
-              }).toList(),
-              onChanged: (v) => setState(() => _selectedCourseId = v),
-            ),
-          ),
-        );
-      },
     );
   }
 

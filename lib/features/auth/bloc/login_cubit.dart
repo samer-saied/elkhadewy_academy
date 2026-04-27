@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../core/remote/firebase_firestore_service.dart';
+import '../models/log_report_model.dart';
 import '../models/user_model.dart';
 import '../repository/auth_repository.dart';
-import '../repository/log_repository.dart';
+import 'log_report_cubit.dart';
 import 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -43,15 +43,21 @@ class LoginCubit extends Cubit<LoginState> {
         state.copyWith(status: LoginStatus.failure, errorMessage: e.toString()),
       );
     } finally {
-      LogRepository(GetIt.I<FirebaseFirestoreService>()).addLogReport(
+      LogReportModel logReport = LogReportModel(
         name: currentUser!.name,
         email: currentUser!.email,
-        password: currentUser!.password,
         phone: currentUser!.phone,
+        faculty: currentUser!.faculty,
+        studyYear: currentUser!.studyYear,
+        type: currentUser!.role,
         isSuccess: result is String ? false : true,
-        result: result is String ? result : 'Login successful',
+        result: result is String
+            ? "$result:${state.errorMessage}"
+            : 'Login successful',
         dateTime: DateTime.now().toIso8601String(),
       );
+
+      GetIt.I<LogReportCubit>().addLogReport(logReport);
     }
   }
 

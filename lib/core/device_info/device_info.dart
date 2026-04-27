@@ -91,7 +91,7 @@ class DeviceInfo {
     if (Platform.isAndroid) {
       return "${deviceData['manufacturer']}-${deviceData['brand']}-${deviceData['model']}-${deviceData['name']}-${deviceData['id']}-${deviceData['isPhysicalDevice']}";
     } else if (Platform.isIOS) {
-      return "${deviceData['name']}-${deviceData['systemName']}-${deviceData['model']}";
+      return "${deviceData['name']}-${deviceData['systemName']}-${deviceData['model']}-${deviceData['identifierForVendor']}-${deviceData['isPhysicalDevice']}";
     } else {
       return "${deviceData['type']}-${deviceData['systemName']}-${deviceData['deviceId']}";
     }

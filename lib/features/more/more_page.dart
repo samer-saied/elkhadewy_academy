@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:unimind/features/auth/bloc/login_cubit.dart';
+import 'package:unimind/general/presentations/cubits/navigation_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
+import 'package:unimind/services/service_locator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/navigation/app_routes.dart';
-import '../../general/presentations/cubits/navigation_cubit.dart';
 import '../../utils/app_info.dart';
 import '../../utils/colors.dart';
 import 'widgets/setting_item.dart';
@@ -258,19 +259,37 @@ class GetBody extends StatelessWidget {
                   leadingIcon: Icons.logout,
                   bgIconColor: AppColors.jonquil,
                   onTap: () async {
-                    //////////////////    removeAutoSignIn();
                     HapticFeedback.mediumImpact();
                     final prefs = await SharedPreferences.getInstance();
+                    // 1. Clear auto-sign in
                     await prefs.setBool('auto_signin_allowed', false);
-                    
-                    if (context.mounted) {
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        AppRoutes.login,
-                        (route) => false,
-                      );
+                    await prefs.setString(
+                      'last_login_phone',
+                      GetIt.I<LoginCubit>().currentUser!.phone,
+                    );
+                    try {
+                      // 2. Reset GetIt (disposes all registered singletons/cubits)
+                      GetIt.I<NavigationCubit>().updateIndex(0);
+
+                      // 4. Navigate to Login and clear the navigation stack
+                      if (context.mounted) {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          AppRoutes.login,
+                          (route) => false,
+                        );
+                      }
+                    } catch (e) {
+                      debugPrint("Logout error: $e");
+                      // Fallback navigation if reset fails
+                      if (context.mounted) {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          AppRoutes.login,
+                          (route) => false,
+                        );
+                      }
                     }
-                    GetIt.I<NavigationCubit>().updateIndex(0);
                   },
                 ),
               ],

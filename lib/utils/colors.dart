@@ -9,6 +9,7 @@ class AppColors {
   static const Color whiteColor = Color(0xFFFFFFFF);
   static const Color jonquil = Color(0xFFD69E33);
   static const Color jonquilLight = Color(0xFFE8B65B);
+  static const Color jonquilLightSoft = Color.fromARGB(255, 243, 238, 229);
   static const Color raisinBlack = Color(0xFF2C2827);
   static const Color redWood = Color(0xFFB0413E);
   static const Color emerald = Color(0xFF58BC82);
