@@ -15,20 +15,34 @@ import '../../../../courses/data/models/course_model.dart';
 import '../../../../courses/presentations/cubit/course_cubit.dart';
 import 'latest_chapter_card_widget.dart';
 
-class LatestChapterSectionWidget extends StatelessWidget {
+class LatestChapterSectionWidget extends StatefulWidget {
   const LatestChapterSectionWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<LatestChapterSectionWidget> createState() =>
+      _LatestChapterSectionWidgetState();
+}
+
+class _LatestChapterSectionWidgetState
+    extends State<LatestChapterSectionWidget> {
+  @override
+  void initState() {
+    super.initState();
     List<String> userMaterials = GetIt.I
         .get<LoginCubit>()
         .currentUser!
         .materials;
+    GetIt.I.get<ChaptersCubit>().latestChaptersFunc(
+      userMaterials: userMaterials,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         BlocBuilder<ChaptersCubit, ChaptersState>(
-          bloc: GetIt.I.get<ChaptersCubit>()
-            ..latestChaptersFunc(userMaterials: userMaterials),
+          bloc: GetIt.I.get<ChaptersCubit>(),
           builder: (context, state) {
             if (state is ChaptersLoaded) {
               List<Chapter> latestChapters = GetIt.I

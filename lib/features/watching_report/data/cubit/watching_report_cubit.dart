@@ -93,10 +93,13 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
   }
 
   Future<dynamic> getLastWatchingReport() async {
-    // if (isContinue) {
-    //   return lastWatchingReports;
-    // }
+    if (isContinue) {
+      print("GOOD");
+      return lastWatchingReports;
+    }
     try {
+      print("NOT GOOD");
+
       final reports = await _service.getCollections4LastWatchingReport(
         collectionId: collectionID,
         filterField: 'userId',
@@ -109,6 +112,7 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
       lastWatchingReports = WatchingReport.fromJson(
         reports.first.data() as Map<String, dynamic>,
       );
+      print("lastWatchingReports" + lastWatchingReports.toString());
       isContinue = true;
       return lastWatchingReports;
     } catch (e) {
@@ -152,5 +156,11 @@ class WatchingReportCubit extends Cubit<WatchingReportState> {
     } catch (e) {
       emit(WatchingReportError(message: e.toString()));
     }
+  }
+
+  void clearWatchingReports() {
+    watchingReports.clear();
+    weeklyCountReport.clear();
+    isContinue = false;
   }
 }

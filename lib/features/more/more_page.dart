@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:unimind/features/auth/bloc/login_cubit.dart';
-import 'package:unimind/general/presentations/cubits/navigation_cubit.dart';
+import 'package:unimind/features/course_details/presentations/cubit/chapters_cubit.dart';
+import 'package:unimind/features/courses/presentations/cubit/course_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
-import 'package:unimind/services/service_locator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/navigation/app_routes.dart';
 import '../../utils/app_info.dart';
 import '../../utils/colors.dart';
+import '../watching_report/data/cubit/watching_report_cubit.dart';
 import 'widgets/setting_item.dart';
 
 class MoreScreen extends StatelessWidget {
@@ -263,15 +264,14 @@ class GetBody extends StatelessWidget {
                     final prefs = await SharedPreferences.getInstance();
                     // 1. Clear auto-sign in
                     await prefs.setBool('auto_signin_allowed', false);
-                    await prefs.setString(
-                      'last_login_phone',
-                      GetIt.I<LoginCubit>().currentUser!.phone,
-                    );
-                    try {
-                      // 2. Reset GetIt (disposes all registered singletons/cubits)
-                      GetIt.I<NavigationCubit>().updateIndex(0);
 
-                      // 4. Navigate to Login and clear the navigation stack
+                    // 2. Reset Cubit states for the next login
+                    GetIt.I<CourseCubit>().clearCourses();
+                    GetIt.I<ChaptersCubit>().clearChapters();
+                    GetIt.I<WatchingReportCubit>().clearWatchingReports();
+                    try {
+                      // 1. Navigate to Login and clear the navigation stack first
+                      // This removes the current MainPage (and its listeners) from the tree
                       if (context.mounted) {
                         Navigator.pushNamedAndRemoveUntil(
                           context,
@@ -281,7 +281,6 @@ class GetBody extends StatelessWidget {
                       }
                     } catch (e) {
                       debugPrint("Logout error: $e");
-                      // Fallback navigation if reset fails
                       if (context.mounted) {
                         Navigator.pushNamedAndRemoveUntil(
                           context,

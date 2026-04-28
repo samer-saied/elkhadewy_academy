@@ -129,7 +129,10 @@ class ChartReportScreen extends StatelessWidget {
                   ],
                 );
               }
-              return Center(child: CircularProgressIndicator());
+              return SizedBox(
+                height: MediaQuery.sizeOf(context).height * 0.4,
+                child: Center(child: CircularProgressIndicator()),
+              );
             },
           ),
         ),

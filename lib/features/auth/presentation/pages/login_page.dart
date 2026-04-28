@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 import '../../../../core/navigation/app_routes.dart';
 import '../../../../general/presentations/cubits/locale_cubit.dart';
+import '../../../../general/presentations/cubits/navigation_cubit.dart';
 import '../../../../utils/colors.dart';
 import '../../bloc/login_cubit.dart';
 import '../../bloc/login_state.dart';
@@ -266,6 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
                             FocusScope.of(context).unfocus();
                             HapticFeedback.mediumImpact();
+                            GetIt.I<NavigationCubit>().updateIndex(0);
                             _saveCredentials();
                             GetIt.I<LoginCubit>().login(
                               phone: _phoneController.text,

@@ -1,9 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../auth/bloc/login_cubit.dart';
 import '../../data/chapter_model.dart';
 import '../../data/chapters_repository.dart';
 
@@ -14,7 +11,8 @@ class ChaptersCubit extends Cubit<ChaptersState> {
 
   final ChaptersRepository _repository;
   final List<Chapter> latestChapters = [];
-  late Chapter watchedChapters;
+  // late Chapter watchedChapters;
+  bool isInitialLoaded = false;
 
   Future<void> fetchChapters(String courseId) async {
     emit(ChaptersLoading());
@@ -32,19 +30,17 @@ class ChaptersCubit extends Cubit<ChaptersState> {
     return chapter;
   }
 
+  setInitialLoaded(bool value) {
+    isInitialLoaded = value;
+  }
+
   Future<void> latestChaptersFunc({
     required List<String> userMaterials,
     bool forceRefresh = false,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
-    String phone = prefs.getString('last_login_phone') ?? "unknown";
-    String currentUserPhone =
-        GetIt.I<LoginCubit>().currentUser?.phone ?? "unknown";
-    print("phone: $phone");
-    print("currentUserPhone: $currentUserPhone");
-    if (latestChapters.isNotEmpty &&
-        !forceRefresh &&
-        currentUserPhone == phone) {
+    if (latestChapters.isNotEmpty && !forceRefresh && isInitialLoaded) {
+      isInitialLoaded = true;
+
       emit(ChaptersLoaded(items: latestChapters));
       return;
     }
@@ -56,6 +52,7 @@ class ChaptersCubit extends Cubit<ChaptersState> {
       latestChapters.clear();
       latestChapters.addAll(items);
       latestChapters.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      isInitialLoaded = true;
       emit(ChaptersLoaded(items: latestChapters));
     } catch (e) {
       emit(ChaptersFailure(error: e.toString()));
@@ -93,5 +90,11 @@ class ChaptersCubit extends Cubit<ChaptersState> {
     } catch (e) {
       emit(ChaptersFailure(error: e.toString()));
     }
+  }
+
+  void clearChapters() {
+    latestChapters.clear();
+    isInitialLoaded = false;
+    emit(ChaptersInitial());
   }
 }

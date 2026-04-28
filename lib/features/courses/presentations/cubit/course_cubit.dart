@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../auth/bloc/login_cubit.dart';
 import '../../data/models/course_model.dart';
@@ -17,6 +16,7 @@ class CourseCubit extends Cubit<CourseState> {
   List<CourseModel> userCourses = [];
   List<CourseModel> allCourses = [];
   List<CourseModel> specificCourses = [];
+  bool isInitialLoaded = false;
 
   Future<void> fetchCourseItems({bool forceRefresh = false}) async {
     if (allCourses.isNotEmpty && !forceRefresh) {
@@ -69,26 +69,25 @@ class CourseCubit extends Cubit<CourseState> {
     }
   }
 
+  setInitialLoaded(bool value) {
+    isInitialLoaded = value;
+  }
+
   Future<void> fetchUsersCourse({
     required List<String> materials,
     bool forceRefresh = false,
   }) async {
     emit(CourseLoading());
-    final prefs = await SharedPreferences.getInstance();
-    String? phone = prefs.getString('last_login_phone') ?? "unknown";
-    String currentUserPhone = GetIt.I<LoginCubit>().currentUser?.phone ?? "";
-    print("phone: $phone");
-    print("currentUserPhone: $currentUserPhone");
-    if (userCourses.isNotEmpty && !forceRefresh && currentUserPhone == phone) {
+    if (userCourses.isNotEmpty && !forceRefresh && isInitialLoaded) {
       emit(CourseLoaded(items: userCourses));
       return;
     }
+
     try {
       userCourses.clear();
-      if (materials.isNotEmpty) {
-        final items = await _repository.getByIds(materials);
-        userCourses.addAll(items);
-      }
+      final items = await _repository.getByIds(materials);
+      userCourses.addAll(items);
+      isInitialLoaded = true;
       emit(CourseLoaded(items: userCourses));
     } catch (e) {
       emit(CourseOperationFailure(error: e.toString()));

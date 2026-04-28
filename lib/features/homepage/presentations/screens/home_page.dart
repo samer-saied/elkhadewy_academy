@@ -67,7 +67,7 @@ class HomePage extends StatelessWidget {
 
               CarouselWidget(),
               // DividerWidget(),
-              buildContinueLearningCard(),
+              buildContinueLearningCard(context),
               SectionHeaderWidget(title: "Recent News".tr(context), action: ""),
               NewsSectionWidget(),
 

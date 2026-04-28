@@ -70,13 +70,18 @@ class SingleNewsPage extends StatelessWidget {
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
+                child: Container(
+                  constraints: BoxConstraints(minHeight: 75),
+
                   width: double.infinity,
-                  child: Text(
-                    singleNews.description,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
+                  child: Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      singleNews.description,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
                   ),
                 ),
