@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:screen_capture_event/screen_capture_event.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -36,6 +37,18 @@ class ChapterDetailsWidget extends StatefulWidget {
 
 class _ChapterDetailsWidgetState extends State<ChapterDetailsWidget> {
   CourseModel? currentCourse;
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // Show status bar and navigation bar
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: SystemUiOverlay.values,
+    );
+
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -448,9 +461,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             disableDragSeek: true,
             enableCaption: false,
             forceHD: true,
-            hideThumbnail: false,
-            controlsVisibleAtStart: false,
+            hideThumbnail: true,
+            controlsVisibleAtStart: true,
             hideControls: false,
+            showLiveFullscreenButton: false,
           ),
         )..addListener(() {
           if (_controller.value.isReady) {
@@ -505,13 +519,15 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           minScale: 1,
           child: YoutubePlayer(
             liveUIColor: AppColors.jonquil,
-            aspectRatio: 16 / 9,
+            aspectRatio:
+                MediaQuery.sizeOf(context).height /
+                MediaQuery.sizeOf(context).width,
             controller: _controller,
 
             showVideoProgressIndicator: true,
             progressIndicatorColor: Colors.black,
             progressColors: ProgressBarColors(
-              playedColor: Colors.black,
+              playedColor: const Color.fromARGB(255, 189, 162, 162),
               handleColor: Colors.black,
               bufferedColor: Colors.black,
               backgroundColor: Colors.black,
@@ -550,7 +566,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                 width: MediaQuery.sizeOf(context).width - 20,
                 decoration: BoxDecoration(
-                  color: AppColors.blackColor.withValues(alpha: 0.7),
+                  color: AppColors.blackColor,
                   borderRadius: BorderRadius.circular(
                     5.0,
                   ), // Adjust corner radius as needed
@@ -564,6 +580,35 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                     ),
                     CurrentPosition(),
                     const SizedBox(width: 5),
+
+                    GestureDetector(
+                      onTap: () {
+                        _controller.seekTo(
+                          _controller.value.position -
+                              const Duration(seconds: 10),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.replay_10_rounded,
+                        color: AppColors.whiteColor,
+                        size: 30,
+                      ),
+                    ),
+
+                    GestureDetector(
+                      onTap: () {
+                        _controller.seekTo(
+                          _controller.value.position +
+                              const Duration(seconds: 10),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.forward_10_rounded,
+                        color: AppColors.whiteColor,
+                        size: 30,
+                      ),
+                    ),
+
                     ProgressBar(
                       isExpanded: true,
                       colors: const ProgressBarColors(

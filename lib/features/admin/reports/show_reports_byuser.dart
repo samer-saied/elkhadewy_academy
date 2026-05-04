@@ -5,6 +5,7 @@ import 'package:unimind/features/admin/info/cubit/statistic_cubit.dart';
 
 import '../../../utils/colors.dart';
 import '../../auth/models/user_model.dart';
+import '../chapters/manage_chapters/simple_title_widget.dart';
 import '../info/screens/count_students/filter_list_widget.dart';
 import 'widgets/report_card_widget.dart';
 
@@ -17,7 +18,7 @@ class ShowReportsByUserPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.prussianBlue,
+        backgroundColor: AppColors.jonquil,
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -40,10 +41,7 @@ class ShowReportsByUserPage extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: Text(
-              "Enter User Phone Number",
-              style: TextStyle(color: AppColors.prussianBlue, fontSize: 18),
-            ),
+            child: SimpleTitleWidget(title: "Enter User Phone Number"),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -70,7 +68,7 @@ class ShowReportsByUserPage extends StatelessWidget {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: AppColors.prussianBlue),
+                  borderSide: const BorderSide(color: AppColors.jonquil),
                 ),
                 errorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -96,6 +94,10 @@ class ShowReportsByUserPage extends StatelessWidget {
               //   );
               // },
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10, top: 5),
+            child: Divider(),
           ),
           buildSectionTitle('Results'),
           BlocBuilder<StatisticCubit, StatisticState>(

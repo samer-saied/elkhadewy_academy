@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:unimind/features/admin/info/screens/count_students/teacher_count_stud_materials_screen.dart';
 import 'package:unimind/features/course_details/presentations/cubit/request_show_course_cubit.dart';
 import 'package:unimind/services/lang/app_localizations.dart';
 
@@ -140,43 +141,9 @@ class _ManageRequestsPageState extends State<ManageRequestsPage> {
                         )
                       : Column(
                           children: [
-                            Card(
-                              elevation: 1,
-                              color: AppColors.whiteColor,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Total Reports",
-                                      style: TextStyle(
-                                        color: AppColors.jonquil,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.jonquil,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Text(
-                                        dataList.length.toString(),
-                                        style: TextStyle(
-                                          color: AppColors.whiteColor,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            TotalReportWidget(
+                              text: "Total Reports",
+                              totalNum: dataList.length.toString(),
                             ),
                             ListView.builder(
                               shrinkWrap: true,

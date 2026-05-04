@@ -20,44 +20,52 @@ class BuildCourseDropDown extends StatelessWidget {
     return BlocBuilder<CourseCubit, CourseState>(
       bloc: GetIt.I<CourseCubit>(),
       builder: (context, state) {
-        final courses = GetIt.I<LoginCubit>().currentUser!.role == "admin"
-            ? GetIt.I<CourseCubit>().allCourses
-            : GetIt.I<CourseCubit>().userCourses;
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(40),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              value: courses.any((c) => c.id == selectedCourseId)
-                  ? selectedCourseId
-                  : null,
-              hint: Text(
-                'Select the appropriate course',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge!.copyWith(color: AppColors.grey),
-              ),
-              items: courses.map((course) {
-                return DropdownMenuItem<String>(
-                  value: course.id,
-                  child: Text(course.title),
-                );
-              }).toList(),
-              onChanged: (v) => {onChanged(v!)},
+        bool isAdmin = GetIt.I<LoginCubit>().currentUser!.role == "admin";
+        if (state is CourseLoaded) {
+          final courses = isAdmin
+              ? GetIt.I<CourseCubit>().allCourses
+              : GetIt.I<CourseCubit>().userCourses;
+          courses.isEmpty && isAdmin
+              ? GetIt.I<CourseCubit>().fetchCourseItems()
+              : null;
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(40),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-          ),
-        );
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                isExpanded: true,
+                value: courses.any((c) => c.id == selectedCourseId)
+                    ? selectedCourseId
+                    : null,
+                hint: Text(
+                  'Select the appropriate course',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge!.copyWith(color: AppColors.grey),
+                ),
+                items: courses.map((course) {
+                  return DropdownMenuItem<String>(
+                    value: course.id,
+                    child: Text(course.title),
+                  );
+                }).toList(),
+                onChanged: (v) => {onChanged(v!)},
+              ),
+            ),
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
       },
     );
   }

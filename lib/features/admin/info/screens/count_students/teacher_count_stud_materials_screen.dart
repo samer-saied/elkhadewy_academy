@@ -4,16 +4,14 @@ import 'package:get_it/get_it.dart';
 import 'package:unimind/features/courses/data/models/course_model.dart';
 import 'package:unimind/utils/colors.dart';
 
-import '../../../../auth/bloc/login_cubit.dart';
-import '../../../../courses/presentations/cubit/course_cubit.dart';
+import '../../../chapters/add_chapter/drop_down_widget.dart';
 import '../../../chapters/manage_chapters/simple_title_widget.dart';
-import '../../../users/show_users.dart';
+import '../../../users/widgets/user_card_widget.dart';
 import '../../cubit/statistic_cubit.dart';
 import '../../models/info_chip_model.dart';
 
 class CountStudMaterialsTeacherScreen extends StatefulWidget {
-  final bool? isAdmin;
-  const CountStudMaterialsTeacherScreen({super.key, this.isAdmin = false});
+  const CountStudMaterialsTeacherScreen({super.key});
 
   @override
   State<CountStudMaterialsTeacherScreen> createState() =>
@@ -22,12 +20,11 @@ class CountStudMaterialsTeacherScreen extends StatefulWidget {
 
 class _CountStudMaterialsScreenState
     extends State<CountStudMaterialsTeacherScreen> {
-  late final StatisticCubit _statisticCubit;
+  String _selectedCourseId = '';
 
   @override
   void initState() {
     super.initState();
-    _statisticCubit = GetIt.I<StatisticCubit>();
   }
 
   @override
@@ -41,10 +38,19 @@ class _CountStudMaterialsScreenState
             //////////  Filter CARD    ///////////////////
             /////////////   SELECT WIDGET   ////////////////////////
             SimpleTitleWidget(title: "Select the course"),
-
+            BuildCourseDropDown(
+              selectedCourseId: _selectedCourseId,
+              onChanged: (v) {
+                _selectedCourseId = v;
+                GetIt.I<StatisticCubit>().getUsersDataByMaterial(
+                  materialId: _selectedCourseId,
+                );
+                setState(() {});
+              },
+            ),
             //////////  RESULTS AND CHART AREA   /////////
             BlocBuilder<StatisticCubit, StatisticState>(
-              bloc: _statisticCubit,
+              bloc: GetIt.I<StatisticCubit>(),
               builder: (context, state) {
                 if (state is StatisticInitial) {
                   return const Center(child: Text('Choose a Course To Start'));
@@ -56,47 +62,101 @@ class _CountStudMaterialsScreenState
                   );
                 }
 
-                if (state is StatisticLoaded) {
-                  final courses =
-                      GetIt.I<LoginCubit>().currentUser!.role == "admin"
-                      ? GetIt.I<CourseCubit>().allCourses
-                      : GetIt.I<CourseCubit>().userCourses;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: courses.length,
-                    itemBuilder: (context, index) {
-                      final course = courses[index];
-                      final colorValue =
-                          int.tryParse(course.color!) ??
-                          0xFF000000; // Fallback to black if parsing fails
-
-                      return GestureDetector(
-                        onTap: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ShowUsersPage(
-                                field: "materials",
-                                value: course.id,
-                                title: course.title,
-                                isDelete: true,
-                                isAll: false,
-                              ),
-                            ),
-                          );
-                        },
-                        child: SimpleMaterialCardInfoWidget(
-                          color: Color(colorValue),
-                          index: index,
-                          course: course,
+                if (state is StatisticLoaded && _selectedCourseId != '') {
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10.0,
+                            right: 10,
+                            top: 5,
+                          ),
+                          child: Divider(),
                         ),
-                      );
-                    },
+                        TotalReportWidget(
+                          text: "Total Reports",
+                          totalNum: GetIt.I<StatisticCubit>().users.length
+                              .toString(),
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: GetIt.I<StatisticCubit>().users.length,
+                          itemBuilder: (context, index) {
+                            return UserCardWidget(
+                              index: index,
+                              student: GetIt.I<StatisticCubit>().users[index],
+                              isDelete: true,
+                              isAdmin: false,
+                              // GetIt.I<LoginCubit>().currentUser!.role ==
+                              // "admin",
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   );
                 }
-                return const Center(child: Text('Choose a Course To Start'));
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.only(
+                      top: MediaQuery.sizeOf(context).height / 4,
+                    ),
+                    child: Text('Choose a Course To Start'),
+                  ),
+                );
               },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TotalReportWidget extends StatelessWidget {
+  final String text;
+  final String totalNum;
+
+  const TotalReportWidget({
+    super.key,
+    required this.text,
+    required this.totalNum,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 1,
+      color: AppColors.jonquilLight,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                color: AppColors.whiteColor,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                totalNum,
+                style: TextStyle(
+                  color: AppColors.jonquil,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),

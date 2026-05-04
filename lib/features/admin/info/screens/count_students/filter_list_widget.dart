@@ -5,6 +5,7 @@ import 'package:unimind/features/homepage/data/model/category_model.dart';
 import 'package:unimind/features/homepage/presentations/cubit/category_cubit.dart';
 import 'package:unimind/utils/colors.dart';
 
+import '../../../chapters/manage_chapters/simple_title_widget.dart';
 import '../../cubit/statistic_cubit.dart';
 
 class FilterScreen extends StatelessWidget {
@@ -16,12 +17,12 @@ class FilterScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // SECTION 1: Faculty
-        buildSectionTitle('College'),
+        SimpleTitleWidget(title: 'College'),
         BuildFacultyFilters(),
         const SizedBox(height: 5),
 
         // SECTION 2: Academic Year
-        buildSectionTitle('Academic Year'),
+        SimpleTitleWidget(title: 'Academic Year'),
         BuildAcademicYearFilters(),
         const SizedBox(height: 5),
       ],
@@ -197,7 +198,7 @@ class _CustomFilterChip extends StatelessWidget {
 // --- Common Title Builder ---
 Widget buildSectionTitle(String title) {
   return Padding(
-    padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 10),
+    padding: const EdgeInsets.only(left: 5.0, right: 5.0),
     child: Row(
       children: [
         Text(

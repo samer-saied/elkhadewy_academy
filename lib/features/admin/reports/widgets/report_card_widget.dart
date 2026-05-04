@@ -33,7 +33,7 @@ class ReportCardWidget extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
-                color: AppColors.lightprussianBlue,
+                color: AppColors.jonquil,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(5),
                   bottomLeft: Radius.circular(5),
@@ -101,7 +101,7 @@ class ReportCardWidget extends StatelessWidget {
                         SmallButtonWidget(
                           iconName: Icons.receipt_rounded,
                           iconTxt: "View User Activity",
-                          bkColor: AppColors.lightprussianBlue,
+                          bkColor: AppColors.jonquilLight,
                           onTap: () {},
                         ),
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -16,7 +18,7 @@ class RequestShowCourseCubit extends Cubit<RequestShowCourseState> {
   RequestShowCourseCubit(this._service) : super(RequestShowCourseInitial());
 
   final String collectionId = "request_show_course";
-  List<Map> requestsData = [];
+  List<Map<String, dynamic>> requestsData = [];
 
   Future<void> requestShowCourse({required CourseModel course}) async {
     emit(RequestShowCourseLoading());
@@ -80,15 +82,17 @@ class RequestShowCourseCubit extends Cubit<RequestShowCourseState> {
       } else {
         ////////////////////// TEACHER  /////////////////////
         List<String> materials = GetIt.I<LoginCubit>().currentUser!.materials;
-
+        log(materials.toString());
         for (var material in materials) {
           QuerySnapshot<Object?> data = await _service.getDocuments(
             collectionId: collectionId,
             where: {"courseId": material},
           );
+          log(data.docs.toString());
           requestsData.addAll(
             data.docs.map((doc) {
-              final map = doc.data() as Map<String, dynamic>;
+              final Map<String, dynamic> map =
+                  doc.data() as Map<String, dynamic>;
               map['docId'] = doc.id;
               return map;
             }),

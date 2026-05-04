@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:unimind/features/admin/info/cubit/statistic_cubit.dart';
+import 'package:unimind/general/widgets/headers_widgets.dart';
 
 import '../../../utils/colors.dart';
 import '../../auth/bloc/login_cubit.dart';
 import '../../auth/models/user_model.dart';
+import '../chapters/manage_chapters/simple_title_widget.dart';
 import '../info/screens/count_students/filter_list_widget.dart';
 import 'widgets/user_card_widget.dart';
 
@@ -39,13 +41,7 @@ class SearchUsersPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: Text(
-              "Enter User Phone Number",
-              style: TextStyle(color: AppColors.jonquil, fontSize: 18),
-            ),
-          ),
+          SimpleTitleWidget(title: "Enter User Phone Number"),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: TextField(

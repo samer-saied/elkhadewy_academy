@@ -19,7 +19,7 @@ class ManageChapters extends StatefulWidget {
 }
 
 class _ManageChaptersState extends State<ManageChapters> {
-  String? _selectedCourseId;
+  String _selectedCourseId = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,11 +46,13 @@ class _ManageChaptersState extends State<ManageChapters> {
             child: Divider(),
           ),
           Expanded(
+            // ignore: unnecessary_null_comparison
             child: _selectedCourseId == null
+                // ignore: dead_code
                 ? const Center(child: Text("Please select a course"))
                 : BlocBuilder<ChaptersCubit, ChaptersState>(
                     bloc: GetIt.I<ChaptersCubit>()
-                      ..fetchChapters(_selectedCourseId!),
+                      ..fetchChapters(_selectedCourseId),
                     builder: (context, state) {
                       if (state is ChaptersLoading) {
                         return const Center(child: CircularProgressIndicator());
@@ -93,7 +95,7 @@ class _ManageChaptersState extends State<ManageChapters> {
       onDismissed: (direction) {
         if (direction == DismissDirection.endToStart) {
           GetIt.I<ChaptersCubit>().deleteChapter(
-            _selectedCourseId!,
+            _selectedCourseId,
             chapter.id.toString(),
           );
         }

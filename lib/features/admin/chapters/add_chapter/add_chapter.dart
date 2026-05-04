@@ -59,7 +59,7 @@ class _AddChapterFormState extends State<AddChapterForm> {
   final _linkController = TextEditingController();
   final List<TextEditingController> _attachmentControllers = [];
 
-  String? _selectedCourseId;
+  String _selectedCourseId = '';
 
   @override
   void initState() {
@@ -94,7 +94,8 @@ class _AddChapterFormState extends State<AddChapterForm> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedCourseId == null) {
+    // ignore: unnecessary_null_comparison
+    if (_selectedCourseId == null || _selectedCourseId == '') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please select a course'),
@@ -109,7 +110,7 @@ class _AddChapterFormState extends State<AddChapterForm> {
       title: _titleController.text.trim(),
       orderIndex: int.tryParse(_indexController.text.trim()) ?? 0,
       content: _contentController.text.trim(),
-      courseId: _selectedCourseId!,
+      courseId: _selectedCourseId,
       createdAt: widget.chapter?.createdAt ?? Timestamp.now(),
       videoUrl: _linkController.text.trim(),
       createdBy:
@@ -121,9 +122,9 @@ class _AddChapterFormState extends State<AddChapterForm> {
     );
 
     if (widget.chapter == null) {
-      GetIt.I<ChaptersCubit>().addChapter(_selectedCourseId!, chapter);
+      GetIt.I<ChaptersCubit>().addChapter(_selectedCourseId, chapter);
     } else {
-      GetIt.I<ChaptersCubit>().updateChapter(_selectedCourseId!, chapter);
+      GetIt.I<ChaptersCubit>().updateChapter(_selectedCourseId, chapter);
     }
   }
 
@@ -209,14 +210,13 @@ class _AddChapterFormState extends State<AddChapterForm> {
                     ),
                     const SizedBox(height: 14),
                     /////////////////   DROPDOWN MENU WIDGET   ////////////////////////////
-                    _selectedCourseId != null
-                        ? BuildCourseDropDown(
-                            selectedCourseId: _selectedCourseId!,
-                            onChanged: (v) {
-                              _selectedCourseId = v;
-                            },
-                          )
-                        : CircularProgressIndicator(),
+                    BuildCourseDropDown(
+                      selectedCourseId: _selectedCourseId,
+                      onChanged: (v) {
+                        _selectedCourseId = v;
+                        setState(() {});
+                      },
+                    ),
                     const SizedBox(height: 28),
 
                     // ── Video URL ────────────────────────────────────
