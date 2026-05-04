@@ -1,3 +1,3 @@
-# course_mate
+# course_mate By samer
 
 A new Flutter project.
